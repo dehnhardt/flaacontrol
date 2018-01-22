@@ -8,9 +8,9 @@
 #include <QQueue>
 #include <string>
 
-use std::string;
 
 using namespace oscpkt;
+using std::string;
 
 class OscSender : public QThread
 {

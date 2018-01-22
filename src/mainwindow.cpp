@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "structure/flowcontrol.h"
 #include "osc/osclistener.h"
 #include "osc/oscpkt.hh"
 
@@ -30,6 +31,7 @@ void MainWindow::openSockets()
 void MainWindow::connectSlots()
 {
 	connect(m_pUi->actionSendPing, SIGNAL(triggered()), this, SLOT(sendMessage()));
+	connect(m_pUi->actionSignal_Flow, SIGNAL(triggered()), this, SLOT(openFlowControlWindow()));
 }
 
 void MainWindow::sendMessage()
@@ -38,4 +40,10 @@ void MainWindow::sendMessage()
 	msg.pushInt32(m_iPing);
 	m_pUdpSender->enqueuMessage(msg);
 	++m_iPing;
+}
+
+void MainWindow::openFlowControlWindow()
+{
+	FlowControl *flowControlWindow = new FlowControl(this);
+	flowControlWindow->show();
 }

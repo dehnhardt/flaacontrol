@@ -26,6 +26,7 @@ private:
 
 private slots:
 	void sendMessage();
+	void openFlowControlWindow();
 
 private:
 	int m_iPing = 0;

@@ -27,10 +27,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     src/main.cpp \
-    src/mainwindow.cpp \
     src/tracks/tracks.cpp \
     src/osc/osclistener.cpp \
-    src/osc/oscsender.cpp
+    src/osc/oscsender.cpp \
+    src/structure/flowcontrol.cpp \
+    src/mainwindow.cpp
 
 HEADERS += \
     src/osc/oscpkt.hh \
@@ -38,10 +39,23 @@ HEADERS += \
     src/mainwindow.h \
     src/tracks/tracks.h \
     src/osc/osclistener.h \
-    src/osc/oscsender.h
+    src/osc/oscsender.h \
+    src/structure/flowcontrol.h
 
 FORMS += \
-    src/mainwindow.ui
+    src/mainwindow.ui \
+    src/structure/flowcontrol_s.ui \
+    src/structure/flowcontrol.ui
+
+RESOURCES += \
+    icons.qrc
 
 DISTFILES += \
-	.astylerc
+	.astylerc \
+    resources/ethernetjack.xpm \
+    resources/midijack_svg.xpm \
+    resources/readfromdevice.xpm \
+    resources/restore.xpm \
+    resources/savetodevice.xpm \
+    resources/usbhostjack.xpm \
+    resources/usbjack.xpm

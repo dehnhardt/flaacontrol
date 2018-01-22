@@ -59,8 +59,15 @@
     <addaction name="actionInput"/>
     <addaction name="actionChannel"/>
    </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+    <addaction name="actionSignal_Flow"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAdd"/>
+   <addaction name="menuWindow"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -99,6 +106,11 @@
    </property>
    <property name="toolTip">
     <string>Sende ein Ping an den Server</string>
+   </property>
+  </action>
+  <action name="actionSignal_Flow">
+   <property name="text">
+    <string>Signal Flow</string>
    </property>
   </action>
  </widget>

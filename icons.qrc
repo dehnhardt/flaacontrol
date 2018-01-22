@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/ressources">
+        <file alias="etherjack">resources/ethernetjack.xpm</file>
+        <file alias="midijack">resources/midijack_svg.xpm</file>
+        <file alias="readfromdevice">resources/readfromdevice.xpm</file>
+        <file alias="restore">resources/restore.xpm</file>
+        <file alias="savetodevice">resources/savetodevice.xpm</file>
+        <file alias="usbhost">resources/usbhostjack.xpm</file>
+        <file alias="usbjack">resources/usbjack.xpm</file>
+    </qresource>
+</RCC>
