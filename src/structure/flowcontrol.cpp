@@ -15,13 +15,8 @@ FlowControl::~FlowControl()
 
 void FlowControl::mousePressEvent(QMouseEvent *event)
 {
-	QLabel *child = static_cast<QLabel *>(childAt(event->pos()));
+	QPushButton *child = static_cast<QPushButton *>(childAt(event->pos()));
 	if (!child)
 		return;
 
-	QPixmap pixmap = *child->pixmap();
-
-	QByteArray itemData;
-	QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-	dataStream << pixmap << QPoint(event->pos() - child->pos());
 }

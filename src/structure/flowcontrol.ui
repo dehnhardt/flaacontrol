@@ -76,6 +76,12 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="acceptDrops">
+         <bool>true</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
         <widget class="QToolBox" name="toolBox">
          <property name="geometry">
           <rect>
@@ -109,33 +115,56 @@
           <widget class="QWidget" name="verticalLayoutWidget_2">
            <property name="geometry">
             <rect>
-             <x>0</x>
+             <x>9</x>
              <y>0</y>
-             <width>150</width>
+             <width>131</width>
              <height>271</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="inputsLayout">
             <item>
-             <widget class="QLabel" name="label">
+             <widget class="QPushButton" name="AudioInDrop">
+              <property name="styleSheet">
+               <string notr="true">text-align: left;
+opacity: 0;
+border-width: 0;
+border-style: none;</string>
+              </property>
               <property name="text">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img height=&quot;20&quot; src=&quot;:/ressources/midijack&quot;/&gt; MIDI in&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>Audio in</string>
               </property>
-              <property name="textFormat">
-               <enum>Qt::RichText</enum>
-              </property>
-              <property name="margin">
-               <number>2</number>
-              </property>
-              <property name="indent">
-               <number>2</number>
+              <property name="icon">
+               <iconset resource="../../icons.qrc">
+                <normaloff>:/ressources/etherjack</normaloff>:/ressources/etherjack</iconset>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="lblAudioIn">
+             <widget class="QPushButton" name="MidiInDrop">
+              <property name="mouseTracking">
+               <bool>true</bool>
+              </property>
+              <property name="autoFillBackground">
+               <bool>false</bool>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">text-align: left;
+opacity: 0;
+border-width: 0;
+border-style: none;</string>
+              </property>
               <property name="text">
-               <string>Audio in</string>
+               <string>Midi In</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../icons.qrc">
+                <normaloff>:/ressources/midijack</normaloff>:/ressources/midijack</iconset>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -294,7 +323,9 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
