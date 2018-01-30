@@ -31,7 +31,13 @@ SOURCES += \
     src/osc/osclistener.cpp \
     src/osc/oscsender.cpp \
     src/structure/flowcontrol.cpp \
-    src/mainwindow.cpp
+    src/mainwindow.cpp \
+    src/structure/draggablebutton.cpp \
+    src/osc/oschandler.cpp \
+    src/handler/FLCRepositoryModuleHandler.cpp \
+    src/handler/FLCPingHandler.cpp \
+    src/model/FLCRepositoryModule.cpp \
+    src/Flaacontrol.cpp
 
 HEADERS += \
     src/osc/oscpkt.hh \
@@ -40,18 +46,23 @@ HEADERS += \
     src/tracks/tracks.h \
     src/osc/osclistener.h \
     src/osc/oscsender.h \
-    src/structure/flowcontrol.h
+    src/structure/flowcontrol.h \
+    src/structure/draggablebutton.h \
+    src/osc/oschandler.h \
+    src/handler/FLCRepositoryModuleHandler.h \
+    src/handler/FLCPingHandler.h \
+    src/model/FLCRepositoryModule.h \
+    src/Flaacontrol.h
 
 FORMS += \
     src/mainwindow.ui \
-    src/structure/flowcontrol_s.ui \
     src/structure/flowcontrol.ui
 
 RESOURCES += \
     icons.qrc
 
 DISTFILES += \
-	.astylerc \
+        .astylerc \
     resources/ethernetjack.xpm \
     resources/midijack_svg.xpm \
     resources/readfromdevice.xpm \
@@ -59,3 +70,6 @@ DISTFILES += \
     resources/savetodevice.xpm \
     resources/usbhostjack.xpm \
     resources/usbjack.xpm
+
+INCLUDEPATH += $$PWD/../flaarlib/src
+

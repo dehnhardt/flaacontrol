@@ -21,6 +21,7 @@ public:
 
 	void enqueuMessage(Message message);
 	void sendQueuedMessages();
+	void sendPackage( PacketWriter pw);
 
 protected:
 	void run() override;

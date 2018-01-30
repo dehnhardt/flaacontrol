@@ -3,14 +3,20 @@
 
 #define OSCPKT_OSTREAM_OUTPUT
 
-#include <QThread>
+#include "oschandler.h"
 
-class OscListener : public QThread
+#include <QThread>
+#include <map>
+#include <string>
+
+class OscListener : public QThread, public OscHandler
 {
 
 public:
 	OscListener( int iPortNum);
-	~OscListener(){}
+	~OscListener() {}
+
+	void setBRunning(bool bRunning);
 
 protected:
 	void run() override;
@@ -20,6 +26,8 @@ private:
 
 private:
 	int m_iPortNum = 0;
+	bool m_bRunning = false;
+	std::map<std::string, OscHandler *> m_HandlerMap;
 
 };
 

@@ -42,13 +42,6 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -87,26 +80,20 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>151</width>
-           <height>364</height>
+           <width>121</width>
+           <height>181</height>
           </rect>
          </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
-         <widget class="QWidget" name="inputPage">
+         <widget class="QWidget" name="inputsPage">
           <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>151</width>
-            <height>271</height>
+            <width>121</width>
+            <height>97</height>
            </rect>
           </property>
           <attribute name="label">
@@ -115,72 +102,22 @@
           <widget class="QWidget" name="verticalLayoutWidget_2">
            <property name="geometry">
             <rect>
-             <x>9</x>
+             <x>0</x>
              <y>0</y>
-             <width>131</width>
-             <height>271</height>
+             <width>121</width>
+             <height>131</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="inputsLayout">
-            <item>
-             <widget class="QPushButton" name="AudioInDrop">
-              <property name="styleSheet">
-               <string notr="true">text-align: left;
-opacity: 0;
-border-width: 0;
-border-style: none;</string>
-              </property>
-              <property name="text">
-               <string>Audio in</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../../icons.qrc">
-                <normaloff>:/ressources/etherjack</normaloff>:/ressources/etherjack</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="MidiInDrop">
-              <property name="mouseTracking">
-               <bool>true</bool>
-              </property>
-              <property name="autoFillBackground">
-               <bool>false</bool>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">text-align: left;
-opacity: 0;
-border-width: 0;
-border-style: none;</string>
-              </property>
-              <property name="text">
-               <string>Midi In</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../../icons.qrc">
-                <normaloff>:/ressources/midijack</normaloff>:/ressources/midijack</iconset>
-              </property>
-              <property name="autoDefault">
-               <bool>false</bool>
-              </property>
-              <property name="flat">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="verticalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
+            <property name="spacing">
+             <number>2</number>
+            </property>
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMaximumSize</enum>
+            </property>
+            <property name="leftMargin">
+             <number>5</number>
+            </property>
            </layout>
           </widget>
          </widget>
@@ -189,143 +126,50 @@ border-style: none;</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>151</width>
-            <height>271</height>
+            <width>121</width>
+            <height>97</height>
            </rect>
           </property>
           <attribute name="label">
            <string>Processors</string>
           </attribute>
-          <widget class="QWidget" name="verticalLayoutWidget_4">
-           <property name="geometry">
-            <rect>
-             <x>-1</x>
-             <y>-1</y>
-             <width>151</width>
-             <height>281</height>
-            </rect>
-           </property>
-           <layout class="QVBoxLayout" name="processorsLayout">
-            <item>
-             <widget class="QLabel" name="lblFader">
-              <property name="text">
-               <string>Fader</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="verticalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </widget>
-         </widget>
-         <widget class="QWidget" name="outputsPage">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>151</width>
-            <height>271</height>
-           </rect>
-          </property>
-          <attribute name="label">
-           <string>Outputs</string>
-          </attribute>
           <widget class="QWidget" name="verticalLayoutWidget_3">
            <property name="geometry">
             <rect>
-             <x>-1</x>
+             <x>0</x>
              <y>0</y>
-             <width>151</width>
-             <height>271</height>
+             <width>121</width>
+             <height>91</height>
             </rect>
            </property>
-           <layout class="QVBoxLayout" name="outputsLayout">
-            <item>
-             <widget class="QLabel" name="lblMidiOut">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="sizeIncrement">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img height=&quot;20&quot; src=&quot;:/ressources/midijack&quot;/&gt;&amp;nbsp;Midi Out&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="textFormat">
-               <enum>Qt::RichText</enum>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="lblAudioOut">
-              <property name="text">
-               <string>Audio Out</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="verticalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
+           <layout class="QVBoxLayout" name="processorsLayout"/>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="outputsPage">
+          <attribute name="label">
+           <string>Outputs</string>
+          </attribute>
+          <widget class="QWidget" name="verticalLayoutWidget_4">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>9</y>
+             <width>121</width>
+             <height>91</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="outputsLayout"/>
           </widget>
          </widget>
         </widget>
        </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </item>
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="../../icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

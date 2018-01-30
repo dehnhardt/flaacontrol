@@ -38,6 +38,11 @@ void OscSender::init()
 {
 	m_pMessageQueue = new QQueue<Message>();
 	m_pUdpSocket = new UdpSocket();
+	if( m_pUdpSocket->isOk() )
+		qDebug() << "Socket ready, sending to host " << m_sHost.c_str() << " on port " << m_iPortNum;
+	else
+		cerr << "Socket not ready:" << m_pUdpSocket->errorMessage().c_str() << " (host " << m_sHost.c_str() << ", port " << m_iPortNum << ")";
+
 }
 
 void OscSender::enqueuMessage(Message message)
@@ -62,16 +67,24 @@ void OscSender::sendQueuedMessages()
 		Message message = m_pMessageQueue->dequeue();
 		PacketWriter pw;
 		pw.startBundle().addMessage(message).endBundle();
-		bool ok = m_pUdpSocket->sendPacket(pw.packetData(), pw.packetSize());
-		if (ok && m_pUdpSocket->receiveNextPacket(30 /* timeout, in ms */))
-		{
-			PacketReader pr(m_pUdpSocket->packetData(), m_pUdpSocket->packetSize());
-			Message *incoming_msg;
-			while (pr.isOk() && (incoming_msg = pr.popMessage()) != 0)
-				qDebug() << "Client: received " << incoming_msg->addressPattern().c_str();
-		}
+		sendPackage(pw);
 	}
 	m_bRunning = false;
+}
+
+void OscSender::sendPackage(PacketWriter pw)
+{
+	bool ok = m_pUdpSocket->sendPacket(pw.packetData(), pw.packetSize());
+	if (ok && m_pUdpSocket->receiveNextPacket(30 /* timeout, in ms */))
+	{
+		PacketReader pr(m_pUdpSocket->packetData(), m_pUdpSocket->packetSize());
+		Message *incoming_msg;
+		while (pr.isOk() && (incoming_msg = pr.popMessage()) != 0)
+			qDebug() << "Client: received " << incoming_msg->addressPattern().c_str();
+	}
+	if( !ok )
+		cerr << "Sending of packet failed";
+
 }
 
 void OscSender::run()
