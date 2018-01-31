@@ -37,7 +37,8 @@ SOURCES += \
     src/handler/FLCRepositoryModuleHandler.cpp \
     src/handler/FLCPingHandler.cpp \
     src/model/FLCRepositoryModule.cpp \
-    src/Flaacontrol.cpp
+    src/Flaacontrol.cpp \
+    src/model/FLCRepositoryModuleModel.cpp
 
 HEADERS += \
     src/osc/oscpkt.hh \
@@ -52,7 +53,8 @@ HEADERS += \
     src/handler/FLCRepositoryModuleHandler.h \
     src/handler/FLCPingHandler.h \
     src/model/FLCRepositoryModule.h \
-    src/Flaacontrol.h
+    src/Flaacontrol.h \
+    src/model/FLCRepositoryModuleModel.h
 
 FORMS += \
     src/mainwindow.ui \
