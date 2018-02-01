@@ -64,6 +64,8 @@
      <string>Window</string>
     </property>
     <addaction name="actionSignal_Flow"/>
+    <addaction name="separator"/>
+    <addaction name="actionSession_Settings"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAdd"/>
@@ -120,6 +122,11 @@
    </property>
    <property name="toolTip">
     <string>Request Repository</string>
+   </property>
+  </action>
+  <action name="actionSession_Settings">
+   <property name="text">
+    <string>Session Settings</string>
    </property>
   </action>
  </widget>

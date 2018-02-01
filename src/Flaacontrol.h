@@ -1,6 +1,7 @@
 #ifndef FLAACONTROL_H
 #define FLAACONTROL_H
 
+#include <string>
 
 class OscListener;
 class OscSender;
@@ -22,6 +23,15 @@ public: //getter
 	OscListener *pUdpListener() const;
 	OscSender *pUdpSender() const;
 
+	int listenPort() const {return m_iListenPort;}
+	int sendPort() const {return m_iSendPort;}
+	std::string sendAddress() const {return m_sSendAddress;}
+
+public: //setter
+	void setListenPort(int iListenPort) {m_iListenPort = iListenPort;}
+	void setSendPort(int iSendPort) {m_iSendPort = iSendPort;}
+	void setSendAddress(const std::string &sSendAddress) { m_sSendAddress = sSendAddress;}
+
 private: // methods
 	Flaacontrol();
 	virtual ~Flaacontrol();
@@ -37,6 +47,10 @@ private: // members
 	static Flaacontrol *_instance;
 	OscListener *m_pUdpListener = 0;
 	OscSender *m_pUdpSender = 0;
+
+	int m_iListenPort = 0;
+	int m_iSendPort = 0;
+	std::string m_sSendAddress;
 
 
 	class CGuard

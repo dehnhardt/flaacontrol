@@ -38,7 +38,9 @@ SOURCES += \
     src/handler/FLCPingHandler.cpp \
     src/model/FLCRepositoryModule.cpp \
     src/Flaacontrol.cpp \
-    src/model/FLCRepositoryModuleModel.cpp
+    src/model/FLCRepositoryModuleModel.cpp \
+    src/settings/SessionSettings.cpp \
+    src/settings/SettingsModel.cpp
 
 HEADERS += \
     src/osc/oscpkt.hh \
@@ -54,11 +56,15 @@ HEADERS += \
     src/handler/FLCPingHandler.h \
     src/model/FLCRepositoryModule.h \
     src/Flaacontrol.h \
-    src/model/FLCRepositoryModuleModel.h
+    src/model/FLCRepositoryModuleModel.h \
+    src/settings/SessionSettings.h \
+    src/settings/XmlSettings.h \
+    src/settings/SettingsModel.h
 
 FORMS += \
     src/mainwindow.ui \
-    src/structure/flowcontrol.ui
+    src/structure/flowcontrol.ui \
+    src/settings/SessionSettings.ui
 
 RESOURCES += \
     icons.qrc
