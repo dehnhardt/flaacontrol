@@ -7,6 +7,8 @@
 #include <map>
 #include <vector>
 
+class FLCRepositoryModuleModel;
+
 class FLCRepositoryModuleHandler : public OscHandler
 {
 public:
@@ -16,13 +18,13 @@ public: //methods
 	bool handle(UdpSocket *socket, Message *message) override;
 	void requestRepository();
 
-	std::map<flaarlib::MODULE_TYPE, std::vector<FLCRepositoryModule *>*> getRepository();
+	void setModel( flaarlib::MODULE_TYPE moduleType, FLCRepositoryModuleModel *repositoryModuleModel );
 
 private: //methods
-	void addToRepository( FLCRepositoryModule *flcModule);
+	void addToModel( FLCRepositoryModule *flcModule);
 
 private: //members
-	std::map<flaarlib::MODULE_TYPE, std::vector<FLCRepositoryModule *>*> m_flcModulesMap;
+	std::map<flaarlib::MODULE_TYPE, FLCRepositoryModuleModel *> m_flcModuleModels;
 };
 
 #endif // FLCREPOSITORYMODULEHANDLER_H

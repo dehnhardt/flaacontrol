@@ -2,6 +2,8 @@
 
 #include "../Flaacontrol.h"
 #include "../model/FLCRepositoryModule.h"
+#include "../model/FLCRepositoryModuleModel.h"
+
 #include "../osc/oscsender.h"
 
 #include <QDebug>
@@ -26,23 +28,21 @@ bool FLCRepositoryModuleHandler::handle(UdpSocket *socket __attribute__((unused)
 		qDebug() << "\tfunctionalName " << functionalName.c_str();
 		qDebug() << "\tdescription " << description.c_str();
 		FLCRepositoryModule *m = new FLCRepositoryModule(type, moduleTypeName, functionalName, description);
-		addToRepository(m);
+		addToModel(m);
 	}
 	return true;
 }
 
-std::map<flaarlib::MODULE_TYPE, std::vector<FLCRepositoryModule *> *> FLCRepositoryModuleHandler::getRepository()
+void FLCRepositoryModuleHandler::setModel(flaarlib::MODULE_TYPE moduleType, FLCRepositoryModuleModel *repositoryModuleModel)
 {
-	return m_flcModulesMap;
+	m_flcModuleModels[moduleType] = repositoryModuleModel;
 }
 
-void FLCRepositoryModuleHandler::addToRepository(FLCRepositoryModule *flcModule)
+void FLCRepositoryModuleHandler::addToModel(FLCRepositoryModule *flcModule)
 {
-	std::vector<FLCRepositoryModule *> *moduleVector = m_flcModulesMap[flcModule->moduleType()];
-	if( !moduleVector )
-		moduleVector = new std::vector<FLCRepositoryModule *>();
-	moduleVector->push_back(flcModule);
-	m_flcModulesMap[flcModule->moduleType()] = moduleVector;
+	FLCRepositoryModuleModel *moduleModel = m_flcModuleModels[flcModule->moduleType()];
+	if( moduleModel )
+		moduleModel->addModule(flcModule);
 }
 
 void FLCRepositoryModuleHandler::requestRepository()

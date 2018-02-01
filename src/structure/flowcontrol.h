@@ -4,6 +4,7 @@
 #include "draggablebutton.h"
 #include "FLModuleDefs.h"
 #include "../model/FLCRepositoryModule.h"
+#include "../model/FLCRepositoryModuleModel.h"
 
 #include <QDialog>
 #include <QMoveEvent>
@@ -35,11 +36,15 @@ private: // Methods
 	void setupUi();
 	void setupDraggableObjects();
 	void getRepositoryModules();
+	void clearModuleMap();
 
 private: // Members
+	bool m_bDataLoaded = false;
 	Ui::FlowControl *m_pUi;
 	QString m_sMimeType = "application/x-flowcontrolobject";
-	std::map<flaarlib::MODULE_TYPE, std::vector<FLCRepositoryModule *>*> m_flcModulesMap;
+	//std::map<flaarlib::MODULE_TYPE, std::vector<FLCRepositoryModule *>*> m_flcModulesMap;
+	std::map<flaarlib::MODULE_TYPE, FLCRepositoryModuleModel *> m_flcModulesModelMap;
+
 
 };
 

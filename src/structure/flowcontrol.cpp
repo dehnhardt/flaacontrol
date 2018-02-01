@@ -23,13 +23,21 @@ FlowControl::FlowControl(QWidget *parent) :
 {
 	m_pUi->setupUi(this);
 	setupUi();
-	getRepositoryModules();
-	setupDraggableObjects();
+	if( ! m_bDataLoaded )
+		getRepositoryModules();
 }
 
 FlowControl::~FlowControl()
 {
+	clearModuleMap();
 	delete m_pUi;
+}
+
+void FlowControl::clearModuleMap()
+{
+	for( auto it : m_flcModulesModelMap )
+		delete it.second;
+	m_flcModulesModelMap.clear();
 }
 
 void FlowControl::setupUi()
@@ -37,55 +45,29 @@ void FlowControl::setupUi()
 	setAcceptDrops(true);
 }
 
-void FlowControl::setupDraggableObjects()
-{
-	using namespace flaarlib;
-	for( auto outerIt : m_flcModulesMap )
-	{
-		MODULE_TYPE t = outerIt.first;
-		QVBoxLayout *currentLayout = 0;
-		switch( t )
-		{
-			case INPUT:
-				currentLayout = this->m_pUi->inputsLayout;
-				break;
-			case OUTPUT:
-				currentLayout = this->m_pUi->outputsLayout;
-				break;
-			case PROCESSOR:
-				currentLayout = this->m_pUi->processorsLayout;
-				break;
-		}
-		std::vector<FLCRepositoryModule *> *v = outerIt.second;
-		for( auto innerIt : *v )
-		{
-			FLCRepositoryModule *m = innerIt;
-			qDebug() << "Found " <<  m->functionalName().c_str();
-			DraggableButton *btn = new DraggableButton( m->functionalName().c_str(), QIcon(":/icons/midijack"), this);
-			btn->setToolTip(m->description().c_str());
-			currentLayout->insertWidget(-1, btn);
-			connect(btn, SIGNAL(buttonDragStart(DraggableButton *, QMouseEvent *)), this, SLOT(buttonDragStart(DraggableButton *, QMouseEvent *)));
-		}
-	}
-	/*
-	DraggableButton *btn1 = new DraggableButton( "MIDI-In", QIcon(":/icons/midijack"), this);
-	this->m_pUi->inputsLayout->insertWidget(0, btn1);
-	connect(btn1, SIGNAL(buttonDragStart(DraggableButton *, QMouseEvent *)), this, SLOT(buttonDragStart(DraggableButton *, QMouseEvent *)));
-	DraggableButton *btn2 = new DraggableButton( "Audio-In", QIcon(":/icons/audiocombojack"), this);
-	this->m_pUi->inputsLayout->insertWidget(1, btn2);
-	connect(btn2, SIGNAL(buttonDragStart(DraggableButton *, QMouseEvent *)), this, SLOT(buttonDragStart(DraggableButton *, QMouseEvent *)));
-	*/
-}
-
 void FlowControl::getRepositoryModules()
 {
-	m_flcModulesMap.clear();
+	using namespace flaarlib;
+	m_flcModulesModelMap.clear();
 	Flaacontrol *flaaControl = Flaacontrol::instance();
 	FLCRepositoryModuleHandler *handler = static_cast<FLCRepositoryModuleHandler *> (flaaControl->pUdpListener()->handlerFor("/ws/repository/module"));
+	for( int i = MODULE_TYPE::INPUT; i <= MODULE_TYPE::PROCESSOR; i++ )
+	{
+		FLCRepositoryModuleModel *m = new FLCRepositoryModuleModel();
+		handler->setModel(MODULE_TYPE(i), m);
+		m_flcModulesModelMap[MODULE_TYPE(i)] = m;
+	}
+	m_bDataLoaded = true;
+	setupDraggableObjects();
 	handler->requestRepository();
-	m_flcModulesMap = handler->getRepository();
 }
 
+void FlowControl::setupDraggableObjects()
+{
+	this->m_pUi->inputsListView->setModel( m_flcModulesModelMap[flaarlib::MODULE_TYPE::INPUT] );
+	this->m_pUi->processorsListView->setModel( m_flcModulesModelMap[flaarlib::MODULE_TYPE::PROCESSOR] );
+	this->m_pUi->outputsListView->setModel( m_flcModulesModelMap[flaarlib::MODULE_TYPE::OUTPUT] );
+}
 
 void FlowControl::buttonDragStart(DraggableButton *draggableButton, QMouseEvent *event)
 {

@@ -13,7 +13,10 @@ class FLCRepositoryModuleModel : public QAbstractListModel
 	Q_OBJECT
 
 public:
+	explicit FLCRepositoryModuleModel( vector<FLCRepositoryModule *> *dataVector, QObject *parent = nullptr);
 	explicit FLCRepositoryModuleModel( QObject *parent = nullptr);
+
+	~FLCRepositoryModuleModel();
 
 
 	// Basic functionality:

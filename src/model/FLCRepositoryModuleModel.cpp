@@ -1,9 +1,26 @@
 #include "FLCRepositoryModuleModel.h"
 
+FLCRepositoryModuleModel::FLCRepositoryModuleModel(vector<FLCRepositoryModule *> *dataVector, QObject *parent)
+	: QAbstractListModel(parent),
+	  m_pDataVector(dataVector)
+{
+}
+
 FLCRepositoryModuleModel::FLCRepositoryModuleModel(QObject *parent)
 	: QAbstractListModel(parent)
 {
 	m_pDataVector = new vector<FLCRepositoryModule *>();
+}
+
+FLCRepositoryModuleModel::~FLCRepositoryModuleModel()
+{
+	if( m_pDataVector)
+	{
+		for( auto it : *m_pDataVector )
+			delete it;
+		m_pDataVector->clear();
+		delete m_pDataVector;
+	}
 }
 
 int FLCRepositoryModuleModel::rowCount(const QModelIndex &parent) const
@@ -11,6 +28,8 @@ int FLCRepositoryModuleModel::rowCount(const QModelIndex &parent) const
 	// For list models only the root node (an invalid parent) should return the list's size. For all
 	// other (valid) parents, rowCount() should return 0 so that it does not become a tree model.
 	if (parent.isValid())
+		return 0;
+	if( ! m_pDataVector )
 		return 0;
 	return static_cast<int>(m_pDataVector->size());
 }
