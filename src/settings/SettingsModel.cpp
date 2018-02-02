@@ -1,10 +1,13 @@
 #include "SettingsModel.h"
+#include "XmlSettings.h"
 
 #include <QSettings>
 
 SettingsModel::SettingsModel()
 {
+	QSettings::setDefaultFormat(xmlFormat);
 	m_pSettings = new QSettings();
+	qDebug() << m_pSettings->fileName();
 }
 
 SettingsModel::~SettingsModel()
@@ -32,6 +35,7 @@ void SettingsModel::writeSeesionSettings(SettingsModel::SessionSettings *session
 {
 	m_pSettings->beginGroup("SessionSettings");
 	m_pSettings->setValue("listenPort", sessionSettings->listenPort);
+	//m_pSettings->setValue("@listenPortType", "Dolle");
 	m_pSettings->setValue("sendPort", sessionSettings->sendPort );
 	m_pSettings->setValue("sendAddress", sessionSettings->sendAddress );
 	m_pSettings->endGroup();

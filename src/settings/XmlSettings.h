@@ -3,6 +3,7 @@
 
 #include <QtCore/QtCore>
 #include <QtXml/QtXml>
+#include <QDebug>
 
 bool readSettingsXml(QIODevice &device, QMap<QString, QVariant> &map);
 bool writeSettingsXml(QIODevice &device, const QMap<QString, QVariant> &map);
@@ -20,6 +21,7 @@ public:
 		tagName(name),
 		subtext(text)
 	{
+		qDebug() << "Name: " << name << ", text: " << text;
 	}
 	~XmlSettings() {}
 
@@ -29,8 +31,8 @@ public:
 		QString path = tagName;
 
 		while((cur = static_cast<const XmlSettings *> (cur->parent()) ) != 0)
-			path.prepend(cur->tagName + "\\");
-
+			path.prepend(cur->tagName + "/");
+		qDebug() << "Full pathname: " << path.mid(rootName.size() + 1);
 		return path.mid(rootName.size() + 1); // remove root node & trailing slash
 	}
 };
@@ -45,6 +47,7 @@ bool readSettingsXml(QIODevice &device, QMap<QString, QVariant> &map)
 		switch(xml.readNext())
 		{
 			case QXmlStreamReader::StartElement:
+				qDebug() << "Name " << xml.name().toString();
 				if(curNode != 0)
 					//we're already processing the file if there already is a current node
 					curNode = new XmlSettings(xml.name().toString(), QString(), curNode);
@@ -74,7 +77,10 @@ bool readSettingsXml(QIODevice &device, QMap<QString, QVariant> &map)
 
 			case QXmlStreamReader::Characters:
 				if(!xml.isWhitespace())
+				{
 					map[curNode->fullPath()] = xml.text().toString();
+					qDebug() << "Value: " << xml.text().toString();
+				}
 				break;
 			default:
 				break;
@@ -184,6 +190,8 @@ bool writeSettingsXml(QIODevice &device, const QMap<QString, QVariant> &map)
 		}
 
 		//see step 2
+		/*if( cur->tagName.startsWith("@"))
+			xml.writeAttribute(cur->tagName.remove(0,1), cur->subtext );*/
 		xml.writeStartElement(cur->tagName);
 		stack << 0; // required to close text-only elements as well as for nodes with children to go back up a level when children are processed.
 
