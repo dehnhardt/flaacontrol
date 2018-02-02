@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "Flaacontrol.h"
 #include "structure/flowcontrol.h"
 #include "osc/osclistener.h"
 #include "osc/oscpkt.hh"
 #include "settings/SessionSettings.h"
+#include "settings/SettingsModel.h"
 
 #include <QDesktopWidget>
 
@@ -19,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
 					size(),
 					qApp->desktop()->availableGeometry()
 			));
+	prepareCommunication();
 	connectSlots();
 }
 
@@ -45,4 +48,15 @@ void MainWindow::openSettingsWindow()
 {
 	SessionSettings *sessionSettings = new SessionSettings(this);
 	sessionSettings->show();
+}
+
+void MainWindow::prepareCommunication()
+{
+	SettingsModel *m = SettingsModel::instance();
+	SettingsModel::SessionSettings *sessionSettings = m->readSessionSettings();
+	Flaacontrol *f = Flaacontrol::instance();
+	f->setListenPort(sessionSettings->listenPort);
+	f->setSendAddress(sessionSettings->sendAddress.toStdString());
+	f->setSendPort(sessionSettings->sendPort);
+	f->openSockets();
 }

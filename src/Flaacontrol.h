@@ -19,6 +19,7 @@ public:
 			_instance = new Flaacontrol();
 		return (_instance);
 	}
+	void openSockets();
 
 public: //getter
 	OscListener *udpListener() const;
@@ -27,6 +28,7 @@ public: //getter
 	int listenPort() const {return m_iListenPort;}
 	int sendPort() const {return m_iSendPort;}
 	std::string sendAddress() const {return m_sSendAddress;}
+	bool socketsOpen() const;
 
 public: //setter
 	void setListenPort(int iListenPort) {m_iListenPort = iListenPort;}
@@ -45,7 +47,6 @@ private: // methods
 	Flaacontrol(const Flaacontrol &) = delete;
 	void operator= (Flaacontrol const) = delete;
 
-	void openSockets();
 	void registerHandler();
 	void connectSlots();
 
@@ -58,6 +59,7 @@ private: // members
 	int m_iSendPort = 0;
 	std::string m_sSendAddress;
 
+	bool m_bSocketsOpen = false;
 
 	class CGuard
 	{

@@ -22,6 +22,7 @@ private:
 private slots:
 	void openFlowControlWindow();
 	void openSettingsWindow();
+	void prepareCommunication();
 
 private:
 	Ui::MainWindow *m_pUi;

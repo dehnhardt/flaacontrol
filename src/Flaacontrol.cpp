@@ -9,7 +9,6 @@
 
 Flaacontrol::Flaacontrol() : QObject ()
 {
-	openSockets();
 }
 
 Flaacontrol::~Flaacontrol()
@@ -18,13 +17,14 @@ Flaacontrol::~Flaacontrol()
 
 void Flaacontrol::openSockets()
 {
-	m_pUdpSender = new OscSender(9109);
-	m_pUdpListener = new OscListener(9110);
+	m_pUdpSender = new OscSender(m_sSendAddress, m_iSendPort);
+	m_pUdpListener = new OscListener(m_iListenPort);
 	registerHandler();
 	connectSlots();
 
 	m_pUdpSender->start();
 	m_pUdpListener->start();
+	m_bSocketsOpen = true;
 }
 
 void Flaacontrol::registerHandler()
@@ -38,6 +38,11 @@ void Flaacontrol::connectSlots()
 	connect(m_pUdpListener, &OscListener::finished, m_pUdpListener, &QObject::deleteLater);
 	connect(m_pUdpListener, &OscListener::finished, this, &Flaacontrol::listenerThreadFinished);
 	connect(m_pUdpListener, &OscListener::started, this, &Flaacontrol::listenerThreadStarted);
+}
+
+bool Flaacontrol::socketsOpen() const
+{
+	return m_bSocketsOpen;
 }
 
 OscSender *Flaacontrol::udpSender() const
