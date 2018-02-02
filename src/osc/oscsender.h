@@ -4,27 +4,29 @@
 #include "oscpkt.hh"
 #include "udp.hh"
 
-#include <QThread>
 #include <QQueue>
+#include <QObject>
 #include <string>
 
 
 using namespace oscpkt;
 using std::string;
 
-class OscSender : public QThread
+class OscSender : public QObject
 {
+	Q_OBJECT
 public:
 	OscSender( int iPortNum);
 	OscSender( string sHost, int iPortNum);
-	~OscSender();
+	virtual ~OscSender();
+	void start();
 
 	void enqueuMessage(Message message);
 	void sendQueuedMessages();
 	void sendPackage( PacketWriter pw);
 
 protected:
-	void run() override;
+	void run();
 
 private: //methods
 	void init();

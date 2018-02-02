@@ -10,23 +10,20 @@ using namespace oscpkt;
 
 
 OscSender::OscSender( int iPortNum) :
-	QThread(),
 	m_sHost("localhost"),
 	m_iPortNum(iPortNum)
 {
-	init();
 }
 
 OscSender::OscSender(string sHost, int iPortNum) :
-	QThread(),
 	m_sHost(sHost),
 	m_iPortNum(iPortNum)
 {
-	init();
 }
 
 OscSender::~OscSender()
 {
+	qDebug() << "Closing Socket";
 	m_pUdpSocket->close();
 	delete m_pMessageQueue;
 	delete m_pUdpSocket;
@@ -34,10 +31,15 @@ OscSender::~OscSender()
 	m_pUdpSocket = 0;
 }
 
+void OscSender::start()
+{
+	run();
+}
+
 void OscSender::init()
 {
-	m_pMessageQueue = new QQueue<Message>();
 	m_pUdpSocket = new UdpSocket();
+	m_pMessageQueue = new QQueue<Message>();
 	if( m_pUdpSocket->isOk() )
 		qDebug() << "Socket ready, sending to host " << m_sHost.c_str() << " on port " << m_iPortNum;
 	else
@@ -55,6 +57,8 @@ void OscSender::enqueuMessage(Message message)
 
 void OscSender::sendQueuedMessages()
 {
+	if( !m_pUdpSocket )
+		cerr << "Socket is null";
 	if( m_pUdpSocket->isOk() )
 		m_bRunning = true;
 	else
@@ -89,5 +93,6 @@ void OscSender::sendPackage(PacketWriter pw)
 
 void OscSender::run()
 {
+	init();
 	m_pUdpSocket->connectTo(m_sHost, m_iPortNum);
 }
