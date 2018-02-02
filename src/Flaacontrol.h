@@ -2,13 +2,14 @@
 #define FLAACONTROL_H
 
 #include <string>
+#include <QObject>
 
 class OscListener;
 class OscSender;
 
-class Flaacontrol
+class Flaacontrol : public QObject
 {
-
+	Q_OBJECT
 public:
 	// singleton pattern
 	static Flaacontrol *instance()
@@ -20,8 +21,8 @@ public:
 	}
 
 public: //getter
-	OscListener *pUdpListener() const;
-	OscSender *pUdpSender() const;
+	OscListener *udpListener() const;
+	OscSender *udpSender() const;
 
 	int listenPort() const {return m_iListenPort;}
 	int sendPort() const {return m_iSendPort;}
@@ -31,6 +32,10 @@ public: //setter
 	void setListenPort(int iListenPort) {m_iListenPort = iListenPort;}
 	void setSendPort(int iSendPort) {m_iSendPort = iSendPort;}
 	void setSendAddress(const std::string &sSendAddress) { m_sSendAddress = sSendAddress;}
+
+public slots:
+	void listenerThreadStarted();
+	void listenerThreadFinished();
 
 private: // methods
 	Flaacontrol();
@@ -42,6 +47,7 @@ private: // methods
 
 	void openSockets();
 	void registerHandler();
+	void connectSlots();
 
 private: // members
 	static Flaacontrol *_instance;

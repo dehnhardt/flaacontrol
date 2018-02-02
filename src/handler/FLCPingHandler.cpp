@@ -28,7 +28,7 @@ bool FLCPingHandler::handle(oscpkt::UdpSocket *socket, oscpkt::Message *message)
 
 void FLCPingHandler::sendPing()
 {
-	OscSender *sender = Flaacontrol::instance()->pUdpSender();
+	OscSender *sender = Flaacontrol::instance()->udpSender();
 	Message msg("/ping");
 	msg.pushInt32(m_iPing);
 	sender->enqueuMessage(msg);

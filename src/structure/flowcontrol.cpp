@@ -50,7 +50,7 @@ void FlowControl::getRepositoryModules()
 	using namespace flaarlib;
 	m_flcModulesModelMap.clear();
 	Flaacontrol *flaaControl = Flaacontrol::instance();
-	FLCRepositoryModuleHandler *handler = static_cast<FLCRepositoryModuleHandler *> (flaaControl->pUdpListener()->handlerFor("/ws/repository/module"));
+	FLCRepositoryModuleHandler *handler = static_cast<FLCRepositoryModuleHandler *> (flaaControl->udpListener()->handlerFor("/ws/repository/module"));
 	for( int i = MODULE_TYPE::INPUT; i <= MODULE_TYPE::PROCESSOR; i++ )
 	{
 		FLCRepositoryModuleModel *m = new FLCRepositoryModuleModel();

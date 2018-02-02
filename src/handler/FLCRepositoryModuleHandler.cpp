@@ -47,7 +47,7 @@ void FLCRepositoryModuleHandler::addToModel(FLCRepositoryModule *flcModule)
 
 void FLCRepositoryModuleHandler::requestRepository()
 {
-	OscSender *sender = Flaacontrol::instance()->pUdpSender();
+	OscSender *sender = Flaacontrol::instance()->udpSender();
 	Message msg("/ws/repository/get");
 	sender->enqueuMessage(msg);
 }

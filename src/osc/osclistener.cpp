@@ -5,7 +5,6 @@
 #include <QDebug>
 #include <QString>
 
-using namespace oscpkt;
 
 OscListener::OscListener( int iPortNum) :
 	QThread( ),
@@ -14,10 +13,22 @@ OscListener::OscListener( int iPortNum) :
 {
 }
 
+OscListener::~OscListener()
+{
+	delete m_pUdpSocket;
+	m_pUdpSocket = 0;
+}
+
 void OscListener::run()
 {
 	m_bRunning = true;
+	init();
 	runListener();
+}
+
+void OscListener::init()
+{
+	m_pUdpSocket = new oscpkt::UdpSocket();
 }
 
 void OscListener::runListener()
@@ -26,34 +37,33 @@ void OscListener::runListener()
 	using std::cout;
 	using std::cerr;
 
-	using namespace oscpkt;
-
-	UdpSocket *socket = new UdpSocket();
-	socket->bindTo(m_iPortNum);
-	if (!socket->isOk())
-		cerr << "Error opening port " << m_iPortNum << ": " << socket->errorMessage() << "\n";
+	m_pUdpSocket->bindTo(m_iPortNum);
+	if (!m_pUdpSocket->isOk())
+		cerr << "Error opening port " << m_iPortNum << ": " << m_pUdpSocket->errorMessage() << "\n";
 	else
 	{
 		cout << "Listener started, will listen to packets on port " << m_iPortNum << std::endl;
 		PacketReader pr;
-		while (m_bRunning && socket->isOk())
+		while (m_pUdpSocket->isOk())
 		{
-			if (socket->receiveNextPacket(30))
+			if (m_pUdpSocket->receiveNextPacket(30))
 			{
-				pr.init(socket->packetData(), socket->packetSize());
+				pr.init(m_pUdpSocket->packetData(), m_pUdpSocket->packetSize());
 				oscpkt::Message *message;
 				while (pr.isOk() && (message = pr.popMessage()) != 0)
 				{
 					OscHandler *handler = handlerFor(message);
 					if( handler)
-						handler->handle(socket, message);
+						handler->handle(m_pUdpSocket, message);
 					else
 						qDebug() << "Listener: unhandled message: " << message->addressPattern().c_str();
 				}
 			}
+			if( !m_bRunning )
+				break;
 		}
 		qDebug() << "close socket";
-		socket->close();
+		m_pUdpSocket->close();
 	}
 }
 

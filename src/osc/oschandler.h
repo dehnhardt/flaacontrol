@@ -2,10 +2,14 @@
 #define OSCHANDLER_H
 
 #include "oscpkt.hh"
-#include "udp.hh"
 
 #include <string>
 #include <map>
+
+namespace oscpkt
+{
+class UdpSocket;
+}
 
 using namespace oscpkt;
 
