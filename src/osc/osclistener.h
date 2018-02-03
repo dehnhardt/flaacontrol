@@ -5,7 +5,7 @@
 
 #include "oschandler.h"
 
-#include <QThread>
+#include <QObject>
 #include <map>
 #include <string>
 
@@ -14,7 +14,7 @@ namespace oscpkt
 class UdpSocket;
 }
 
-class OscListener : public QThread, public OscHandler
+class OscListener : public QObject, public OscHandler
 {
 	Q_OBJECT
 public:
@@ -23,11 +23,15 @@ public:
 
 	void setBRunning(bool bRunning);
 
-protected:
-	void run() override;
+public slots:
+	void init();
+	void exit();
+
+signals:
+	void started();
+	void finished();
 
 private:
-	void init();
 	void runListener();
 
 private:

@@ -56,7 +56,7 @@ void MainWindow::prepareCommunication()
 	SettingsModel::SessionSettings *sessionSettings = m->readSessionSettings();
 	Flaacontrol *f = Flaacontrol::instance();
 	f->setListenPort(sessionSettings->listenPort);
-	f->setSendAddress(sessionSettings->sendAddress.toStdString());
+	f->setSendHost(sessionSettings->sendAddress.toStdString());
 	f->setSendPort(sessionSettings->sendPort);
 	f->openSockets();
 }

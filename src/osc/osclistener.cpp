@@ -7,7 +7,7 @@
 
 
 OscListener::OscListener( int iPortNum) :
-	QThread( ),
+	QObject( ),
 	OscHandler ("/"),
 	m_iPortNum( iPortNum)
 {
@@ -19,16 +19,20 @@ OscListener::~OscListener()
 	m_pUdpSocket = 0;
 }
 
-void OscListener::run()
+void OscListener::init()
 {
+	qDebug() << "Listener slot init called";
 	m_bRunning = true;
-	init();
+	m_pUdpSocket = new oscpkt::UdpSocket();
+	emit( started());
 	runListener();
 }
 
-void OscListener::init()
+void OscListener::exit()
 {
-	m_pUdpSocket = new oscpkt::UdpSocket();
+	qDebug() << "Listener slot exit called";
+	setBRunning(false);
+	emit(finished());
 }
 
 void OscListener::runListener()
@@ -39,7 +43,7 @@ void OscListener::runListener()
 
 	m_pUdpSocket->bindTo(m_iPortNum);
 	if (!m_pUdpSocket->isOk())
-		cerr << "Error opening port " << m_iPortNum << ": " << m_pUdpSocket->errorMessage() << "\n";
+		cerr << "Error opening listener port " << m_iPortNum << ": " << m_pUdpSocket->errorMessage() << "\n";
 	else
 	{
 		cout << "Listener started, will listen to packets on port " << m_iPortNum << std::endl;
@@ -62,7 +66,7 @@ void OscListener::runListener()
 			if( !m_bRunning )
 				break;
 		}
-		qDebug() << "close socket";
+		qDebug() << "close listener socket";
 		m_pUdpSocket->close();
 	}
 }

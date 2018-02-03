@@ -6,6 +6,7 @@
 
 class OscListener;
 class OscSender;
+class QThread;
 
 class Flaacontrol : public QObject
 {
@@ -20,6 +21,7 @@ public:
 		return (_instance);
 	}
 	void openSockets();
+	void closeSockets();
 
 public: //getter
 	OscListener *udpListener() const;
@@ -27,17 +29,17 @@ public: //getter
 
 	int listenPort() const {return m_iListenPort;}
 	int sendPort() const {return m_iSendPort;}
-	std::string sendAddress() const {return m_sSendAddress;}
-	bool socketsOpen() const;
+	std::string sendHost() const {return m_sSendHost;}
 
 public: //setter
 	void setListenPort(int iListenPort) {m_iListenPort = iListenPort;}
 	void setSendPort(int iSendPort) {m_iSendPort = iSendPort;}
-	void setSendAddress(const std::string &sSendAddress) { m_sSendAddress = sSendAddress;}
+	void setSendHost(const std::string &sSendAddress) { m_sSendHost = sSendAddress;}
 
 public slots:
 	void listenerThreadStarted();
 	void listenerThreadFinished();
+	void onApplicationExit();
 
 private: // methods
 	Flaacontrol();
@@ -54,12 +56,13 @@ private: // members
 	static Flaacontrol *_instance;
 	OscListener *m_pUdpListener = 0;
 	OscSender *m_pUdpSender = 0;
+	QThread *m_pListenerThread = 0;
 
 	int m_iListenPort = 0;
 	int m_iSendPort = 0;
-	std::string m_sSendAddress;
+	std::string m_sSendHost;
 
-	bool m_bSocketsOpen = false;
+	//bool m_bSocketsOpen = false;
 
 	class CGuard
 	{
