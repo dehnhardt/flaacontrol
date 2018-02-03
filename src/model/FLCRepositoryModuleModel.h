@@ -23,10 +23,10 @@ public:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-	QModelIndex addModule( FLCRepositoryModule *module);
+	QModelIndex addModule(FLCRepositoryModule *module);
 
 private:
 	vector<FLCRepositoryModule *> *m_pDataVector;
+	QVariant icon(const FLCRepositoryModule *m) const;
 };
-
 #endif // FLCREPOSITORYMODULEMODEL_H

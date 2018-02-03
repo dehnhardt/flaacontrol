@@ -1,4 +1,7 @@
 #include "FLCRepositoryModuleModel.h"
+#include "FLModuleDefs.h"
+
+#include <QIcon>
 
 FLCRepositoryModuleModel::FLCRepositoryModuleModel(vector<FLCRepositoryModule *> *dataVector, QObject *parent)
 	: QAbstractListModel(parent),
@@ -43,10 +46,23 @@ QVariant FLCRepositoryModuleModel::data(const QModelIndex &index, int role) cons
 	{
 		case Qt::DisplayRole:
 			return m->functionalName().c_str();
+		case Qt::DecorationRole:
+			return icon(m);
 	}
 	return QVariant();
 }
 
+QVariant FLCRepositoryModuleModel::icon(const FLCRepositoryModule *m) const
+{
+	switch( m->moduleType() )
+	{
+		case flaarlib::INPUT:
+			return QIcon(":/icons/etherjack");
+		default:
+			return QVariant();
+
+	}
+}
 
 QModelIndex FLCRepositoryModuleModel::addModule(FLCRepositoryModule *module)
 {

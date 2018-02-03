@@ -7,6 +7,6 @@
         <file alias="savetodevice">resources/savetodevice.xpm</file>
         <file alias="usbhost">resources/usbhostjack.xpm</file>
         <file alias="usbjack">resources/usbjack.xpm</file>
-        <file alias="audiocombojack">resources/audiocombojack.svg</file>
+        <file alias="audiocombojack">resources/audiocombojack.xpm</file>
     </qresource>
 </RCC>

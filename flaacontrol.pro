@@ -77,7 +77,8 @@ DISTFILES += \
     resources/restore.xpm \
     resources/savetodevice.xpm \
     resources/usbhostjack.xpm \
-    resources/usbjack.xpm
+    resources/usbjack.xpm \
+    resources/audiocombojack.xpm
 
 INCLUDEPATH += $$PWD/../flaarlib/src
 
