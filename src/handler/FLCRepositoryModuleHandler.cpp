@@ -18,13 +18,15 @@ bool FLCRepositoryModuleHandler::handle(UdpSocket *socket __attribute__((unused)
 {
 	std::string moduleTypeName;
 	int	type;
+	int dataType;
 	std::string functionalName;
 	std::string description;
 
-	if(message->arg().popStr(moduleTypeName).popInt32(type).popStr(functionalName).popStr(description).isOk())
+	if(message->arg().popStr(moduleTypeName).popInt32(type).popInt32(dataType).popStr(functionalName).popStr(description).isOk())
 	{
 		qDebug() << "recieced " << moduleTypeName.c_str();
 		qDebug() << "\ttype: " << type;
+		qDebug() << "\tdataType: " << dataType;
 		qDebug() << "\tfunctionalName " << functionalName.c_str();
 		qDebug() << "\tdescription " << description.c_str();
 		FLCRepositoryModule *m = new FLCRepositoryModule(type, moduleTypeName, functionalName, description);
