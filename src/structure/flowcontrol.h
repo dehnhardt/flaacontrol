@@ -25,16 +25,21 @@ public: // Methods
 	~FlowControl();
 
 public slots:
-	void buttonDragStart(DraggableButton *draggableButton, QMouseEvent *event);
+	//void buttonDragStart(DraggableButton *draggableButton, QMouseEvent *event);
+
+private slots:
+	void repositoryItemClicked(const QModelIndex &index);
 
 protected:
+	void mousePressEvent(QMouseEvent *event) override;
 	void dragEnterEvent(QDragEnterEvent *event) override;
 	void dragMoveEvent(QDragMoveEvent *event) override;
 	void dropEvent(QDropEvent *event) override;
 
 private: // Methods
+	void connectSlots();
 	void setupUi();
-	void setupDraggableObjects();
+	void setupStructureObjects();
 	void getRepositoryModules();
 	void clearModuleMap();
 

@@ -4,6 +4,7 @@
 #include "../Flaacontrol.h"
 #include "../osc/osclistener.h"
 #include "../handler/FLCRepositoryModuleHandler.h"
+#include "../model/FLCRepositoryModuleModel.h"
 
 #include <QIcon>
 #include <QString>
@@ -25,6 +26,7 @@ FlowControl::FlowControl(QWidget *parent) :
 	setupUi();
 	if( ! m_bDataLoaded )
 		getRepositoryModules();
+	connectSlots();
 }
 
 FlowControl::~FlowControl()
@@ -58,17 +60,46 @@ void FlowControl::getRepositoryModules()
 		m_flcModulesModelMap[MODULE_TYPE(i)] = m;
 	}
 	m_bDataLoaded = true;
-	setupDraggableObjects();
+	setupStructureObjects();
 	handler->requestRepository();
 }
 
-void FlowControl::setupDraggableObjects()
+void FlowControl::setupStructureObjects()
 {
 	this->m_pUi->inputsListView->setModel( m_flcModulesModelMap[flaarlib::MODULE_TYPE::INPUT] );
 	this->m_pUi->processorsListView->setModel( m_flcModulesModelMap[flaarlib::MODULE_TYPE::PROCESSOR] );
 	this->m_pUi->outputsListView->setModel( m_flcModulesModelMap[flaarlib::MODULE_TYPE::OUTPUT] );
 }
 
+void FlowControl::repositoryItemClicked(const QModelIndex &index)
+{
+	qDebug() << "Index: " << index.row();
+	QString text;
+	const FLCRepositoryModuleModel *flcRepositoryModule = dynamic_cast<FLCRepositoryModuleModel const *>(index.model());
+	if( flcRepositoryModule )
+	{
+		text = flcRepositoryModule->data(index).String;
+		qDebug() << text;
+		QByteArray itemData;
+		QDataStream dataStream(&itemData, QIODevice::WriteOnly);
+		dataStream << text;
+		QMimeData *mimeData = new QMimeData;
+		mimeData->setData(sMimeType(), itemData);
+		mimeData->setText(text);
+
+		QDrag *drag = new QDrag(this);
+		drag->setMimeData(mimeData);
+		drag->setHotSpot(p);
+
+		if (drag->exec(Qt::MoveAction | Qt::CopyAction, Qt::CopyAction) == Qt::MoveAction)
+			child->close();
+		else
+			child->show();
+
+	}
+}
+
+/*
 void FlowControl::buttonDragStart(DraggableButton *draggableButton, QMouseEvent *event)
 {
 	DraggableButton *child = draggableButton;
@@ -94,6 +125,12 @@ void FlowControl::buttonDragStart(DraggableButton *draggableButton, QMouseEvent 
 	else
 		child->show();
 
+}
+*/
+
+void FlowControl::mousePressEvent(QMouseEvent *event)
+{
+	qDebug() << "mouse press";
 }
 
 
@@ -180,5 +217,12 @@ void FlowControl::dropEvent(QDropEvent *event)
 	else
 		event->ignore();
 
+}
+
+void FlowControl::connectSlots()
+{
+	connect(m_pUi->inputsListView, &QAbstractItemView::clicked, this, &FlowControl::repositoryItemClicked);
+	connect(m_pUi->processorsListView, &QAbstractItemView::clicked, this, &FlowControl::repositoryItemClicked);
+	connect(m_pUi->outputsListView, &QAbstractItemView::clicked, this, &FlowControl::repositoryItemClicked);
 }
 
