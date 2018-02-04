@@ -29,7 +29,7 @@ bool FLCRepositoryModuleHandler::handle(UdpSocket *socket __attribute__((unused)
 		qDebug() << "\tdataType: " << dataType;
 		qDebug() << "\tfunctionalName " << functionalName.c_str();
 		qDebug() << "\tdescription " << description.c_str();
-		FLCRepositoryModule *m = new FLCRepositoryModule(type, moduleTypeName, functionalName, description);
+		FLCRepositoryModule *m = new FLCRepositoryModule(type, dataType, moduleTypeName, functionalName, description);
 		addToModel(m);
 	}
 	return true;
