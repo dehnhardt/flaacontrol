@@ -71,69 +71,6 @@ void FlowControl::setupStructureObjects()
 	this->m_pUi->outputsListView->setModel( m_flcModulesModelMap[flaarlib::MODULE_TYPE::OUTPUT] );
 }
 
-void FlowControl::repositoryItemClicked(const QModelIndex &index)
-{
-	qDebug() << "Index: " << index.row();
-	QString text;
-	const FLCRepositoryModuleModel *flcRepositoryModule = dynamic_cast<FLCRepositoryModuleModel const *>(index.model());
-	if( flcRepositoryModule )
-	{
-		text = flcRepositoryModule->data(index).String;
-		qDebug() << text;
-		QByteArray itemData;
-		QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-		dataStream << text;
-		QMimeData *mimeData = new QMimeData;
-		mimeData->setData(sMimeType(), itemData);
-		mimeData->setText(text);
-
-		QDrag *drag = new QDrag(this);
-		drag->setMimeData(mimeData);
-		drag->setHotSpot(p);
-
-		if (drag->exec(Qt::MoveAction | Qt::CopyAction, Qt::CopyAction) == Qt::MoveAction)
-			child->close();
-		else
-			child->show();
-
-	}
-}
-
-/*
-void FlowControl::buttonDragStart(DraggableButton *draggableButton, QMouseEvent *event)
-{
-	DraggableButton *child = draggableButton;
-	if (!child)
-		return;
-
-	QPoint hotSpot = event->pos() - child->pos();
-
-	QByteArray itemData;
-	QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-	dataStream << child->text() << QPoint(hotSpot);
-	QMimeData *mimeData = new QMimeData;
-	mimeData->setData(sMimeType(), itemData);
-	mimeData->setText(child->text());
-
-	QDrag *drag = new QDrag(this);
-	drag->setMimeData(mimeData);
-	drag->setHotSpot(hotSpot);
-
-	//child->hide();
-	if (drag->exec(Qt::MoveAction | Qt::CopyAction, Qt::CopyAction) == Qt::MoveAction)
-		child->close();
-	else
-		child->show();
-
-}
-*/
-
-void FlowControl::mousePressEvent(QMouseEvent *event)
-{
-	qDebug() << "mouse press";
-}
-
-
 void FlowControl::dragEnterEvent(QDragEnterEvent *event)
 {
 	if (event->mimeData()->hasFormat(sMimeType()))
@@ -182,7 +119,7 @@ void FlowControl::dropEvent(QDropEvent *event)
 
 		QString text;
 		QPoint offset;
-		dataStream >> text >> offset;
+		dataStream >> text;
 		QLabel *newLabel = new QLabel(text, this);
 		newLabel->move(event->pos() - offset);
 		newLabel->show();
@@ -221,8 +158,8 @@ void FlowControl::dropEvent(QDropEvent *event)
 
 void FlowControl::connectSlots()
 {
-	connect(m_pUi->inputsListView, &QAbstractItemView::clicked, this, &FlowControl::repositoryItemClicked);
-	connect(m_pUi->processorsListView, &QAbstractItemView::clicked, this, &FlowControl::repositoryItemClicked);
-	connect(m_pUi->outputsListView, &QAbstractItemView::clicked, this, &FlowControl::repositoryItemClicked);
+	//connect(m_pUi->inputsListView, &QAbstractItemView::clicked, this, &FlowControl::repositoryItemClicked);
+	//connect(m_pUi->processorsListView, &QAbstractItemView::clicked, this, &FlowControl::repositoryItemClicked);
+	//connect(m_pUi->outputsListView, &QAbstractItemView::clicked, this, &FlowControl::repositoryItemClicked);
 }
 

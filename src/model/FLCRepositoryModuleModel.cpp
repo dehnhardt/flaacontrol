@@ -2,6 +2,7 @@
 #include "FLModuleDefs.h"
 
 #include <QIcon>
+#include <QMimeData>
 
 FLCRepositoryModuleModel::FLCRepositoryModuleModel(vector<FLCRepositoryModule *> *dataVector, QObject *parent)
 	: QAbstractListModel(parent),
@@ -62,6 +63,46 @@ QVariant FLCRepositoryModuleModel::icon(const FLCRepositoryModule *m) const
 			return QVariant();
 
 	}
+}
+
+QStringList FLCRepositoryModuleModel::mimeTypes() const
+{
+	QStringList types;
+	types << "application/x-flowcontrol";
+	return types;
+
+}
+
+QMimeData *FLCRepositoryModuleModel::mimeData(const QModelIndexList &indexes) const
+{
+	QMimeData *mimeData = new QMimeData();
+	QByteArray encodedData;
+
+	QDataStream stream(&encodedData, QIODevice::WriteOnly);
+
+	foreach (QModelIndex index, indexes)
+	{
+		if (index.isValid())
+		{
+			QString text = data(index, Qt::DisplayRole).toString();
+			stream << text;
+		}
+	}
+
+	mimeData->setData("application/x-flowcontrol", encodedData);
+	return mimeData;
+
+}
+
+Qt::ItemFlags FLCRepositoryModuleModel::flags(const QModelIndex &index) const
+{
+	Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
+
+	if (index.isValid())
+		return Qt::ItemIsDragEnabled | defaultFlags;
+	else
+		return defaultFlags;
+
 }
 
 QModelIndex FLCRepositoryModuleModel::addModule(FLCRepositoryModule *module)

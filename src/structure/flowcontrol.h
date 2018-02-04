@@ -24,14 +24,7 @@ public: // Methods
 	explicit FlowControl(QWidget *parent = 0);
 	~FlowControl();
 
-public slots:
-	//void buttonDragStart(DraggableButton *draggableButton, QMouseEvent *event);
-
-private slots:
-	void repositoryItemClicked(const QModelIndex &index);
-
 protected:
-	void mousePressEvent(QMouseEvent *event) override;
 	void dragEnterEvent(QDragEnterEvent *event) override;
 	void dragMoveEvent(QDragMoveEvent *event) override;
 	void dropEvent(QDropEvent *event) override;
@@ -46,10 +39,7 @@ private: // Methods
 private: // Members
 	bool m_bDataLoaded = false;
 	Ui::FlowControl *m_pUi;
-	QString m_sMimeType = "application/x-flowcontrolobject";
-	//std::map<flaarlib::MODULE_TYPE, std::vector<FLCRepositoryModule *>*> m_flcModulesMap;
 	std::map<flaarlib::MODULE_TYPE, FLCRepositoryModuleModel *> m_flcModulesModelMap;
-
 
 };
 
