@@ -49,6 +49,8 @@ QVariant FLCRepositoryModuleModel::data(const QModelIndex &index, int role) cons
 			return m->functionalName().c_str();
 		case Qt::DecorationRole:
 			return icon(m);
+		case Qt::ToolTipRole:
+			return m->description().c_str();
 	}
 	return QVariant();
 }
