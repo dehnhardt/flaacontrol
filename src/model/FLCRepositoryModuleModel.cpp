@@ -55,12 +55,16 @@ QVariant FLCRepositoryModuleModel::data(const QModelIndex &index, int role) cons
 
 QVariant FLCRepositoryModuleModel::icon(const FLCRepositoryModule *m) const
 {
-	switch( m->moduleType() )
+	switch( m->dataType() )
 	{
-		case flaarlib::INPUT:
+		case flaarlib::OSC:
 			return QIcon(":/icons/etherjack");
+		case flaarlib::MIDI:
+			return QIcon(":/icons/midijack");
+		case flaarlib::AUDIO:
+			return QIcon(":/icons/audiocombojack");
 		default:
-			return QVariant();
+			return QIcon(":/icons/usbjack");
 
 	}
 }
@@ -85,7 +89,8 @@ QMimeData *FLCRepositoryModuleModel::mimeData(const QModelIndexList &indexes) co
 		if (index.isValid())
 		{
 			QString text = data(index, Qt::DisplayRole).toString();
-			stream << text;
+			QIcon icon = data(index, Qt::DecorationRole).value<QIcon>();
+			stream << text << icon;
 		}
 	}
 
