@@ -5,6 +5,7 @@
 #include "../osc/osclistener.h"
 #include "../handler/FLCRepositoryModuleHandler.h"
 #include "../model/FLCRepositoryModuleModel.h"
+#include "FLCModule.h"
 
 #include <QIcon>
 #include <QString>
@@ -119,12 +120,23 @@ void FlowControl::dropEvent(QDropEvent *event)
 
 		QString text;
 		QPoint offset;
-		dataStream >> text;
-		QLabel *newLabel = new QLabel(text, this);
-		newLabel->move(event->pos() - offset);
-		newLabel->show();
-		newLabel->setAttribute(Qt::WA_DeleteOnClose);
+		QIcon icon;
+		dataStream >> text >> icon;
 
+		if( !icon.isNull() )
+		{
+			FLCModule *module = new FLCModule(this, text, &icon);
+			module->move(event->pos() - offset);
+			module->show();
+			module->setAttribute(Qt::WA_DeleteOnClose);
+		}
+		else
+		{
+			QLabel *newLabel = new QLabel(text, this);
+			newLabel->move(event->pos() - offset);
+			newLabel->show();
+			newLabel->setAttribute(Qt::WA_DeleteOnClose);
+		}
 		if (event->source() == this)
 		{
 			event->setDropAction(Qt::CopyAction);
