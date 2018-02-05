@@ -40,7 +40,8 @@ SOURCES += \
     src/Flaacontrol.cpp \
     src/model/FLCRepositoryModuleModel.cpp \
     src/settings/SessionSettings.cpp \
-    src/settings/SettingsModel.cpp
+    src/settings/SettingsModel.cpp \
+    src/structure/FLCModule.cpp
 
 HEADERS += \
     src/osc/oscpkt.hh \
@@ -59,7 +60,8 @@ HEADERS += \
     src/model/FLCRepositoryModuleModel.h \
     src/settings/SessionSettings.h \
     src/settings/XmlSettings.h \
-    src/settings/SettingsModel.h
+    src/settings/SettingsModel.h \
+    src/structure/FLCModule.h
 
 FORMS += \
     src/mainwindow.ui \
