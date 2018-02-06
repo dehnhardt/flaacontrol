@@ -1,11 +1,11 @@
-#include "FLCModule.h"
+#include "FLCModuleWidget.h"
 
 #include <QLabel>
 #include <QIcon>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-FLCModule::FLCModule(QWidget *parent, const QString functionalName, const QIcon icon)
+FLCModuleWidget::FLCModuleWidget(QWidget *parent, const QString functionalName, const QIcon icon)
 	: QWidget(parent),
 	  m_pModuleIcon(icon),
 	  m_sFunctionalName(functionalName)

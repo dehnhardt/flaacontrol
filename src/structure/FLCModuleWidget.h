@@ -1,5 +1,5 @@
-#ifndef FLCMODULE_H
-#define FLCMODULE_H
+#ifndef FLCMODULEWIDGET_H
+#define FLCMODULEWIDGET_H
 
 #include <QObject>
 #include <QWidget>
@@ -9,11 +9,11 @@ class QHBoxLayout;
 class QVBoxLayout;
 class QLabel;
 
-class FLCModule : public QWidget
+class FLCModuleWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit FLCModule(QWidget *parent, const QString functionalName, const QIcon icon);
+	explicit FLCModuleWidget(QWidget *parent, const QString functionalName, const QIcon icon);
 
 	QIcon moduleIcon() const
 	{
@@ -35,4 +35,4 @@ private:
 	QString m_sFunctionalName;
 };
 
-#endif // FLCMODULE_H
+#endif // FLCMODULEWIDGET_H
