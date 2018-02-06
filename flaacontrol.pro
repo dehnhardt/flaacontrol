@@ -41,7 +41,8 @@ SOURCES += \
     src/model/FLCRepositoryModuleModel.cpp \
     src/settings/SessionSettings.cpp \
     src/settings/SettingsModel.cpp \
-    src/structure/FLCModule.cpp
+    src/model/FlcModuleModel.cpp \
+    src/structure/FLCModuleWidget.cpp
 
 HEADERS += \
     src/osc/oscpkt.hh \
@@ -61,7 +62,8 @@ HEADERS += \
     src/settings/SessionSettings.h \
     src/settings/XmlSettings.h \
     src/settings/SettingsModel.h \
-    src/structure/FLCModule.h
+    src/model/FlcModuleModel.h \
+    src/structure/FLCModuleWidget.h
 
 FORMS += \
     src/mainwindow.ui \

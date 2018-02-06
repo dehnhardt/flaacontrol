@@ -5,7 +5,7 @@
 #include "../osc/osclistener.h"
 #include "../handler/FLCRepositoryModuleHandler.h"
 #include "../model/FLCRepositoryModuleModel.h"
-#include "FLCModule.h"
+#include "FLCModuleWidget.h"
 
 #include <QWindow>
 #include <QIcon>
@@ -81,9 +81,9 @@ void FlowControl::mousePressEvent(QMouseEvent *event)
 	{
 		dragStartPosition = event->pos();
 		QWidget *w = childAt(dragStartPosition);
-		FLCModule *m = dynamic_cast<FLCModule *>(w);
+		FLCModuleWidget *m = dynamic_cast<FLCModuleWidget *>(w);
 		if( !m )
-			m = dynamic_cast<FLCModule *>(w->parentWidget());
+			m = dynamic_cast<FLCModuleWidget *>(w->parentWidget());
 		if( m )
 		{
 			QPoint hotSpot = event->pos() - m->pos();
@@ -168,7 +168,7 @@ void FlowControl::dropEvent(QDropEvent *event)
 
 		if( !icon.isNull() )
 		{
-			FLCModule *module = new FLCModule(this, text, icon);
+			FLCModuleWidget *module = new FLCModuleWidget(this, text, icon);
 			module->move(event->pos() - offset);
 			module->show();
 			module->setAttribute(Qt::WA_DeleteOnClose);
