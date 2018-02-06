@@ -7,6 +7,7 @@
 #include "../model/FLCRepositoryModuleModel.h"
 #include "FLCModule.h"
 
+#include <QWindow>
 #include <QIcon>
 #include <QString>
 #include <QLabel>
@@ -35,6 +36,7 @@ FlowControl::~FlowControl()
 	clearModuleMap();
 	delete m_pUi;
 }
+
 
 void FlowControl::clearModuleMap()
 {
@@ -70,6 +72,47 @@ void FlowControl::setupStructureObjects()
 	this->m_pUi->inputsListView->setModel( m_flcModulesModelMap[flaarlib::MODULE_TYPE::INPUT] );
 	this->m_pUi->processorsListView->setModel( m_flcModulesModelMap[flaarlib::MODULE_TYPE::PROCESSOR] );
 	this->m_pUi->outputsListView->setModel( m_flcModulesModelMap[flaarlib::MODULE_TYPE::OUTPUT] );
+}
+
+void FlowControl::mousePressEvent(QMouseEvent *event)
+{
+	QPoint dragStartPosition;
+	if (event->button() == Qt::LeftButton )
+	{
+		dragStartPosition = event->pos();
+		QWidget *w = childAt(dragStartPosition);
+		FLCModule *m = dynamic_cast<FLCModule *>(w);
+		if( !m )
+			m = dynamic_cast<FLCModule *>(w->parentWidget());
+		if( m )
+		{
+			QPoint hotSpot = event->pos() - m->pos();
+			QByteArray encodedData;
+			QDataStream stream(&encodedData, QIODevice::WriteOnly);
+			QDrag *drag = new QDrag(this);
+			QMimeData *mimeData = new QMimeData;
+			QString text = m->functionalName();
+			const QIcon icon = m->moduleIcon();
+			stream << text << icon << hotSpot;
+			mimeData->setData(sMimeType(), encodedData);
+
+			qreal dpr = window()->windowHandle()->devicePixelRatio();
+			QPixmap pixmap(m->size() * dpr);
+			pixmap.setDevicePixelRatio(dpr);
+			m->render(&pixmap);
+
+			drag->setMimeData(mimeData);
+			drag->setPixmap(pixmap);
+			drag->setHotSpot(hotSpot);
+
+			Qt::DropAction dropAction = drag->exec();
+			if( dropAction == Qt::MoveAction)
+			{
+				m->hide();
+				m->deleteLater();
+			}
+		}
+	}
 }
 
 void FlowControl::dragEnterEvent(QDragEnterEvent *event)
@@ -121,11 +164,11 @@ void FlowControl::dropEvent(QDropEvent *event)
 		QString text;
 		QPoint offset;
 		QIcon icon;
-		dataStream >> text >> icon;
+		dataStream >> text >> icon >> offset;
 
 		if( !icon.isNull() )
 		{
-			FLCModule *module = new FLCModule(this, text, &icon);
+			FLCModule *module = new FLCModule(this, text, icon);
 			module->move(event->pos() - offset);
 			module->show();
 			module->setAttribute(Qt::WA_DeleteOnClose);

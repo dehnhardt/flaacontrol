@@ -5,23 +5,25 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-FLCModule::FLCModule(QWidget *parent, const QString functionalName, const QIcon *icon)
+FLCModule::FLCModule(QWidget *parent, const QString functionalName, const QIcon icon)
 	: QWidget(parent),
-	  m_pModuleIcon(icon)
+	  m_pModuleIcon(icon),
+	  m_sFunctionalName(functionalName)
 {
 	QPalette p = palette();
 	QBrush b = p.brush(QPalette::ColorRole::Background);
-	b.setColor(QColor(200,100,100));
+	setAutoFillBackground(true);
+	b.setColor(QColor(200,200,200));
 	p.setBrush(QPalette::ColorRole::Background, b);
 	setPalette(p);
-	setMinimumSize(120,45);
+	setMinimumSize(100,20);
 	m_pVerticalLayout = new QVBoxLayout(this);
 	m_pHorizontalLayot = new QHBoxLayout();
-	m_pFunctionalLabel = new QLabel(functionalName, this);
+	QLabel *functionalLabel = new QLabel(m_sFunctionalName, this);
 	QLabel *iconLabel = new QLabel(this);
-	iconLabel->setPixmap(icon->pixmap(QSize(20,20)));
+	iconLabel->setPixmap(icon.pixmap(QSize(20,20)));
 	m_pHorizontalLayot->addWidget(iconLabel);
-	m_pHorizontalLayot->addWidget(m_pFunctionalLabel);
+	m_pHorizontalLayot->addWidget(functionalLabel);
 	m_pVerticalLayout->insertLayout(-1, m_pHorizontalLayot);
 	setLayout(m_pVerticalLayout);
 }

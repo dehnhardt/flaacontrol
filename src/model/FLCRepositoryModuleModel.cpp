@@ -1,8 +1,12 @@
 #include "FLCRepositoryModuleModel.h"
 #include "FLModuleDefs.h"
 
+#include <QApplication>
+#include <QWidget>
 #include <QIcon>
 #include <QMimeData>
+#include <QCursor>
+#include <QDebug>
 
 FLCRepositoryModuleModel::FLCRepositoryModuleModel(vector<FLCRepositoryModule *> *dataVector, QObject *parent)
 	: QAbstractListModel(parent),
@@ -83,22 +87,24 @@ QMimeData *FLCRepositoryModuleModel::mimeData(const QModelIndexList &indexes) co
 {
 	QMimeData *mimeData = new QMimeData();
 	QByteArray encodedData;
-
 	QDataStream stream(&encodedData, QIODevice::WriteOnly);
 
 	foreach (QModelIndex index, indexes)
 	{
 		if (index.isValid())
 		{
+
+			QPoint hotspot(0,0);
+			// qDebug() << "cursor pos: " << globalCursorPos.x() << ":" << globalCursorPos.y();
+			// qDebug() << "widget pos: " << p.x() << ":" << p.y();
+			// qDebug() << "hotspot pos: " << hotspot.x() << ":" <<hotspot.y();
 			QString text = data(index, Qt::DisplayRole).toString();
 			QIcon icon = data(index, Qt::DecorationRole).value<QIcon>();
-			stream << text << icon;
+			stream << text << icon << hotspot;
 		}
 	}
-
 	mimeData->setData("application/x-flowcontrol", encodedData);
 	return mimeData;
-
 }
 
 Qt::ItemFlags FLCRepositoryModuleModel::flags(const QModelIndex &index) const
