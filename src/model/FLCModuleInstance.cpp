@@ -1,6 +1,8 @@
 #include "FLCModuleInstance.h"
 #include "FLCRepositoryModule.h"
 
+#include <QDebug>
+
 FLCModuleInstance::FLCModuleInstance(QObject *parent)
 	: QObject(parent),
 	  m_uuid(QUuid::createUuid())
@@ -19,21 +21,106 @@ FLCModuleInstance::FLCModuleInstance(FLCRepositoryModule *module) :
 
 void FLCModuleInstance::serialize( QXmlStreamWriter *xmlWriter )
 {
-	xmlWriter->writeStartElement(moduleFunctionalName());
+	xmlWriter->writeStartElement("Module");
+	xmlWriter->writeAttribute("functionalName", moduleFunctionalName());
 	xmlWriter->writeAttribute("uuid", uuid().toString());
 	xmlWriter->writeAttribute("name", moduleName());
-	xmlWriter->writeStartElement("moduleType");
-	xmlWriter->writeAttribute("moduleTypeId", QString(static_cast<int>(moduleType())));
+	xmlWriter->writeStartElement("ModuleType");
+	xmlWriter->writeAttribute("moduleTypeId", QString::number(static_cast<int>(moduleType())));
 	xmlWriter->writeCharacters(moduleTypeName());
 	xmlWriter->writeEndElement();
-	xmlWriter->writeStartElement("moduleDataType");
-	xmlWriter->writeAttribute("moduleDataTypeId", QString(static_cast<int>(dataType())));
+	xmlWriter->writeStartElement("ModuleDataType");
+	xmlWriter->writeAttribute("moduleDataTypeId", QString::number(static_cast<int>(dataType())));
 	xmlWriter->writeEndElement();
-	xmlWriter->writeStartElement("displayPosition");
-	xmlWriter->writeAttribute("x", QString(position().x()));
-	xmlWriter->writeAttribute("y", QString(position().y()));
+	xmlWriter->writeStartElement("DisplayPosition");
+	xmlWriter->writeAttribute("x", QString::number(position().x()));
+	xmlWriter->writeAttribute("y", QString::number(position().y()));
 	xmlWriter->writeEndElement();
 	xmlWriter->writeEndElement();
+}
+
+void FLCModuleInstance::deserialize(QXmlStreamReader *xmlReader)
+{
+	QXmlStreamReader::TokenType t = xmlReader->tokenType();
+	QStringRef s = xmlReader->name();
+	while(!xmlReader->atEnd())
+	{
+		switch( t )
+		{
+			case QXmlStreamReader::TokenType::StartElement:
+				s = xmlReader->name();
+				qDebug() << "Model: Element Name: " << s;
+				if( s == "Module")
+				{
+					QXmlStreamAttributes attributes = xmlReader->attributes();
+					for( auto attribute : attributes )
+					{
+						QStringRef name = attribute.name();
+						if( name == "functionalName")
+							setModuleFunctionalName(attribute.value().toString());
+						if( name == "uuid")
+							setUuid(attribute.value().toString());
+						if( name == "name")
+							setModuleName(attribute.value().toString());
+						qDebug() << "\tAttribute Name: " << name << ", value: " << attribute.value();
+					}
+				}
+				if( s == "ModuleType" )
+				{
+					QXmlStreamAttributes attributes = xmlReader->attributes();
+					for( auto attribute : attributes )
+					{
+						QStringRef name = attribute.name();
+						qDebug() << "\tAttribute Name: " << name;
+						if(name == "moduleTypeId")
+							setModuleType(flaarlib::MODULE_TYPE(attribute.value().toInt()));
+					}
+
+				}
+				if( s == "ModuleDataType" )
+				{
+					QXmlStreamAttributes attributes = xmlReader->attributes();
+					for( auto attribute : attributes )
+					{
+						QStringRef name = attribute.name();
+						qDebug() << "\tAttribute Name: " << name;
+						if( name == "moduleDateTypeId")
+							setDataType(flaarlib::DATA_TYPE(attribute.value().toInt()));
+					}
+
+				}
+				if( s == "DisplayPosition" )
+				{
+					QXmlStreamAttributes attributes = xmlReader->attributes();
+					QPoint p;
+					for( auto attribute : attributes )
+					{
+						QStringRef name = attribute.name();
+						qDebug() << "\tAttribute Name: " << name;
+						if( name == "x")
+							p.setX(attribute.value().toInt());
+						if( name == "y")
+							p.setY(attribute.value().toInt());
+					}
+					setPosition(p);
+				}
+				break;
+			case QXmlStreamReader::TokenType::Characters:
+				{
+					QStringRef text = xmlReader->text();
+					if( s == "ModuleType")
+						setModuleTypeName(text.toString());
+					break;
+				}
+			case QXmlStreamReader::TokenType::EndElement:
+				s = xmlReader->name();
+				if( s == "Module")
+					return;
+			default:
+				break;
+		}
+		t = xmlReader->readNext();
+	}
 }
 
 /*

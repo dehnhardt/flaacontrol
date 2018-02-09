@@ -7,6 +7,7 @@
 #include <QUuid>
 #include <QPoint>
 #include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 
 class FLCRepositoryModule;
 
@@ -20,6 +21,7 @@ public:
 
 public: //methods
 	void serialize(QXmlStreamWriter *xmlWriter);
+	void deserialize(QXmlStreamReader *xmlReader);
 
 public: //getter
 

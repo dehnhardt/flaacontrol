@@ -43,6 +43,7 @@ private: // Methods
 
 private slots:
 	void saveStructure();
+	void readStructure();
 
 private: // Members
 	bool m_bDataLoaded = false;

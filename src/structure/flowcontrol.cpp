@@ -33,6 +33,7 @@ FlowControl::FlowControl(QWidget *parent) :
 	if( ! m_bDataLoaded )
 		getRepositoryModules();
 	connectSlots();
+	readStructure();
 }
 
 FlowControl::~FlowControl()
@@ -62,6 +63,33 @@ void FlowControl::saveStructure()
 	m_pModel->serialize(w);
 	w->writeEndElement();
 	w->writeEndDocument();
+	file->close();
+}
+
+void FlowControl::readStructure()
+{
+	QFile *file = new QFile("/home/dehnhardt/structure.xml");
+	if (!file->open(QIODevice::ReadOnly | QIODevice::Text))
+		return;
+	QXmlStreamReader *xmlReader = new QXmlStreamReader(file);
+	while(!xmlReader->atEnd())
+	{
+		QXmlStreamReader::TokenType t = xmlReader->readNext();
+		QStringRef s = xmlReader->name();
+		switch( t )
+		{
+			case QXmlStreamReader::TokenType::StartElement:
+				qDebug() << "Widget: Element Name: " << s;
+				if( s == "ModuleInstances")
+					m_pModel->deserialize(xmlReader);
+				break;
+			case QXmlStreamReader::TokenType::EndElement:
+				if( s == "ModuleInstances")
+					return;
+			default:
+				break;
+		}
+	}
 	file->close();
 }
 

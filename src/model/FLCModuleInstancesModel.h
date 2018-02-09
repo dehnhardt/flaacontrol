@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QUuid>
 #include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 
 class FLCModuleInstance;
 
@@ -14,6 +15,7 @@ class FLCModuleInstancesModel : public QObject
 public:
 	explicit FLCModuleInstancesModel(QObject *parent = nullptr);
 	void serialize(QXmlStreamWriter *xmlWriter);
+	void deserialize(QXmlStreamReader *xmlReader);
 
 public: //setter
 	void addFLCModuleInstance( FLCModuleInstance *moduleInstance );
