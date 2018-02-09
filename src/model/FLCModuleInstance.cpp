@@ -17,23 +17,23 @@ FLCModuleInstance::FLCModuleInstance(FLCRepositoryModule *module) :
 	setModuleTypeName(module->moduleTypeName().c_str());
 }
 
-void FLCModuleInstance::serialize( QXmlStreamWriter &xmlWriter )
+void FLCModuleInstance::serialize( QXmlStreamWriter *xmlWriter )
 {
-	xmlWriter.writeStartElement(moduleFunctionalName());
-	xmlWriter.writeAttribute("uuid", uuid().toString());
-	xmlWriter.writeAttribute("name", moduleName());
-	xmlWriter.writeStartElement("moduleType");
-	xmlWriter.writeAttribute("moduleTypeId", QString(static_cast<int>(moduleType())));
-	xmlWriter.writeCharacters(moduleTypeName());
-	xmlWriter.writeEndElement();
-	xmlWriter.writeStartElement("moduleDataType");
-	xmlWriter.writeAttribute("moduleDataTypeId", QString(static_cast<int>(dataType())));
-	xmlWriter.writeEndElement();
-	xmlWriter.writeStartElement("displayPosition");
-	xmlWriter.writeAttribute("x", QString(position().x()));
-	xmlWriter.writeAttribute("y", QString(position().y()));
-	xmlWriter.writeEndElement();
-	xmlWriter.writeEndElement();
+	xmlWriter->writeStartElement(moduleFunctionalName());
+	xmlWriter->writeAttribute("uuid", uuid().toString());
+	xmlWriter->writeAttribute("name", moduleName());
+	xmlWriter->writeStartElement("moduleType");
+	xmlWriter->writeAttribute("moduleTypeId", QString(static_cast<int>(moduleType())));
+	xmlWriter->writeCharacters(moduleTypeName());
+	xmlWriter->writeEndElement();
+	xmlWriter->writeStartElement("moduleDataType");
+	xmlWriter->writeAttribute("moduleDataTypeId", QString(static_cast<int>(dataType())));
+	xmlWriter->writeEndElement();
+	xmlWriter->writeStartElement("displayPosition");
+	xmlWriter->writeAttribute("x", QString(position().x()));
+	xmlWriter->writeAttribute("y", QString(position().y()));
+	xmlWriter->writeEndElement();
+	xmlWriter->writeEndElement();
 }
 
 /*

@@ -41,6 +41,9 @@ private: // Methods
 	void getRepositoryModules();
 	void clearModuleMap();
 
+private slots:
+	void saveStructure();
+
 private: // Members
 	bool m_bDataLoaded = false;
 	Ui::FlowControl *m_pUi;

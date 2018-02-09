@@ -1,6 +1,5 @@
 #include "flowcontrol.h"
 #include "ui_flowcontrol.h"
-#include "draggablebutton.h"
 #include "../Flaacontrol.h"
 #include "../osc/osclistener.h"
 #include "../handler/FLCRepositoryModuleHandler.h"
@@ -18,6 +17,7 @@
 #include <QDataStream>
 #include <QMimeData>
 #include <QDrag>
+#include <QTextCodec>
 #include <QtDebug>
 
 static inline QString sMimeTypeAdd() { return QStringLiteral("application/x-flowcontrol-add"); }
@@ -47,6 +47,22 @@ void FlowControl::clearModuleMap()
 	for( auto it : m_flcModulesModelMap )
 		delete it.second;
 	m_flcModulesModelMap.clear();
+}
+
+void FlowControl::saveStructure()
+{
+	QFile *file = new QFile("/home/dehnhardt/structure.xml");
+	if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
+		return;
+	QXmlStreamWriter *w = new QXmlStreamWriter(file);
+	w->setAutoFormatting(true);
+	w->setCodec(QTextCodec::codecForName("utf-8"));
+	w->writeStartDocument("1.0");
+	w->writeStartElement("ModuleInstances");
+	m_pModel->serialize(w);
+	w->writeEndElement();
+	w->writeEndDocument();
+	file->close();
 }
 
 FLCModuleInstancesModel *FlowControl::getModel() const
@@ -237,5 +253,6 @@ void FlowControl::dropEvent(QDropEvent *event)
 
 void FlowControl::connectSlots()
 {
+	connect(this->m_pUi->buttonBox, &QDialogButtonBox::accepted, this, &FlowControl::saveStructure);
 }
 

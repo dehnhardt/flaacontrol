@@ -13,7 +13,7 @@ class FLCModuleInstancesModel : public QObject
 	Q_OBJECT
 public:
 	explicit FLCModuleInstancesModel(QObject *parent = nullptr);
-	void serialize(QXmlStreamWriter &xmlWriter);
+	void serialize(QXmlStreamWriter *xmlWriter);
 
 public: //setter
 	void addFLCModuleInstance( FLCModuleInstance *moduleInstance );

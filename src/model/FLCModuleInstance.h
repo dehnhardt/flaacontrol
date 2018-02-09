@@ -19,7 +19,7 @@ public:
 
 
 public: //methods
-	void serialize(QXmlStreamWriter &xmlWriter);
+	void serialize(QXmlStreamWriter *xmlWriter);
 
 public: //getter
 
