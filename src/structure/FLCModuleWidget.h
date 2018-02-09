@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QIcon>
+#include <QUuid>
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -24,6 +25,16 @@ public:
 		return  m_sFunctionalName;
 	}
 
+	QUuid getUuid() const
+	{
+		return m_uuid;
+	}
+
+	void setUuid(const QUuid &uuid)
+	{
+		m_uuid = uuid;
+	}
+
 signals:
 
 public slots:
@@ -33,6 +44,7 @@ private:
 	QVBoxLayout *m_pVerticalLayout;
 	QIcon m_pModuleIcon;
 	QString m_sFunctionalName;
+	QUuid m_uuid;
 };
 
 #endif // FLCMODULEWIDGET_H
