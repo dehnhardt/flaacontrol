@@ -1,10 +1,20 @@
 #include "FLCModuleInstance.h"
+#include "FLCRepositoryModule.h"
 
 FLCModuleInstance::FLCModuleInstance(QObject *parent)
 	: QObject(parent),
-	  m_uuid(QUuid())
+	  m_uuid(QUuid::createUuid())
 {
 
+}
+
+FLCModuleInstance::FLCModuleInstance(FLCRepositoryModule *module) :
+	FLCModuleInstance()
+{
+	setModuleType(module->moduleType());
+	setDataType(module->dataType());
+	setModuleFunctionalName(module->functionalName().c_str());
+	setModuleTypeName(module->moduleTypeName().c_str());
 }
 
 void FLCModuleInstance::serialize( QXmlStreamWriter &xmlWriter )

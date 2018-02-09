@@ -8,11 +8,15 @@
 #include <QPoint>
 #include <QXmlStreamWriter>
 
+class FLCRepositoryModule;
+
 class FLCModuleInstance : public QObject
 {
 	Q_OBJECT
 public:
 	explicit FLCModuleInstance(QObject *parent = nullptr);
+	explicit FLCModuleInstance(FLCRepositoryModule *module);
+
 
 public: //methods
 	void serialize(QXmlStreamWriter &xmlWriter);

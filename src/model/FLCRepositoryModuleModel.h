@@ -30,6 +30,11 @@ public:
 
 	QModelIndex addModule(FLCRepositoryModule *module);
 
+	FLCRepositoryModule *moduleAt( unsigned int index)
+	{
+		return m_pDataVector->at(static_cast<unsigned long>(index));
+	}
+
 private:
 	vector<FLCRepositoryModule *> *m_pDataVector;
 	QVariant icon(const FLCRepositoryModule *m) const;

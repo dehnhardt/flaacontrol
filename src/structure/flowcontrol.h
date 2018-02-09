@@ -11,6 +11,8 @@
 #include <map>
 #include <vector>
 
+class FLCModuleInstancesModel;
+
 namespace Ui
 {
 class FlowControl;
@@ -23,6 +25,8 @@ class FlowControl : public QDialog
 public: // Methods
 	explicit FlowControl(QWidget *parent = 0);
 	~FlowControl();
+
+	FLCModuleInstancesModel *getModel() const;
 
 protected:
 	void mousePressEvent(QMouseEvent *event) override;
@@ -41,6 +45,8 @@ private: // Members
 	bool m_bDataLoaded = false;
 	Ui::FlowControl *m_pUi;
 	std::map<flaarlib::MODULE_TYPE, FLCRepositoryModuleModel *> m_flcModulesModelMap;
+	FLCModuleInstancesModel *m_pModel = 0;
+
 
 };
 

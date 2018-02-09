@@ -94,16 +94,15 @@ QMimeData *FLCRepositoryModuleModel::mimeData(const QModelIndexList &indexes) co
 		if (index.isValid())
 		{
 
+			FLCRepositoryModule *m = m_pDataVector->at(static_cast<unsigned long>(index.row()));
 			QPoint hotspot(0,0);
-			// qDebug() << "cursor pos: " << globalCursorPos.x() << ":" << globalCursorPos.y();
-			// qDebug() << "widget pos: " << p.x() << ":" << p.y();
-			// qDebug() << "hotspot pos: " << hotspot.x() << ":" <<hotspot.y();
-			QString text = data(index, Qt::DisplayRole).toString();
+			QString text = m->functionalName().c_str();
 			QIcon icon = data(index, Qt::DecorationRole).value<QIcon>();
-			stream << text << icon << hotspot;
+			int moduleType = m->moduleType();
+			stream << text << icon << hotspot << moduleType << index.row();
 		}
 	}
-	mimeData->setData("application/x-flowcontrol", encodedData);
+	mimeData->setData("application/x-flowcontrol-add", encodedData);
 	return mimeData;
 }
 

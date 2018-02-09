@@ -5,6 +5,8 @@
 #include "../osc/osclistener.h"
 #include "../handler/FLCRepositoryModuleHandler.h"
 #include "../model/FLCRepositoryModuleModel.h"
+#include "../model/FLCModuleInstance.h"
+#include "../model/FLCModuleInstancesModel.h"
 #include "FLCModuleWidget.h"
 
 #include <QWindow>
@@ -18,11 +20,13 @@
 #include <QDrag>
 #include <QtDebug>
 
-static inline QString sMimeType() { return QStringLiteral("application/x-flowcontrol"); }
+static inline QString sMimeTypeAdd() { return QStringLiteral("application/x-flowcontrol-add"); }
+static inline QString sMimeTypeMove() { return QStringLiteral("application/x-flowcontrol-move"); }
 
 FlowControl::FlowControl(QWidget *parent) :
 	QDialog(parent),
-	m_pUi(new Ui::FlowControl)
+	m_pUi(new Ui::FlowControl),
+	m_pModel(new FLCModuleInstancesModel())
 {
 	m_pUi->setupUi(this);
 	setupUi();
@@ -43,6 +47,11 @@ void FlowControl::clearModuleMap()
 	for( auto it : m_flcModulesModelMap )
 		delete it.second;
 	m_flcModulesModelMap.clear();
+}
+
+FLCModuleInstancesModel *FlowControl::getModel() const
+{
+	return m_pModel;
 }
 
 void FlowControl::setupUi()
@@ -93,8 +102,9 @@ void FlowControl::mousePressEvent(QMouseEvent *event)
 			QMimeData *mimeData = new QMimeData;
 			QString text = m->functionalName();
 			const QIcon icon = m->moduleIcon();
-			stream << text << icon << hotSpot;
-			mimeData->setData(sMimeType(), encodedData);
+			QUuid uuid = m->getUuid();
+			stream << text << icon << hotSpot << uuid;
+			mimeData->setData(sMimeTypeMove(), encodedData);
 
 			qreal dpr = window()->windowHandle()->devicePixelRatio();
 			QPixmap pixmap(m->size() * dpr);
@@ -117,7 +127,7 @@ void FlowControl::mousePressEvent(QMouseEvent *event)
 
 void FlowControl::dragEnterEvent(QDragEnterEvent *event)
 {
-	if (event->mimeData()->hasFormat(sMimeType()))
+	if (event->mimeData()->hasFormat(sMimeTypeAdd()) || event->mimeData()->hasFormat(sMimeTypeMove()))
 	{
 		if (children().contains(event->source()))
 		{
@@ -136,7 +146,7 @@ void FlowControl::dragEnterEvent(QDragEnterEvent *event)
 
 void FlowControl::dragMoveEvent(QDragMoveEvent *event)
 {
-	if (event->mimeData()->hasFormat(sMimeType()))
+	if (event->mimeData()->hasFormat(sMimeTypeAdd()) || event->mimeData()->hasFormat(sMimeTypeMove() ))
 	{
 		if (children().contains(event->source()))
 		{
@@ -155,30 +165,33 @@ void FlowControl::dragMoveEvent(QDragMoveEvent *event)
 
 void FlowControl::dropEvent(QDropEvent *event)
 {
-	if (event->mimeData()->hasFormat(sMimeType()))
+	if (event->mimeData()->hasFormat(sMimeTypeAdd()))
 	{
 		const QMimeData *mime = event->mimeData();
-		QByteArray itemData = mime->data(sMimeType());
+		QByteArray itemData = mime->data(sMimeTypeAdd());
 		QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
 		QString text;
 		QPoint offset;
 		QIcon icon;
-		dataStream >> text >> icon >> offset;
-
+		QString sUuid;
+		int moduleType;
+		unsigned int index;
+		dataStream >> text >> icon >> offset >> moduleType >> index;
+		FLCModuleInstance *moduleInstance = 0;
 		if( !icon.isNull() )
 		{
 			FLCModuleWidget *module = new FLCModuleWidget(this, text, icon);
+			FLCRepositoryModuleModel *m = m_flcModulesModelMap[flaarlib::MODULE_TYPE(moduleType)];
+			FLCRepositoryModule *repositoryModule = m->moduleAt(index);
+			moduleInstance = new FLCModuleInstance(repositoryModule);
+			m_pModel->addFLCModuleInstance(moduleInstance);
+			sUuid = moduleInstance->uuid().toString();
+			module->setUuid(sUuid);
+			moduleInstance->setPosition(event->pos() - offset);
 			module->move(event->pos() - offset);
 			module->show();
 			module->setAttribute(Qt::WA_DeleteOnClose);
-		}
-		else
-		{
-			QLabel *newLabel = new QLabel(text, this);
-			newLabel->move(event->pos() - offset);
-			newLabel->show();
-			newLabel->setAttribute(Qt::WA_DeleteOnClose);
 		}
 		if (event->source() == this)
 		{
@@ -188,23 +201,34 @@ void FlowControl::dropEvent(QDropEvent *event)
 		else
 			event->acceptProposedAction();
 	}
-	else if (event->mimeData()->hasText())
+	else if (event->mimeData()->hasFormat(sMimeTypeMove()))
 	{
-		QStringList pieces = event->mimeData()->text().split(QRegularExpression(QStringLiteral("\\s+")),
-							 QString::SkipEmptyParts);
-		QPoint position = event->pos();
+		const QMimeData *mime = event->mimeData();
+		QByteArray itemData = mime->data(sMimeTypeMove());
+		QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
-		for (const QString &piece : pieces)
+		QString text;
+		QPoint offset;
+		QIcon icon;
+		QUuid uuid;
+		dataStream >> text >> icon >> offset >>uuid;
+		if( !icon.isNull() && uuid != "" )
 		{
-			QLabel *newLabel = new QLabel(piece, this);
-			newLabel->move(position);
-			newLabel->show();
-			newLabel->setAttribute(Qt::WA_DeleteOnClose);
-
-			position += QPoint(newLabel->width(), 0);
+			FLCModuleWidget *module = new FLCModuleWidget(this, text, icon);
+			FLCModuleInstance *moduleInstance = m_pModel->getFlcModuleInstance(uuid);
+			moduleInstance->setPosition(event->pos() - offset);
+			module->setUuid(uuid);
+			module->move(event->pos() - offset);
+			module->show();
+			module->setAttribute(Qt::WA_DeleteOnClose);
 		}
-
-		event->acceptProposedAction();
+		if (event->source() == this)
+		{
+			event->setDropAction(Qt::CopyAction);
+			event->accept();
+		}
+		else
+			event->acceptProposedAction();
 	}
 	else
 		event->ignore();
@@ -213,8 +237,5 @@ void FlowControl::dropEvent(QDropEvent *event)
 
 void FlowControl::connectSlots()
 {
-	//connect(m_pUi->inputsListView, &QAbstractItemView::clicked, this, &FlowControl::repositoryItemClicked);
-	//connect(m_pUi->processorsListView, &QAbstractItemView::clicked, this, &FlowControl::repositoryItemClicked);
-	//connect(m_pUi->outputsListView, &QAbstractItemView::clicked, this, &FlowControl::repositoryItemClicked);
 }
 
