@@ -25,14 +25,14 @@ static inline QString sMimeTypeMove() { return QStringLiteral("application/x-flo
 
 FlowControl::FlowControl(QWidget *parent) :
 	QDialog(parent),
-	m_pUi(new Ui::FlowControl),
-	m_pModel(new FLCModuleInstancesModel())
+	m_pUi(new Ui::FlowControl)
 {
 	m_pUi->setupUi(this);
 	setupUi();
 	if( ! m_bDataLoaded )
 		getRepositoryModules();
 	connectSlots();
+	setModel(new FLCModuleInstancesModel());
 	readStructure();
 }
 
@@ -40,6 +40,12 @@ FlowControl::~FlowControl()
 {
 	clearModuleMap();
 	delete m_pUi;
+}
+
+void FlowControl::setModel(FLCModuleInstancesModel *model)
+{
+	m_pModel = model;
+	connect(m_pModel, &FLCModuleInstancesModel::moduleAdded, this, &FlowControl::addModuleWidget);
 }
 
 
@@ -93,9 +99,37 @@ void FlowControl::readStructure()
 	file->close();
 }
 
-FLCModuleInstancesModel *FlowControl::getModel() const
+void FlowControl::addModuleWidget(FLCModuleInstance *module)
+{
+	QIcon icon = iconForModule(module->moduleType(), module->dataType());
+	FLCModuleWidget *moduleWidget = new FLCModuleWidget(this, module->moduleFunctionalName(), icon);
+	QUuid sUuid = module->uuid();
+	moduleWidget->setAttribute(Qt::WA_DeleteOnClose);
+	moduleWidget->setUuid(sUuid);
+	moduleWidget->move(module->position());
+	moduleWidget->show();
+	this->m_flcWidgetMap[sUuid] = moduleWidget;
+}
+
+void FlowControl::removeModuleWidget(QUuid uuid)
+{
+	FLCModuleWidget *moduleWidget = this->m_flcWidgetMap[uuid];
+	if( moduleWidget )
+	{
+		moduleWidget->hide();
+		moduleWidget->deleteLater();
+		this->m_flcWidgetMap.erase(this->m_flcWidgetMap.find(uuid));
+	}
+}
+
+FLCModuleInstancesModel *FlowControl::model() const
 {
 	return m_pModel;
+}
+
+QIcon FlowControl::iconForModule(flaarlib::MODULE_TYPE moduleType, flaarlib::DATA_TYPE dataType)
+{
+	return m_flcModulesModelMap[moduleType]->icon(dataType).value<QIcon>();
 }
 
 void FlowControl::setupUi()
@@ -139,7 +173,7 @@ void FlowControl::mousePressEvent(QMouseEvent *event)
 			m = dynamic_cast<FLCModuleWidget *>(w->parentWidget());
 		if( m )
 		{
-			QPoint hotSpot = event->pos() - m->pos();
+			QPoint hotSpot = dragStartPosition - m->pos();
 			QByteArray encodedData;
 			QDataStream stream(&encodedData, QIODevice::WriteOnly);
 			QDrag *drag = new QDrag(this);
@@ -225,17 +259,12 @@ void FlowControl::dropEvent(QDropEvent *event)
 		FLCModuleInstance *moduleInstance = 0;
 		if( !icon.isNull() )
 		{
-			FLCModuleWidget *module = new FLCModuleWidget(this, text, icon);
 			FLCRepositoryModuleModel *m = m_flcModulesModelMap[flaarlib::MODULE_TYPE(moduleType)];
 			FLCRepositoryModule *repositoryModule = m->moduleAt(index);
 			moduleInstance = new FLCModuleInstance(repositoryModule);
-			m_pModel->addFLCModuleInstance(moduleInstance);
 			sUuid = moduleInstance->uuid().toString();
-			module->setUuid(sUuid);
 			moduleInstance->setPosition(event->pos() - offset);
-			module->move(event->pos() - offset);
-			module->show();
-			module->setAttribute(Qt::WA_DeleteOnClose);
+			m_pModel->addFLCModuleInstance(moduleInstance);
 		}
 		if (event->source() == this)
 		{
@@ -258,13 +287,14 @@ void FlowControl::dropEvent(QDropEvent *event)
 		dataStream >> text >> icon >> offset >>uuid;
 		if( !icon.isNull() && uuid != "" )
 		{
-			FLCModuleWidget *module = new FLCModuleWidget(this, text, icon);
+			FLCModuleWidget *moduleWidget = new FLCModuleWidget(this, text, icon);
 			FLCModuleInstance *moduleInstance = m_pModel->getFlcModuleInstance(uuid);
 			moduleInstance->setPosition(event->pos() - offset);
-			module->setUuid(uuid);
-			module->move(event->pos() - offset);
-			module->show();
-			module->setAttribute(Qt::WA_DeleteOnClose);
+			moduleWidget->setUuid(uuid);
+			moduleWidget->move(event->pos() - offset);
+			moduleWidget->show();
+			moduleWidget->setAttribute(Qt::WA_DeleteOnClose);
+			this->m_flcWidgetMap[uuid] = moduleWidget;
 		}
 		if (event->source() == this)
 		{

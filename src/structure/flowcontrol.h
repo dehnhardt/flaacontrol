@@ -8,10 +8,13 @@
 
 #include <QDialog>
 #include <QMoveEvent>
+#include <QUuid>
 #include <map>
 #include <vector>
 
 class FLCModuleInstancesModel;
+class FLCModuleInstance;
+class FLCModuleWidget;
 
 namespace Ui
 {
@@ -26,7 +29,9 @@ public: // Methods
 	explicit FlowControl(QWidget *parent = 0);
 	~FlowControl();
 
-	FLCModuleInstancesModel *getModel() const;
+	void setModel(FLCModuleInstancesModel *model);
+	FLCModuleInstancesModel *model() const;
+	QIcon iconForModule(flaarlib::MODULE_TYPE moduleType, flaarlib::DATA_TYPE dataType);
 
 protected:
 	void mousePressEvent(QMouseEvent *event) override;
@@ -44,13 +49,15 @@ private: // Methods
 private slots:
 	void saveStructure();
 	void readStructure();
+	void addModuleWidget( FLCModuleInstance *module);
+	void removeModuleWidget( QUuid uuid);
 
 private: // Members
 	bool m_bDataLoaded = false;
 	Ui::FlowControl *m_pUi;
 	std::map<flaarlib::MODULE_TYPE, FLCRepositoryModuleModel *> m_flcModulesModelMap;
 	FLCModuleInstancesModel *m_pModel = 0;
-
+	std::map<QUuid, FLCModuleWidget *> m_flcWidgetMap;
 
 };
 

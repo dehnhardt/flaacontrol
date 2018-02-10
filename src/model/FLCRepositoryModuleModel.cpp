@@ -59,9 +59,9 @@ QVariant FLCRepositoryModuleModel::data(const QModelIndex &index, int role) cons
 	return QVariant();
 }
 
-QVariant FLCRepositoryModuleModel::icon(const FLCRepositoryModule *m) const
+QVariant FLCRepositoryModuleModel::icon(flaarlib::DATA_TYPE dataType) const
 {
-	switch( m->dataType() )
+	switch( dataType )
 	{
 		case flaarlib::OSC:
 			return QIcon(":/icons/etherjack");
@@ -73,6 +73,11 @@ QVariant FLCRepositoryModuleModel::icon(const FLCRepositoryModule *m) const
 			return QIcon(":/icons/usbjack");
 
 	}
+}
+
+QVariant FLCRepositoryModuleModel::icon(const FLCRepositoryModule *m) const
+{
+	return icon(m->dataType());
 }
 
 QStringList FLCRepositoryModuleModel::mimeTypes() const

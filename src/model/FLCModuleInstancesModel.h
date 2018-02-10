@@ -24,8 +24,8 @@ public: //getter
 	FLCModuleInstance *getFlcModuleInstance( QUuid uuid);
 
 signals:
-	void moduleAdded( QUuid &uuid);
-	void moduleRemoved( QUuid &uuid);
+	void moduleAdded( FLCModuleInstance *moduleInstance);
+	void moduleRemoved( const QUuid &uuid);
 
 public slots:
 

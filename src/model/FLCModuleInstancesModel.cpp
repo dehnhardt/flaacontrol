@@ -50,6 +50,7 @@ void FLCModuleInstancesModel::deserialize(QXmlStreamReader *xmlReader)
 void FLCModuleInstancesModel::addFLCModuleInstance(FLCModuleInstance *moduleInstance)
 {
 	m_moduleInstancesMap[moduleInstance->uuid()] = moduleInstance;
+	emit(moduleAdded(moduleInstance));
 }
 
 FLCModuleInstance *FLCModuleInstancesModel::getFlcModuleInstance(QUuid uuid)

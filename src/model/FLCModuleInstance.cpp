@@ -43,12 +43,14 @@ void FLCModuleInstance::deserialize(QXmlStreamReader *xmlReader)
 {
 	QXmlStreamReader::TokenType t = xmlReader->tokenType();
 	QStringRef s = xmlReader->name();
+	QString text;
 	while(!xmlReader->atEnd())
 	{
 		switch( t )
 		{
 			case QXmlStreamReader::TokenType::StartElement:
 				s = xmlReader->name();
+				text.clear();
 				qDebug() << "Model: Element Name: " << s;
 				if( s == "Module")
 				{
@@ -107,13 +109,15 @@ void FLCModuleInstance::deserialize(QXmlStreamReader *xmlReader)
 				break;
 			case QXmlStreamReader::TokenType::Characters:
 				{
-					QStringRef text = xmlReader->text();
+					text += xmlReader->text().toString();
 					if( s == "ModuleType")
-						setModuleTypeName(text.toString());
+						qDebug() << text;
 					break;
 				}
 			case QXmlStreamReader::TokenType::EndElement:
 				s = xmlReader->name();
+				if( s == "ModuleType")
+					setModuleTypeName( text.trimmed());
 				if( s == "Module")
 					return;
 			default:

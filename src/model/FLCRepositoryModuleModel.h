@@ -22,6 +22,8 @@ public:
 	// Basic functionality:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+	QVariant icon(flaarlib::DATA_TYPE dataType) const;
+	QVariant icon(const FLCRepositoryModule *m) const;
 
 	// Drag functionality
 	Qt::ItemFlags flags(const QModelIndex &index) const override;
@@ -37,7 +39,6 @@ public:
 
 private:
 	vector<FLCRepositoryModule *> *m_pDataVector;
-	QVariant icon(const FLCRepositoryModule *m) const;
 
 
 };
