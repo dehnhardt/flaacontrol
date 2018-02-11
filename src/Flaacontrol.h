@@ -8,6 +8,8 @@ class OscListener;
 class OscSender;
 class QThread;
 class FLCModuleInstancesModel;
+class FLCModuleInstancesHandler;
+class SessionSettings;
 
 class Flaacontrol : public QObject
 {
@@ -23,6 +25,7 @@ public:
 	}
 	void openSockets();
 	void closeSockets();
+	void init(SessionSettings *sessionSettings);
 
 public: //getter
 	OscListener *udpListener() const;
@@ -57,12 +60,16 @@ private: // methods
 
 	void registerHandler();
 	void connectSlots();
+	void createGlobalHandlers();
 
 private: // members
 	static Flaacontrol *_instance;
 	OscListener *m_pUdpListener = 0;
 	OscSender *m_pUdpSender = 0;
 	QThread *m_pListenerThread = 0;
+
+private: // handlers
+	FLCModuleInstancesHandler *m_pInstancesHandler = 0;
 
 	int m_iListenPort = 0;
 	int m_iSendPort = 0;

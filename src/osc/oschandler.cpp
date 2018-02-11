@@ -57,9 +57,12 @@ OscHandler *OscHandler::handlerFor(std::string prefix)
 			if( h == prefix)
 				return handerlIt.second;
 			std::string resultingPrefix = prefix.substr(h.length());
-			return handerlIt.second->handlerFor(resultingPrefix);
+			OscHandler *handler = handerlIt.second->handlerFor(resultingPrefix);
+			if( handler )
+				return handler;
+			else
+				return this;
 		}
 	}
 	return 0;
-
 }

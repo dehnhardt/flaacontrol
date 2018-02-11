@@ -4,7 +4,6 @@
 #include "structure/flowcontrol.h"
 #include "osc/osclistener.h"
 #include "osc/oscpkt.hh"
-#include "settings/SessionSettings.h"
 #include "settings/SettingsModel.h"
 
 #include <QDesktopWidget>
@@ -55,8 +54,5 @@ void MainWindow::prepareCommunication()
 	SettingsModel *m = SettingsModel::instance();
 	SettingsModel::SessionSettings *sessionSettings = m->readSessionSettings();
 	Flaacontrol *f = Flaacontrol::instance();
-	f->setListenPort(sessionSettings->listenPort);
-	f->setSendHost(sessionSettings->sendAddress.toStdString());
-	f->setSendPort(sessionSettings->sendPort);
-	f->openSockets();
+	f->init( sessionSettings);
 }

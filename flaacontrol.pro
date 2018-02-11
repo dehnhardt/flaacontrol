@@ -43,7 +43,8 @@ SOURCES += \
     src/settings/SettingsModel.cpp \
     src/structure/FLCModuleWidget.cpp \
     src/model/FLCModuleInstancesModel.cpp \
-    src/model/FLCModuleInstance.cpp
+    src/model/FLCModuleInstance.cpp \
+    src/handler/FLCModuleInstancesHandler.cpp
 
 HEADERS += \
     src/osc/oscpkt.hh \
@@ -65,7 +66,8 @@ HEADERS += \
     src/settings/SettingsModel.h \
     src/structure/FLCModuleWidget.h \
     src/model/FLCModuleInstancesModel.h \
-    src/model/FLCModuleInstance.h
+    src/model/FLCModuleInstance.h \
+    src/handler/FLCModuleInstancesHandler.h
 
 FORMS += \
     src/mainwindow.ui \

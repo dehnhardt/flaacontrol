@@ -5,8 +5,11 @@
 
 #include "handler/FLCPingHandler.h"
 #include "handler/FLCRepositoryModuleHandler.h"
+#include "handler/FLCModuleInstancesHandler.h"
 
 #include "model/FLCModuleInstancesModel.h"
+#include "model/FLCModuleInstance.h"
+#include "settings/SessionSettings.h"
 
 #include <QCoreApplication>
 #include <QThread>
@@ -19,7 +22,6 @@
 Flaacontrol::Flaacontrol() : QObject (),
 	m_pModuleInstancesModel(new FLCModuleInstancesModel())
 {
-	readStructure();
 }
 
 Flaacontrol::~Flaacontrol()
@@ -61,6 +63,7 @@ void Flaacontrol::openSockets()
 	m_pUdpListener = new OscListener(m_iListenPort);
 
 	m_pUdpListener->moveToThread(m_pListenerThread);
+	createGlobalHandlers();
 	registerHandler();
 	connectSlots();
 
@@ -77,10 +80,20 @@ void Flaacontrol::closeSockets()
 	m_pListenerThread->deleteLater();
 }
 
+void Flaacontrol::init(SessionSettings *sessionSettings)
+{
+	setListenPort(sessionSettings->listenPort);
+	setSendHost(sessionSettings->sendAddress.toStdString());
+	setSendPort(sessionSettings->sendPort);
+	openSockets();
+	readStructure();
+}
+
 void Flaacontrol::registerHandler()
 {
 	m_pUdpListener->registerHandler(new FLCPingHandler());
 	m_pUdpListener->registerHandler(new FLCRepositoryModuleHandler());
+	m_pUdpListener->registerHandler(m_pInstancesHandler);
 }
 
 void Flaacontrol::connectSlots()
@@ -89,8 +102,15 @@ void Flaacontrol::connectSlots()
 	connect(m_pListenerThread, &QThread::finished, m_pUdpListener, &OscListener::exit);
 	connect(m_pUdpListener, &OscListener::started, this, &Flaacontrol::listenerThreadStarted);
 	connect(m_pUdpListener, &OscListener::finished, this, &Flaacontrol::listenerThreadFinished);
+	connect(m_pInstancesHandler, &FLCModuleInstancesHandler::addModuleInstance,
+			m_pModuleInstancesModel, &FLCModuleInstancesModel::moduleAdded);
 	// Allow graceful termination of the thread
 	connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &Flaacontrol::onApplicationExit );
+}
+
+void Flaacontrol::createGlobalHandlers()
+{
+	this->m_pInstancesHandler = new FLCModuleInstancesHandler();
 }
 
 FLCModuleInstancesModel *Flaacontrol::moduleInstancesModel() const
