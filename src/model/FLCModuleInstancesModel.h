@@ -22,6 +22,7 @@ public: //setter
 
 public: //getter
 	FLCModuleInstance *getFlcModuleInstance( QUuid uuid);
+	QMap<QUuid, FLCModuleInstance *> getModuleInstancesMap();
 
 signals:
 	void moduleAdded( FLCModuleInstance *moduleInstance);

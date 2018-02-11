@@ -45,10 +45,10 @@ private: // Methods
 	void setupStructureObjects();
 	void getRepositoryModules();
 	void clearModuleMap();
+	void initFomModel();
 
 private slots:
 	void saveStructure();
-	void readStructure();
 	void addModuleWidget( FLCModuleInstance *module);
 	void removeModuleWidget( QUuid uuid);
 

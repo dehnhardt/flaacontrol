@@ -57,3 +57,8 @@ FLCModuleInstance *FLCModuleInstancesModel::getFlcModuleInstance(QUuid uuid)
 {
 	return m_moduleInstancesMap[uuid];
 }
+
+QMap<QUuid, FLCModuleInstance *> FLCModuleInstancesModel::getModuleInstancesMap()
+{
+	return m_moduleInstancesMap;
+}

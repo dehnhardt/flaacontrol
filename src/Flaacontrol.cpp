@@ -6,17 +6,52 @@
 #include "handler/FLCPingHandler.h"
 #include "handler/FLCRepositoryModuleHandler.h"
 
+#include "model/FLCModuleInstancesModel.h"
+
 #include <QCoreApplication>
 #include <QThread>
+#include <QFile>
+#include <QIODevice>
+#include <QXmlStreamReader>
+#include <QDebug>
 
 
-Flaacontrol::Flaacontrol() : QObject ()
+Flaacontrol::Flaacontrol() : QObject (),
+	m_pModuleInstancesModel(new FLCModuleInstancesModel())
 {
+	readStructure();
 }
 
 Flaacontrol::~Flaacontrol()
 {
 
+}
+
+void Flaacontrol::readStructure()
+{
+	QFile *file = new QFile("/home/dehnhardt/structure.xml");
+	if (!file->open(QIODevice::ReadOnly | QIODevice::Text))
+		return;
+	QXmlStreamReader *xmlReader = new QXmlStreamReader(file);
+	while(!xmlReader->atEnd())
+	{
+		QXmlStreamReader::TokenType t = xmlReader->readNext();
+		QStringRef s = xmlReader->name();
+		switch( t )
+		{
+			case QXmlStreamReader::TokenType::StartElement:
+				qDebug() << "Widget: Element Name: " << s;
+				if( s == "ModuleInstances")
+					m_pModuleInstancesModel->deserialize(xmlReader);
+				break;
+			case QXmlStreamReader::TokenType::EndElement:
+				if( s == "ModuleInstances")
+					return;
+			default:
+				break;
+		}
+	}
+	file->close();
 }
 
 void Flaacontrol::openSockets()
@@ -56,6 +91,11 @@ void Flaacontrol::connectSlots()
 	connect(m_pUdpListener, &OscListener::finished, this, &Flaacontrol::listenerThreadFinished);
 	// Allow graceful termination of the thread
 	connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &Flaacontrol::onApplicationExit );
+}
+
+FLCModuleInstancesModel *Flaacontrol::moduleInstancesModel() const
+{
+	return m_pModuleInstancesModel;
 }
 
 OscSender *Flaacontrol::udpSender() const

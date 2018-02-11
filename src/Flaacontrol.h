@@ -7,6 +7,7 @@
 class OscListener;
 class OscSender;
 class QThread;
+class FLCModuleInstancesModel;
 
 class Flaacontrol : public QObject
 {
@@ -31,10 +32,13 @@ public: //getter
 	int sendPort() const {return m_iSendPort;}
 	std::string sendHost() const {return m_sSendHost;}
 
+	FLCModuleInstancesModel *moduleInstancesModel() const;
+
 public: //setter
 	void setListenPort(int iListenPort) {m_iListenPort = iListenPort;}
 	void setSendPort(int iSendPort) {m_iSendPort = iSendPort;}
 	void setSendHost(const std::string &sSendAddress) { m_sSendHost = sSendAddress;}
+
 
 public slots:
 	void listenerThreadStarted();
@@ -49,6 +53,8 @@ private: // methods
 	Flaacontrol(const Flaacontrol &) = delete;
 	void operator= (Flaacontrol const) = delete;
 
+	void readStructure();
+
 	void registerHandler();
 	void connectSlots();
 
@@ -61,6 +67,9 @@ private: // members
 	int m_iListenPort = 0;
 	int m_iSendPort = 0;
 	std::string m_sSendHost;
+
+private: // models
+	FLCModuleInstancesModel *m_pModuleInstancesModel = 0;
 
 	//bool m_bSocketsOpen = false;
 
