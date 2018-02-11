@@ -5,6 +5,9 @@
 #include <QWidget>
 #include <QIcon>
 #include <QUuid>
+#include <QDebug>
+#include <QApplication>
+#include <QMoveEvent>
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -39,12 +42,20 @@ signals:
 
 public slots:
 
+protected:
+	void mouseMoveEvent(QMouseEvent *event) override
+	{
+		qDebug() << "mouseMoveEvent MW";
+		QApplication::sendEvent(parentWidget(), event);
+	}
+
 private:
 	QHBoxLayout *m_pHorizontalLayot;
 	QVBoxLayout *m_pVerticalLayout;
 	QIcon m_pModuleIcon;
 	QString m_sFunctionalName;
 	QUuid m_uuid;
+
 };
 
 #endif // FLCMODULEWIDGET_H
