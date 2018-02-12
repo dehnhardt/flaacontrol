@@ -6,17 +6,25 @@
 #include <QObject>
 
 class FLCModuleInstance;
+class FLCModuleInstancesModel;
 
 class FLCModuleInstancesHandler : public QObject, public OscHandler
 {
 	Q_OBJECT
 
-public slots:
-	bool addModuleInstance( FLCModuleInstance *module);
-
 public:
 	FLCModuleInstancesHandler();
 	bool handle(oscpkt::UdpSocket *socket, oscpkt::Message *message) override;
+	void setModel(FLCModuleInstancesModel *moduleInstancesModel);
+
+public slots:
+	bool addModuleInstance( FLCModuleInstance *module);
+
+private: // methods
+	void initFomModel();
+
+private: // mebers
+	FLCModuleInstancesModel *m_pModuleInstancesModel = 0;
 
 };
 

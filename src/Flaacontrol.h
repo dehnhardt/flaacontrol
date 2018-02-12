@@ -1,8 +1,11 @@
 #ifndef FLAACONTROL_H
 #define FLAACONTROL_H
 
+#include "settings/SettingsModel.h"
+
 #include <string>
 #include <QObject>
+
 
 class OscListener;
 class OscSender;
@@ -25,7 +28,7 @@ public:
 	}
 	void openSockets();
 	void closeSockets();
-	void init(SessionSettings *sessionSettings);
+	void init(SettingsModel::SessionSettings *sessionSettings);
 
 public: //getter
 	OscListener *udpListener() const;

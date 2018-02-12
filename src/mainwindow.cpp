@@ -4,7 +4,7 @@
 #include "structure/flowcontrol.h"
 #include "osc/osclistener.h"
 #include "osc/oscpkt.hh"
-#include "settings/SettingsModel.h"
+#include "settings/SessionSettings.h"
 
 #include <QDesktopWidget>
 

@@ -9,6 +9,7 @@
 
 #include "model/FLCModuleInstancesModel.h"
 #include "model/FLCModuleInstance.h"
+#include "settings/SettingsModel.h"
 #include "settings/SessionSettings.h"
 
 #include <QCoreApplication>
@@ -56,6 +57,17 @@ void Flaacontrol::readStructure()
 	file->close();
 }
 
+void Flaacontrol::init(SettingsModel::SessionSettings *sessionSettings)
+{
+	setListenPort(sessionSettings->listenPort);
+	setSendHost(sessionSettings->sendAddress.toStdString());
+	setSendPort(sessionSettings->sendPort);
+	openSockets();
+	readStructure();
+	registerHandler();
+	connectSlots();
+}
+
 void Flaacontrol::openSockets()
 {
 	m_pListenerThread = new QThread(this);
@@ -65,6 +77,7 @@ void Flaacontrol::openSockets()
 	m_pUdpListener->moveToThread(m_pListenerThread);
 	createGlobalHandlers();
 	registerHandler();
+	m_pInstancesHandler->setModel(m_pModuleInstancesModel);
 	connectSlots();
 
 	m_pUdpSender->start();
@@ -73,20 +86,13 @@ void Flaacontrol::openSockets()
 
 void Flaacontrol::closeSockets()
 {
+	if( m_pInstancesHandler )
+		delete m_pInstancesHandler;
 	m_pUdpListener->setBRunning(false);
 	m_pUdpListener->deleteLater();
 	m_pListenerThread->terminate();
 	m_pListenerThread->wait();
 	m_pListenerThread->deleteLater();
-}
-
-void Flaacontrol::init(SessionSettings *sessionSettings)
-{
-	setListenPort(sessionSettings->listenPort);
-	setSendHost(sessionSettings->sendAddress.toStdString());
-	setSendPort(sessionSettings->sendPort);
-	openSockets();
-	readStructure();
 }
 
 void Flaacontrol::registerHandler()
@@ -102,8 +108,6 @@ void Flaacontrol::connectSlots()
 	connect(m_pListenerThread, &QThread::finished, m_pUdpListener, &OscListener::exit);
 	connect(m_pUdpListener, &OscListener::started, this, &Flaacontrol::listenerThreadStarted);
 	connect(m_pUdpListener, &OscListener::finished, this, &Flaacontrol::listenerThreadFinished);
-	connect(m_pInstancesHandler, &FLCModuleInstancesHandler::addModuleInstance,
-			m_pModuleInstancesModel, &FLCModuleInstancesModel::moduleAdded);
 	// Allow graceful termination of the thread
 	connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &Flaacontrol::onApplicationExit );
 }
