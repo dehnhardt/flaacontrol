@@ -1,7 +1,6 @@
 #ifndef FLOWCONTROL_H
 #define FLOWCONTROL_H
 
-#include "draggablebutton.h"
 #include "FLModuleDefs.h"
 #include "../model/FLCRepositoryModule.h"
 #include "../model/FLCRepositoryModuleModel.h"
