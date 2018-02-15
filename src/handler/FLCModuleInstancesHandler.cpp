@@ -22,6 +22,7 @@ bool FLCModuleInstancesHandler::addModuleInstance(FLCModuleInstance *module)
 	qDebug("start sending module Repository (path: %s)", path.c_str());
 	OscSender *sender = Flaacontrol::instance()->udpSender();
 	Message msg(path);
+	module->serialize(&msg);
 	sender->enqueuMessage(msg);
 	return(true);
 }
