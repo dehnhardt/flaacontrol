@@ -88,7 +88,6 @@ void Flaacontrol::openSockets()
 void Flaacontrol::closeSockets()
 {
 	m_pUdpListener->setBRunning(false);
-	m_pUdpListener->deleteLater();
 	m_pListenerThread->terminate();
 	m_pListenerThread->wait();
 	m_pListenerThread->deleteLater();
