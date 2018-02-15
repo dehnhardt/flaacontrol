@@ -18,7 +18,7 @@ FLCModuleInstancesHandler::FLCModuleInstancesHandler():
 
 bool FLCModuleInstancesHandler::addModuleInstance(FLCModuleInstance *module)
 {
-	std::string path = prefix() + "/add/";
+	std::string path = prefix() + "/add";
 	qDebug("start sending module Repository (path: %s)", path.c_str());
 	OscSender *sender = Flaacontrol::instance()->udpSender();
 	Message msg(path);
