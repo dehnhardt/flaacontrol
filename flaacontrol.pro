@@ -30,7 +30,6 @@ SOURCES += \
     src/tracks/tracks.cpp \
     src/osc/osclistener.cpp \
     src/osc/oscsender.cpp \
-    src/structure/draggablebutton.cpp \
     src/osc/oschandler.cpp \
     src/handler/FLCRepositoryModuleHandler.cpp \
     src/handler/FLCPingHandler.cpp \
@@ -52,7 +51,6 @@ HEADERS += \
     src/tracks/tracks.h \
     src/osc/osclistener.h \
     src/osc/oscsender.h \
-    src/structure/draggablebutton.h \
     src/osc/oschandler.h \
     src/handler/FLCRepositoryModuleHandler.h \
     src/handler/FLCPingHandler.h \
