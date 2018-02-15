@@ -60,7 +60,10 @@ void OscListener::runListener()
 					if( handler)
 						handler->handle(m_pUdpSocket, message);
 					else
-						qDebug() << "Listener: unhandled message: " << message->addressPattern().c_str();
+					{
+						qDebug() << "Listener: unhandled message: ";
+						qDebug() << message->prettyPrint().c_str();
+					}
 				}
 			}
 			if( !m_bRunning )
