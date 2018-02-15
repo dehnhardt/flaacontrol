@@ -1,4 +1,4 @@
-#include "flowcontrol.h"
+#include "FlowControl.h"
 #include "ui_flowcontrol.h"
 #include "../Flaacontrol.h"
 #include "../osc/osclistener.h"

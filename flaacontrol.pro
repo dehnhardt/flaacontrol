@@ -30,8 +30,6 @@ SOURCES += \
     src/tracks/tracks.cpp \
     src/osc/osclistener.cpp \
     src/osc/oscsender.cpp \
-    src/structure/flowcontrol.cpp \
-    src/mainwindow.cpp \
     src/structure/draggablebutton.cpp \
     src/osc/oschandler.cpp \
     src/handler/FLCRepositoryModuleHandler.cpp \
@@ -44,16 +42,16 @@ SOURCES += \
     src/structure/FLCModuleWidget.cpp \
     src/model/FLCModuleInstancesModel.cpp \
     src/model/FLCModuleInstance.cpp \
-    src/handler/FLCModuleInstancesHandler.cpp
+    src/handler/FLCModuleInstancesHandler.cpp \
+    src/structure/FlowControl.cpp \
+    src/MainWindow.cpp
 
 HEADERS += \
     src/osc/oscpkt.hh \
     src/osc/udp.hh \
-    src/mainwindow.h \
     src/tracks/tracks.h \
     src/osc/osclistener.h \
     src/osc/oscsender.h \
-    src/structure/flowcontrol.h \
     src/structure/draggablebutton.h \
     src/osc/oschandler.h \
     src/handler/FLCRepositoryModuleHandler.h \
@@ -67,7 +65,9 @@ HEADERS += \
     src/structure/FLCModuleWidget.h \
     src/model/FLCModuleInstancesModel.h \
     src/model/FLCModuleInstance.h \
-    src/handler/FLCModuleInstancesHandler.h
+    src/handler/FLCModuleInstancesHandler.h \
+    src/structure/FlowControl.h \
+    src/MainWindow.h
 
 FORMS += \
     src/mainwindow.ui \
