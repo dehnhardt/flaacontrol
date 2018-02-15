@@ -1,5 +1,6 @@
 #include "FLCModuleInstance.h"
 #include "FLCRepositoryModule.h"
+#include "../osc/oscpkt.hh"
 
 #include <QDebug>
 
@@ -17,6 +18,34 @@ FLCModuleInstance::FLCModuleInstance(FLCRepositoryModule *module) :
 	setDataType(module->dataType());
 	setModuleFunctionalName(module->functionalName().c_str());
 	setModuleTypeName(module->moduleTypeName().c_str());
+}
+
+void FLCModuleInstance::serialize(oscpkt::Message *message)
+{
+	message->pushStr(uuid().toString().toStdString());
+	message->pushStr(moduleFunctionalName().toStdString());
+	message->pushStr(moduleName().toStdString());
+	message->pushInt32(moduleType());
+	message->pushStr(moduleTypeName().toStdString());
+	message->pushInt32(dataType());
+	message->pushInt32(position().x());
+	message->pushInt32(position().y());
+}
+
+void FLCModuleInstance::deserialize(oscpkt::Message *message)
+{
+	std::string uuid;
+	int moduleType;
+	int dataType;
+	int x;
+	int y;
+	if(message->arg().popStr(uuid).popStr(m_sModuleFunctionalName).popStr(m_sModuleName)
+			.popInt32(moduleType).popStr(m_sModuleTypeName).popInt32(dataType).popInt32(x).popInt32(y).isOk() )
+	{
+		m_moduleType = flaarlib::MODULE_TYPE(moduleType);
+		m_dataType = flaarlib::DATA_TYPE(dataType);
+		m_position = QPoint(x, y);
+	}
 }
 
 void FLCModuleInstance::serialize( QXmlStreamWriter *xmlWriter )

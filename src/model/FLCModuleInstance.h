@@ -10,6 +10,10 @@
 #include <QXmlStreamReader>
 
 class FLCRepositoryModule;
+namespace oscpkt
+{
+class Message;
+}
 
 class FLCModuleInstance : public QObject
 {
@@ -20,7 +24,9 @@ public:
 
 
 public: //methods
+	void serialize(oscpkt::Message *message);
 	void serialize(QXmlStreamWriter *xmlWriter);
+	void deserialize(oscpkt::Message *message);
 	void deserialize(QXmlStreamReader *xmlReader);
 
 public: //getter
