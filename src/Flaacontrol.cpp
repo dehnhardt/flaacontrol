@@ -27,7 +27,8 @@ Flaacontrol::Flaacontrol() : QObject (),
 
 Flaacontrol::~Flaacontrol()
 {
-
+	if(m_pModuleInstancesModel)
+		delete m_pModuleInstancesModel;
 }
 
 void Flaacontrol::readStructure()
@@ -86,8 +87,6 @@ void Flaacontrol::openSockets()
 
 void Flaacontrol::closeSockets()
 {
-	if( m_pInstancesHandler )
-		delete m_pInstancesHandler;
 	m_pUdpListener->setBRunning(false);
 	m_pUdpListener->deleteLater();
 	m_pListenerThread->terminate();
