@@ -1,6 +1,6 @@
 #include "FLCPingHandler.h"
 #include "../Flaacontrol.h"
-#include "../osc/oscsender.h"
+#include "../flaaoscsdk/oscsender.h"
 
 #include <QDebug>
 

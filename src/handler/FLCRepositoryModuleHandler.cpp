@@ -4,7 +4,7 @@
 #include "../model/FLCRepositoryModule.h"
 #include "../model/FLCRepositoryModuleModel.h"
 
-#include "../osc/oscsender.h"
+#include "../flaaoscsdk/oscsender.h"
 
 #include <QDebug>
 

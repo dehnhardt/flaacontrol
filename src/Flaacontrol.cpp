@@ -1,7 +1,7 @@
 #include "Flaacontrol.h"
 
-#include "osc/oscsender.h"
-#include "osc/osclistener.h"
+#include "flaaoscsdk/oscsender.h"
+#include "flaaoscsdk/osclistener.h"
 
 #include "handler/FLCPingHandler.h"
 #include "handler/FLCRepositoryModuleHandler.h"

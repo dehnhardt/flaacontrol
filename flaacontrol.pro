@@ -28,10 +28,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     src/main.cpp \
     src/tracks/tracks.cpp \
-    src/osc/osclistener.cpp \
-    src/osc/oscsender.cpp \
-    src/osc/oschandler.cpp \
-    src/handler/FLCRepositoryModuleHandler.cpp \
+	src/handler/FLCRepositoryModuleHandler.cpp \
     src/handler/FLCPingHandler.cpp \
     src/model/FLCRepositoryModule.cpp \
     src/Flaacontrol.cpp \
@@ -43,15 +40,13 @@ SOURCES += \
     src/model/FLCModuleInstance.cpp \
     src/handler/FLCModuleInstancesHandler.cpp \
     src/structure/FlowControl.cpp \
-    src/MainWindow.cpp
+    src/MainWindow.cpp \
+    src/flaaoscsdk/oschandler.cpp \
+    src/flaaoscsdk/osclistener.cpp \
+    src/flaaoscsdk/oscsender.cpp
 
 HEADERS += \
-    src/osc/oscpkt.hh \
-    src/osc/udp.hh \
     src/tracks/tracks.h \
-    src/osc/osclistener.h \
-    src/osc/oscsender.h \
-    src/osc/oschandler.h \
     src/handler/FLCRepositoryModuleHandler.h \
     src/handler/FLCPingHandler.h \
     src/model/FLCRepositoryModule.h \
@@ -65,7 +60,12 @@ HEADERS += \
     src/model/FLCModuleInstance.h \
     src/handler/FLCModuleInstancesHandler.h \
     src/structure/FlowControl.h \
-    src/MainWindow.h
+    src/MainWindow.h \
+    src/flaaoscsdk/oschandler.h \
+    src/flaaoscsdk/osclistener.h \
+    src/flaaoscsdk/oscpkt.hh \
+    src/flaaoscsdk/oscsender.h \
+    src/flaaoscsdk/udp.hh
 
 FORMS += \
     src/mainwindow.ui \
@@ -84,7 +84,12 @@ DISTFILES += \
     resources/savetodevice.xpm \
     resources/usbhostjack.xpm \
     resources/usbjack.xpm \
-    resources/audiocombojack.xpm
+    resources/audiocombojack.xpm \
+    src/flaaoscsdk/README.md \
+    src/flaaoscsdk/LICENSE \
+    src/flaaoscsdk/README.md \
+    src/flaaoscsdk/LICENSE \
+    src/flaaoscsdk/README.md
 
 INCLUDEPATH += $$PWD/../flaarlib/src
 

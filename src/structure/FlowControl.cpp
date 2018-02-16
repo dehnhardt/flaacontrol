@@ -1,7 +1,7 @@
 #include "FlowControl.h"
 #include "ui_flowcontrol.h"
 #include "../Flaacontrol.h"
-#include "../osc/osclistener.h"
+#include "../flaaoscsdk/osclistener.h"
 #include "../handler/FLCRepositoryModuleHandler.h"
 #include "../model/FLCRepositoryModuleModel.h"
 #include "../model/FLCModuleInstance.h"

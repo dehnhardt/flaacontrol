@@ -1,7 +1,7 @@
 #ifndef FLCREPOSITORYMODULEHANDLER_H
 #define FLCREPOSITORYMODULEHANDLER_H
 
-#include "../osc/oschandler.h"
+#include "../flaaoscsdk/oschandler.h"
 #include "../model/FLCRepositoryModule.h"
 
 #include <map>

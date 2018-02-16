@@ -1,6 +1,6 @@
 #include "FLCModuleInstance.h"
 #include "FLCRepositoryModule.h"
-#include "../osc/oscpkt.hh"
+#include "../flaaoscsdk/oscpkt.hh"
 
 #include <QDebug>
 

@@ -1,7 +1,7 @@
 #ifndef FLCMODULEINSTANCESHANDLER_H
 #define FLCMODULEINSTANCESHANDLER_H
 
-#include "../osc/oschandler.h"
+#include "../flaaoscsdk/oschandler.h"
 
 #include <QObject>
 

@@ -1,7 +1,7 @@
 #ifndef FLCPINGHANDLER_H
 #define FLCPINGHANDLER_H
 
-#include "../osc/oschandler.h"
+#include "../flaaoscsdk/oschandler.h"
 
 class FLCPingHandler : public OscHandler
 {

@@ -2,8 +2,8 @@
 #include "ui_mainwindow.h"
 #include "Flaacontrol.h"
 #include "structure/FlowControl.h"
-#include "osc/osclistener.h"
-#include "osc/oscpkt.hh"
+#include "flaaoscsdk/osclistener.h"
+#include "flaaoscsdk/oscpkt.hh"
 #include "settings/SessionSettings.h"
 
 #include <QDesktopWidget>

@@ -1,7 +1,7 @@
 #include "FLCModuleInstancesHandler.h"
 #include "../handler/FLCModuleInstancesHandler.h"
 #include "logging/FLLog.h"
-#include "../osc/oscsender.h"
+#include "../flaaoscsdk/oscsender.h"
 #include "../Flaacontrol.h"
 #include "../model/FLCModuleInstancesModel.h"
 #include "../model/FLCModuleInstance.h"
