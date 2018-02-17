@@ -6,7 +6,7 @@
 
 FLCPingHandler::FLCPingHandler() : OscHandler ("/ping")
 {
-	m_sHandlerName("FLCPingHandler");
+	m_sHandlerName="FLCPingHandler";
 }
 
 bool FLCPingHandler::handle(oscpkt::UdpSocket *socket, oscpkt::Message *message)

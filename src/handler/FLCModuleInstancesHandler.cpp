@@ -13,7 +13,7 @@ FLCModuleInstancesHandler::FLCModuleInstancesHandler():
 	OscHandler ("/ws/instances/modules")
 
 {
-	m_sHandlerName("FLCModuleInstancesHandler")
+	m_sHandlerName="FLCModuleInstancesHandler";
 }
 
 bool FLCModuleInstancesHandler::addModuleInstance(FLCModuleInstance *module)
@@ -29,7 +29,9 @@ bool FLCModuleInstancesHandler::addModuleInstance(FLCModuleInstance *module)
 
 bool FLCModuleInstancesHandler::handle(UdpSocket *socket, Message *message)
 {
-
+	Q_UNUSED(socket)
+	Q_UNUSED(message)
+	return false;
 }
 
 void FLCModuleInstancesHandler::initFomModel()
