@@ -11,6 +11,7 @@
 FLCRepositoryModuleHandler::FLCRepositoryModuleHandler() :
 	OscHandler ("/ws/repository/module")
 {
+	m_sHandlerName("FLCRepositoryModuleHandler");
 }
 
 bool FLCRepositoryModuleHandler::handle(UdpSocket *socket __attribute__((unused)), Message *message )

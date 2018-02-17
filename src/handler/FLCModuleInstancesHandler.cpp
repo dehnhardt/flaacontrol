@@ -13,7 +13,7 @@ FLCModuleInstancesHandler::FLCModuleInstancesHandler():
 	OscHandler ("/ws/instances/modules")
 
 {
-
+	m_sHandlerName("FLCModuleInstancesHandler")
 }
 
 bool FLCModuleInstancesHandler::addModuleInstance(FLCModuleInstance *module)
