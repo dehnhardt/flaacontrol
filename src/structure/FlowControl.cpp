@@ -4,8 +4,8 @@
 #include "../flaaoscsdk/osclistener.h"
 #include "../handler/FLCRepositoryModuleHandler.h"
 #include "../model/FLCRepositoryModuleModel.h"
-#include "../model/FLCModuleInstance.h"
-#include "../model/FLCModuleInstancesModel.h"
+#include "../flaaoscsdk/FLOModuleInstanceDAO.h"
+#include "../flaaoscsdk/FLOModuleInstancesModel.h"
 #include "FLCModuleWidget.h"
 
 #include <QWindow>
@@ -41,11 +41,11 @@ FlowControl::~FlowControl()
 	delete m_pUi;
 }
 
-void FlowControl::setModel(FLCModuleInstancesModel *model)
+void FlowControl::setModel(FLOModuleInstancesModel *model)
 {
 	m_pModel = model;
 	initFomModel();
-	connect(m_pModel, &FLCModuleInstancesModel::moduleAdded, this, &FlowControl::addModuleWidget);
+	connect(m_pModel, &FLOModuleInstancesModel::moduleAdded, this, &FlowControl::addModuleWidget);
 }
 
 
@@ -61,7 +61,7 @@ void FlowControl::initFomModel()
 {
 	if( m_pModel)
 	{
-		QMap<QUuid, FLCModuleInstance *> map = m_pModel->getModuleInstancesMap();
+		QMap<QUuid, FLOModuleInstanceDAO *> map = m_pModel->getModuleInstancesMap();
 		for( auto module : map)
 			addModuleWidget(module);
 	}
@@ -83,7 +83,7 @@ void FlowControl::saveStructure()
 	file->close();
 }
 
-void FlowControl::addModuleWidget(FLCModuleInstance *module)
+void FlowControl::addModuleWidget(FLOModuleInstanceDAO *module)
 {
 	QIcon icon = iconForModule(module->moduleType(), module->dataType());
 	FLCModuleWidget *moduleWidget = new FLCModuleWidget(this, module->moduleFunctionalName(), icon);
@@ -106,7 +106,7 @@ void FlowControl::removeModuleWidget(QUuid uuid)
 	}
 }
 
-FLCModuleInstancesModel *FlowControl::model() const
+FLOModuleInstancesModel *FlowControl::model() const
 {
 	return m_pModel;
 }
@@ -240,15 +240,15 @@ void FlowControl::dropEvent(QDropEvent *event)
 		int moduleType;
 		unsigned int index;
 		dataStream >> text >> icon >> offset >> moduleType >> index;
-		FLCModuleInstance *moduleInstance = 0;
+		FLOModuleInstanceDAO *moduleInstance = 0;
 		if( !icon.isNull() )
 		{
 			FLCRepositoryModuleModel *m = m_flcModulesModelMap[flaarlib::MODULE_TYPE(moduleType)];
 			FLCRepositoryModule *repositoryModule = m->moduleAt(index);
-			moduleInstance = new FLCModuleInstance(repositoryModule);
+			moduleInstance = new FLOModuleInstanceDAO(repositoryModule);
 			sUuid = moduleInstance->uuid().toString();
 			moduleInstance->setPosition(event->pos() - offset);
-			m_pModel->addFLCModuleInstance(moduleInstance);
+			m_pModel->addFLOModuleInstance(moduleInstance);
 		}
 		if (event->source() == this)
 		{
@@ -272,7 +272,7 @@ void FlowControl::dropEvent(QDropEvent *event)
 		if( !icon.isNull() && uuid != "" )
 		{
 			FLCModuleWidget *moduleWidget = new FLCModuleWidget(this, text, icon);
-			FLCModuleInstance *moduleInstance = m_pModel->getFlcModuleInstance(uuid);
+			FLOModuleInstanceDAO *moduleInstance = m_pModel->getFLOModuleInstance(uuid);
 			moduleInstance->setPosition(event->pos() - offset);
 			moduleWidget->setUuid(uuid);
 			moduleWidget->move(event->pos() - offset);

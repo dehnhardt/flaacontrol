@@ -43,7 +43,9 @@ SOURCES += \
     src/MainWindow.cpp \
     src/flaaoscsdk/oschandler.cpp \
     src/flaaoscsdk/osclistener.cpp \
-    src/flaaoscsdk/oscsender.cpp
+    src/flaaoscsdk/oscsender.cpp \
+    src/flaaoscsdk/FLOModuleInstancesModel.cpp \
+    src/flaaoscsdk/FLOModuleInstanceDAO.cpp
 
 HEADERS += \
     src/tracks/tracks.h \
@@ -65,7 +67,9 @@ HEADERS += \
     src/flaaoscsdk/osclistener.h \
     src/flaaoscsdk/oscpkt.hh \
     src/flaaoscsdk/oscsender.h \
-    src/flaaoscsdk/udp.hh
+    src/flaaoscsdk/udp.hh \
+    src/flaaoscsdk/FLOModuleInstancesModel.h \
+    src/flaaoscsdk/FLOModuleInstanceDAO.h
 
 FORMS += \
     src/mainwindow.ui \

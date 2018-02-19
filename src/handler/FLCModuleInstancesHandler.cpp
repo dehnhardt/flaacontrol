@@ -3,8 +3,8 @@
 #include "logging/FLLog.h"
 #include "../flaaoscsdk/oscsender.h"
 #include "../Flaacontrol.h"
-#include "../model/FLCModuleInstancesModel.h"
-#include "../model/FLCModuleInstance.h"
+#include "../flaaoscsdk//FLOModuleInstancesModel.h"
+#include "../flaaoscsdk//FLOModuleInstanceDAO.h"
 
 #include <QDebug>
 
@@ -16,7 +16,7 @@ FLCModuleInstancesHandler::FLCModuleInstancesHandler():
 	m_sHandlerName="FLCModuleInstancesHandler";
 }
 
-bool FLCModuleInstancesHandler::addModuleInstance(FLCModuleInstance *module)
+bool FLCModuleInstancesHandler::addModuleInstance(FLOModuleInstanceDAO *module)
 {
 	std::string path = prefix() + "/add";
 	qDebug("start sending module Repository (path: %s)", path.c_str());
@@ -38,16 +38,16 @@ void FLCModuleInstancesHandler::initFomModel()
 {
 	if( m_pModuleInstancesModel)
 	{
-		QMap<QUuid, FLCModuleInstance *> map = m_pModuleInstancesModel->getModuleInstancesMap();
+		QMap<QUuid, FLOModuleInstanceDAO *> map = m_pModuleInstancesModel->getModuleInstancesMap();
 		for( auto module : map)
 			addModuleInstance(module);
 	}
 }
 
 
-void FLCModuleInstancesHandler::setModel(FLCModuleInstancesModel *moduleInstancesModel)
+void FLCModuleInstancesHandler::setModel(FLOModuleInstancesModel *moduleInstancesModel)
 {
 	m_pModuleInstancesModel = moduleInstancesModel;
 	initFomModel();
-	connect(m_pModuleInstancesModel, &FLCModuleInstancesModel::moduleAdded, this, &FLCModuleInstancesHandler::addModuleInstance);
+	connect(m_pModuleInstancesModel, &FLOModuleInstancesModel::moduleAdded, this, &FLCModuleInstancesHandler::addModuleInstance);
 }
