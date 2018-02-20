@@ -245,7 +245,8 @@ void FlowControl::dropEvent(QDropEvent *event)
 		{
 			FLCRepositoryModuleModel *m = m_flcModulesModelMap[flaarlib::MODULE_TYPE(moduleType)];
 			FLCRepositoryModule *repositoryModule = m->moduleAt(index);
-			moduleInstance = new FLOModuleInstanceDAO(repositoryModule);
+			moduleInstance = new FLOModuleInstanceDAO(repositoryModule->moduleType(),repositoryModule->dataType(),
+					repositoryModule->functionalName().c_str(), repositoryModule->moduleTypeName().c_str());
 			sUuid = moduleInstance->uuid().toString();
 			moduleInstance->setPosition(event->pos() - offset);
 			m_pModel->addFLOModuleInstance(moduleInstance);
