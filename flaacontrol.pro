@@ -28,7 +28,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     src/main.cpp \
     src/tracks/tracks.cpp \
-	src/handler/FLCRepositoryModuleHandler.cpp \
+        src/handler/FLCRepositoryModuleHandler.cpp \
     src/handler/FLCPingHandler.cpp \
     src/model/FLCRepositoryModule.cpp \
     src/Flaacontrol.cpp \
@@ -40,12 +40,7 @@ SOURCES += \
     src/model/FLCModuleInstance.cpp \
     src/handler/FLCModuleInstancesHandler.cpp \
     src/structure/FlowControl.cpp \
-    src/MainWindow.cpp \
-    src/flaaoscsdk/oschandler.cpp \
-    src/flaaoscsdk/osclistener.cpp \
-    src/flaaoscsdk/oscsender.cpp \
-    src/flaaoscsdk/FLOModuleInstancesModel.cpp \
-    src/flaaoscsdk/FLOModuleInstanceDAO.cpp
+    src/MainWindow.cpp
 
 HEADERS += \
     src/tracks/tracks.h \
@@ -62,14 +57,7 @@ HEADERS += \
     src/model/FLCModuleInstance.h \
     src/handler/FLCModuleInstancesHandler.h \
     src/structure/FlowControl.h \
-    src/MainWindow.h \
-    src/flaaoscsdk/oschandler.h \
-    src/flaaoscsdk/osclistener.h \
-    src/flaaoscsdk/oscpkt.hh \
-    src/flaaoscsdk/oscsender.h \
-    src/flaaoscsdk/udp.hh \
-    src/flaaoscsdk/FLOModuleInstancesModel.h \
-    src/flaaoscsdk/FLOModuleInstanceDAO.h
+    src/MainWindow.h
 
 FORMS += \
     src/mainwindow.ui \
@@ -93,7 +81,9 @@ DISTFILES += \
     src/flaaoscsdk/LICENSE \
     src/flaaoscsdk/README.md \
     src/flaaoscsdk/LICENSE \
-    src/flaaoscsdk/README.md
+    src/flaaoscsdk/README.md \
+
+include( src/flaaoscsdk/flaaoscsdk.pri )
 
 INCLUDEPATH += $$PWD/../flaarlib/src
 
