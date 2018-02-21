@@ -28,17 +28,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     src/main.cpp \
     src/tracks/tracks.cpp \
-        src/handler/FLCRepositoryModuleHandler.cpp \
+    src/handler/FLCRepositoryModuleHandler.cpp \
     src/handler/FLCPingHandler.cpp \
+    src/handler/FLCModuleInstancesHandler.cpp \
     src/model/FLCRepositoryModule.cpp \
-    src/Flaacontrol.cpp \
+    src/model/FLCModuleInstancesModel.cpp \
     src/model/FLCRepositoryModuleModel.cpp \
+    src/model/FLCModuleInstance.cpp \
+    src/Flaacontrol.cpp \
     src/settings/SessionSettings.cpp \
     src/settings/SettingsModel.cpp \
     src/structure/FLCModuleWidget.cpp \
-    src/model/FLCModuleInstancesModel.cpp \
-    src/model/FLCModuleInstance.cpp \
-    src/handler/FLCModuleInstancesHandler.cpp \
     src/structure/FlowControl.cpp \
     src/MainWindow.cpp
 
@@ -46,16 +46,16 @@ HEADERS += \
     src/tracks/tracks.h \
     src/handler/FLCRepositoryModuleHandler.h \
     src/handler/FLCPingHandler.h \
+    src/handler/FLCModuleInstancesHandler.h \
     src/model/FLCRepositoryModule.h \
-    src/Flaacontrol.h \
     src/model/FLCRepositoryModuleModel.h \
+    src/model/FLCModuleInstancesModel.h \
+    src/model/FLCModuleInstance.h \
+    src/Flaacontrol.h \
     src/settings/SessionSettings.h \
     src/settings/XmlSettings.h \
     src/settings/SettingsModel.h \
     src/structure/FLCModuleWidget.h \
-    src/model/FLCModuleInstancesModel.h \
-    src/model/FLCModuleInstance.h \
-    src/handler/FLCModuleInstancesHandler.h \
     src/structure/FlowControl.h \
     src/MainWindow.h
 

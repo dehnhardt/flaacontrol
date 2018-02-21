@@ -7,7 +7,7 @@
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 
-class FLCModuleInstance;
+class FLOModuleInstanceDAO;
 
 class FLCModuleInstancesModel : public QObject
 {
@@ -18,20 +18,20 @@ public:
 	void deserialize(QXmlStreamReader *xmlReader);
 
 public: //setter
-	void addFLCModuleInstance( FLCModuleInstance *moduleInstance );
+	void addFLOModuleInstance( FLOModuleInstanceDAO *moduleInstance );
 
 public: //getter
-	FLCModuleInstance *getFlcModuleInstance( QUuid uuid);
-	QMap<QUuid, FLCModuleInstance *> getModuleInstancesMap();
+	FLOModuleInstanceDAO *getFLOModuleInstance( QUuid uuid);
+	QMap<QUuid, FLOModuleInstanceDAO *> getModuleInstancesMap();
 
 signals:
-	void moduleAdded( FLCModuleInstance *moduleInstance);
+	void moduleAdded( FLOModuleInstanceDAO *moduleInstance);
 	void moduleRemoved( const QUuid &uuid);
 
 public slots:
 
 private:
-	QMap<QUuid, FLCModuleInstance *> m_moduleInstancesMap;
+	QMap<QUuid, FLOModuleInstanceDAO *> m_moduleInstancesMap;
 };
 
 #endif // FLCMODULEINSTANCESMODEL_H

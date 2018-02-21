@@ -3,8 +3,8 @@
 #include "logging/FLLog.h"
 #include "../flaaoscsdk/oscsender.h"
 #include "../Flaacontrol.h"
-#include "../flaaoscsdk//FLOModuleInstancesModel.h"
-#include "../flaaoscsdk//FLOModuleInstanceDAO.h"
+#include "../model/FLCModuleInstancesModel.h"
+#include "../flaaoscsdk/FLOModuleInstanceDAO.h"
 
 #include <QDebug>
 
@@ -45,9 +45,9 @@ void FLCModuleInstancesHandler::initFomModel()
 }
 
 
-void FLCModuleInstancesHandler::setModel(FLOModuleInstancesModel *moduleInstancesModel)
+void FLCModuleInstancesHandler::setModel(FLCModuleInstancesModel *moduleInstancesModel)
 {
 	m_pModuleInstancesModel = moduleInstancesModel;
 	initFomModel();
-	connect(m_pModuleInstancesModel, &FLOModuleInstancesModel::moduleAdded, this, &FLCModuleInstancesHandler::addModuleInstance);
+	connect(m_pModuleInstancesModel, &FLCModuleInstancesModel::moduleAdded, this, &FLCModuleInstancesHandler::addModuleInstance);
 }

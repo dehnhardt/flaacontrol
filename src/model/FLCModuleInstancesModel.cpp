@@ -1,5 +1,5 @@
 #include "FLCModuleInstancesModel.h"
-#include "FLCModuleInstance.h"
+#include "../flaaoscsdk/FLOModuleInstanceDAO.h"
 
 #include <QDebug>
 
@@ -15,7 +15,7 @@ void FLCModuleInstancesModel::serialize(QXmlStreamWriter *xmlWriter)
 	xmlWriter->writeAttribute("count", QString::number(m_moduleInstancesMap.size() ));
 	for( auto it : m_moduleInstancesMap )
 	{
-		FLCModuleInstance *i = it;
+		FLOModuleInstanceDAO *i = it;
 		i->serialize(xmlWriter);
 	}
 	xmlWriter->writeEndElement();
@@ -33,9 +33,9 @@ void FLCModuleInstancesModel::deserialize(QXmlStreamReader *xmlReader)
 				qDebug() << "Model: Element Name: " << s;
 				if( s  == "Module")
 				{
-					FLCModuleInstance *i = new FLCModuleInstance();
+					FLOModuleInstanceDAO *i = new FLOModuleInstanceDAO();
 					i->deserialize(xmlReader);
-					addFLCModuleInstance(i);
+					addFLOModuleInstance(i);
 				}
 				break;
 			case QXmlStreamReader::TokenType::EndElement:
@@ -47,18 +47,18 @@ void FLCModuleInstancesModel::deserialize(QXmlStreamReader *xmlReader)
 	}
 }
 
-void FLCModuleInstancesModel::addFLCModuleInstance(FLCModuleInstance *moduleInstance)
+void FLCModuleInstancesModel::addFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance)
 {
 	m_moduleInstancesMap[moduleInstance->uuid()] = moduleInstance;
 	emit(moduleAdded(moduleInstance));
 }
 
-FLCModuleInstance *FLCModuleInstancesModel::getFlcModuleInstance(QUuid uuid)
+FLOModuleInstanceDAO *FLCModuleInstancesModel::getFLOModuleInstance(QUuid uuid)
 {
 	return m_moduleInstancesMap[uuid];
 }
 
-QMap<QUuid, FLCModuleInstance *> FLCModuleInstancesModel::getModuleInstancesMap()
+QMap<QUuid, FLOModuleInstanceDAO *> FLCModuleInstancesModel::getModuleInstancesMap()
 {
 	return m_moduleInstancesMap;
 }

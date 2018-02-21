@@ -6,7 +6,7 @@
 #include <QObject>
 
 class FLOModuleInstanceDAO;
-class FLOModuleInstancesModel;
+class FLCModuleInstancesModel;
 
 class FLCModuleInstancesHandler : public QObject, public OscHandler
 {
@@ -15,7 +15,7 @@ class FLCModuleInstancesHandler : public QObject, public OscHandler
 public:
 	FLCModuleInstancesHandler();
 	bool handle(oscpkt::UdpSocket *socket, oscpkt::Message *message) override;
-	void setModel(FLOModuleInstancesModel *moduleInstancesModel);
+	void setModel(FLCModuleInstancesModel *moduleInstancesModel);
 
 public slots:
 	bool addModuleInstance( FLOModuleInstanceDAO *module);
@@ -24,7 +24,7 @@ private: // methods
 	void initFomModel();
 
 private: // mebers
-	FLOModuleInstancesModel *m_pModuleInstancesModel = 0;
+	FLCModuleInstancesModel *m_pModuleInstancesModel = 0;
 
 };
 

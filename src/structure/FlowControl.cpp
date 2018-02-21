@@ -5,7 +5,7 @@
 #include "../handler/FLCRepositoryModuleHandler.h"
 #include "../model/FLCRepositoryModuleModel.h"
 #include "../flaaoscsdk/FLOModuleInstanceDAO.h"
-#include "../flaaoscsdk/FLOModuleInstancesModel.h"
+#include "../model/FLCModuleInstancesModel.h"
 #include "FLCModuleWidget.h"
 
 #include <QWindow>
@@ -41,11 +41,11 @@ FlowControl::~FlowControl()
 	delete m_pUi;
 }
 
-void FlowControl::setModel(FLOModuleInstancesModel *model)
+void FlowControl::setModel(FLCModuleInstancesModel *model)
 {
 	m_pModel = model;
 	initFomModel();
-	connect(m_pModel, &FLOModuleInstancesModel::moduleAdded, this, &FlowControl::addModuleWidget);
+	connect(m_pModel, &FLCModuleInstancesModel::moduleAdded, this, &FlowControl::addModuleWidget);
 }
 
 
@@ -106,7 +106,7 @@ void FlowControl::removeModuleWidget(QUuid uuid)
 	}
 }
 
-FLOModuleInstancesModel *FlowControl::model() const
+FLCModuleInstancesModel *FlowControl::model() const
 {
 	return m_pModel;
 }

@@ -7,7 +7,7 @@
 #include "handler/FLCRepositoryModuleHandler.h"
 #include "handler/FLCModuleInstancesHandler.h"
 
-#include "flaaoscsdk/FLOModuleInstancesModel.h"
+#include "model/FLCModuleInstancesModel.h"
 #include "flaaoscsdk/FLOModuleInstanceDAO.h"
 #include "settings/SettingsModel.h"
 #include "settings/SessionSettings.h"
@@ -21,7 +21,7 @@
 
 
 Flaacontrol::Flaacontrol() : QObject (),
-	m_pModuleInstancesModel(new FLOModuleInstancesModel())
+	m_pModuleInstancesModel(new FLCModuleInstancesModel())
 {
 }
 
@@ -115,7 +115,7 @@ void Flaacontrol::createGlobalHandlers()
 	this->m_pInstancesHandler = new FLCModuleInstancesHandler();
 }
 
-FLOModuleInstancesModel *Flaacontrol::moduleInstancesModel() const
+FLCModuleInstancesModel *Flaacontrol::moduleInstancesModel() const
 {
 	return m_pModuleInstancesModel;
 }

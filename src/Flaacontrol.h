@@ -10,7 +10,7 @@
 class OscListener;
 class OscSender;
 class QThread;
-class FLOModuleInstancesModel;
+class FLCModuleInstancesModel;
 class FLCModuleInstancesHandler;
 class SessionSettings;
 
@@ -38,7 +38,7 @@ public: //getter
 	int sendPort() const {return m_iSendPort;}
 	std::string sendHost() const {return m_sSendHost;}
 
-	FLOModuleInstancesModel *moduleInstancesModel() const;
+	FLCModuleInstancesModel *moduleInstancesModel() const;
 
 public: //setter
 	void setListenPort(int iListenPort) {m_iListenPort = iListenPort;}
@@ -79,7 +79,7 @@ private: // handlers
 	std::string m_sSendHost;
 
 private: // models
-	FLOModuleInstancesModel *m_pModuleInstancesModel = 0;
+	FLCModuleInstancesModel *m_pModuleInstancesModel = 0;
 
 	//bool m_bSocketsOpen = false;
 
