@@ -39,11 +39,13 @@ public: //getter
 	std::string sendHost() const {return m_sSendHost;}
 
 	FLCModuleInstancesModel *moduleInstancesModel() const;
+	FLCModuleInstancesHandler *pInstancesHandler() const;
 
 public: //setter
 	void setListenPort(int iListenPort) {m_iListenPort = iListenPort;}
 	void setSendPort(int iSendPort) {m_iSendPort = iSendPort;}
 	void setSendHost(const std::string &sSendAddress) { m_sSendHost = sSendAddress;}
+
 
 
 public slots:
@@ -60,6 +62,7 @@ private: // methods
 	void operator= (Flaacontrol const) = delete;
 
 	void readStructure();
+	void readServerStructure();
 
 	void registerHandler();
 	void connectSlots();

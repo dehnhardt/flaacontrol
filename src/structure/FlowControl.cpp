@@ -6,6 +6,7 @@
 #include "../model/FLCRepositoryModuleModel.h"
 #include "../flaaoscsdk/FLOModuleInstanceDAO.h"
 #include "../model/FLCModuleInstancesModel.h"
+#include "../handler/FLCModuleInstancesHandler.h"
 #include "FLCModuleWidget.h"
 
 #include <QWindow>
@@ -85,6 +86,7 @@ void FlowControl::saveStructure()
 
 void FlowControl::addModuleWidget(FLOModuleInstanceDAO *module)
 {
+
 	QIcon icon = iconForModule(module->moduleType(), module->dataType());
 	FLCModuleWidget *moduleWidget = new FLCModuleWidget(this, module->moduleFunctionalName(), icon);
 	QUuid sUuid = module->uuid();
@@ -297,5 +299,6 @@ void FlowControl::dropEvent(QDropEvent *event)
 void FlowControl::connectSlots()
 {
 	connect(this->m_pUi->buttonBox, &QDialogButtonBox::accepted, this, &FlowControl::saveStructure);
+	connect(this->m_pUi->buttonBox, &QDialogButtonBox::accepted, Flaacontrol::instance()->pInstancesHandler(), &FLCModuleInstancesHandler::requestSave);
 }
 

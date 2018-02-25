@@ -47,10 +47,10 @@ void FLCModuleInstancesModel::deserialize(QXmlStreamReader *xmlReader)
 	}
 }
 
-void FLCModuleInstancesModel::addFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance)
+void FLCModuleInstancesModel::addFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance, bool send)
 {
 	m_moduleInstancesMap[moduleInstance->uuid()] = moduleInstance;
-	emit(moduleAdded(moduleInstance));
+	emit(moduleAdded(moduleInstance, send));
 }
 
 FLOModuleInstanceDAO *FLCModuleInstancesModel::getFLOModuleInstance(QUuid uuid)

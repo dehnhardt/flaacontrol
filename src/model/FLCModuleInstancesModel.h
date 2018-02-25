@@ -18,14 +18,14 @@ public:
 	void deserialize(QXmlStreamReader *xmlReader);
 
 public: //setter
-	void addFLOModuleInstance( FLOModuleInstanceDAO *moduleInstance );
+	void addFLOModuleInstance( FLOModuleInstanceDAO *moduleInstance, bool send = true);
 
 public: //getter
 	FLOModuleInstanceDAO *getFLOModuleInstance( QUuid uuid);
 	QMap<QUuid, FLOModuleInstanceDAO *> getModuleInstancesMap();
 
 signals:
-	void moduleAdded( FLOModuleInstanceDAO *moduleInstance);
+	void moduleAdded( FLOModuleInstanceDAO *moduleInstance, bool sendToServer = true);
 	void moduleRemoved( const QUuid &uuid);
 
 public slots:

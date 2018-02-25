@@ -18,7 +18,9 @@ public:
 	void setModel(FLCModuleInstancesModel *moduleInstancesModel);
 
 public slots:
-	bool addModuleInstance( FLOModuleInstanceDAO *module);
+	bool requestSave();
+	bool requestStructure();
+	bool addModuleInstance( FLOModuleInstanceDAO *module, bool sendToServer);
 
 private: // methods
 	void initFomModel();

@@ -48,7 +48,7 @@ private: // Methods
 
 private slots:
 	void saveStructure();
-	void addModuleWidget( FLOModuleInstanceDAO *module);
+	void addModuleWidget(FLOModuleInstanceDAO *module);
 	void removeModuleWidget( QUuid uuid);
 
 private: // Members

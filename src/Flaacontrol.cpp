@@ -51,11 +51,17 @@ void Flaacontrol::readStructure()
 			case QXmlStreamReader::TokenType::EndElement:
 				if( s == "ModuleInstances")
 					return;
+				break;
 			default:
 				break;
 		}
 	}
 	file->close();
+}
+
+void Flaacontrol::readServerStructure()
+{
+	this->m_pInstancesHandler->requestStructure();
 }
 
 void Flaacontrol::init(SettingsModel::SessionSettings *sessionSettings)
@@ -64,7 +70,8 @@ void Flaacontrol::init(SettingsModel::SessionSettings *sessionSettings)
 	setSendHost(sessionSettings->sendAddress.toStdString());
 	setSendPort(sessionSettings->sendPort);
 	openSockets();
-	readStructure();
+	//readStructure();
+	readServerStructure();
 	registerHandler();
 	connectSlots();
 }
@@ -79,7 +86,6 @@ void Flaacontrol::openSockets()
 	createGlobalHandlers();
 	registerHandler();
 	m_pInstancesHandler->setModel(m_pModuleInstancesModel);
-	connectSlots();
 
 	m_pUdpSender->start();
 	m_pListenerThread->start();
@@ -113,6 +119,11 @@ void Flaacontrol::connectSlots()
 void Flaacontrol::createGlobalHandlers()
 {
 	this->m_pInstancesHandler = new FLCModuleInstancesHandler();
+}
+
+FLCModuleInstancesHandler *Flaacontrol::pInstancesHandler() const
+{
+	return m_pInstancesHandler;
 }
 
 FLCModuleInstancesModel *Flaacontrol::moduleInstancesModel() const

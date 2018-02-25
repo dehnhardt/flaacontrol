@@ -68,7 +68,7 @@ RESOURCES += \
     icons.qrc
 
 DISTFILES += \
-        .astylerc \
+    .astylerc \
     resources/ethernetjack.xpm \
     resources/midijack_svg.xpm \
     resources/readfromdevice.xpm \

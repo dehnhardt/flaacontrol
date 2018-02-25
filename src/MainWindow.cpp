@@ -51,8 +51,6 @@ void MainWindow::openSettingsWindow()
 
 void MainWindow::prepareCommunication()
 {
-	SettingsModel *m = SettingsModel::instance();
-	SettingsModel::SessionSettings *sessionSettings = m->readSessionSettings();
-	Flaacontrol *f = Flaacontrol::instance();
-	f->init( sessionSettings);
+	SettingsModel::SessionSettings *sessionSettings = SettingsModel::instance()->readSessionSettings();
+	Flaacontrol::instance()->init( sessionSettings);
 }
