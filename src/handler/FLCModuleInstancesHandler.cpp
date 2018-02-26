@@ -58,6 +58,7 @@ bool FLCModuleInstancesHandler::handle(UdpSocket *socket, Message *message)
 	{
 		FLOModuleInstanceDAO *moduleInstance = new FLOModuleInstanceDAO();
 		moduleInstance->deserialize(message);
+		qDebug() << "About to add module instance " << moduleInstance->uuid().toString();
 		m_pModuleInstancesModel->addFLOModuleInstance(moduleInstance, false);
 	}
 	return false;

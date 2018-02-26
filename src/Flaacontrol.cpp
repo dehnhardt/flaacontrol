@@ -71,9 +71,9 @@ void Flaacontrol::init(SettingsModel::SessionSettings *sessionSettings)
 	setSendPort(sessionSettings->sendPort);
 	openSockets();
 	//readStructure();
-	readServerStructure();
 	registerHandler();
 	connectSlots();
+	readServerStructure();
 }
 
 void Flaacontrol::openSockets()
