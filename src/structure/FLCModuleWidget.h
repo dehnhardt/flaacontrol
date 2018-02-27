@@ -17,6 +17,12 @@ class FLCModuleWidget : public QWidget
 {
 	Q_OBJECT
 public:
+	enum VALIDITY
+	{
+		VALID=1,
+		INVALID = 2,
+		UNDEFINED = 3
+	};
 	explicit FLCModuleWidget(QWidget *parent, const QString functionalName, const QIcon icon);
 
 	QIcon moduleIcon() const
@@ -38,6 +44,8 @@ public:
 		m_uuid = uuid;
 	}
 
+	void setValid( VALIDITY validity);
+
 signals:
 
 public slots:
@@ -55,7 +63,12 @@ private:
 	QIcon m_pModuleIcon;
 	QString m_sFunctionalName;
 	QUuid m_uuid;
+	QColor borderColor = QColor(100,100,100);
 
+
+	// QWidget interface
+protected:
+	void paintEvent(QPaintEvent *e) override;
 };
 
 #endif // FLCMODULEWIDGET_H
