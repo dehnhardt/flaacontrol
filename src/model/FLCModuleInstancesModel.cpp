@@ -41,16 +41,17 @@ void FLCModuleInstancesModel::deserialize(QXmlStreamReader *xmlReader)
 			case QXmlStreamReader::TokenType::EndElement:
 				if( s == "Modules")
 					return;
+				break;
 			default:
 				break;
 		}
 	}
 }
 
-void FLCModuleInstancesModel::addFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance, bool send)
+void FLCModuleInstancesModel::addFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance)
 {
 	m_moduleInstancesMap[moduleInstance->uuid()] = moduleInstance;
-	emit(moduleAdded(moduleInstance, send));
+	emit(moduleInstanceAdded(moduleInstance));
 }
 
 FLOModuleInstanceDAO *FLCModuleInstancesModel::getFLOModuleInstance(QUuid uuid)

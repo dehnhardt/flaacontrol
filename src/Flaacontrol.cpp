@@ -112,6 +112,8 @@ void Flaacontrol::connectSlots()
 	connect(m_pListenerThread, &QThread::finished, m_pUdpListener, &OscListener::exit);
 	connect(m_pUdpListener, &OscListener::started, this, &Flaacontrol::listenerThreadStarted);
 	connect(m_pUdpListener, &OscListener::finished, this, &Flaacontrol::listenerThreadFinished);
+	// Repository
+	connect(m_pInstancesHandler, &FLCModuleInstancesHandler::moduleInstanceAdded, this->m_pModuleInstancesModel, &FLCModuleInstancesModel::addFLOModuleInstance);
 	// Allow graceful termination of the thread
 	connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &Flaacontrol::onApplicationExit );
 }

@@ -16,10 +16,8 @@ FLCModuleInstancesHandler::FLCModuleInstancesHandler():
 	m_sHandlerName="FLCModuleInstancesHandler";
 }
 
-bool FLCModuleInstancesHandler::addModuleInstance(FLOModuleInstanceDAO *module, bool sendToServer)
+bool FLCModuleInstancesHandler::addModuleInstance(FLOModuleInstanceDAO *module)
 {
-	if( !sendToServer )
-		return(true);
 	std::string path = prefix() + "/add";
 	qDebug("start sending module (path: %s)", path.c_str());
 	OscSender *sender = Flaacontrol::instance()->udpSender();
@@ -59,7 +57,7 @@ bool FLCModuleInstancesHandler::handle(UdpSocket *socket, Message *message)
 		FLOModuleInstanceDAO *moduleInstance = new FLOModuleInstanceDAO();
 		moduleInstance->deserialize(message);
 		qDebug() << "About to add module instance " << moduleInstance->uuid().toString();
-		m_pModuleInstancesModel->addFLOModuleInstance(moduleInstance, false);
+		emit( moduleInstanceAdded(moduleInstance) );
 	}
 	return false;
 }
@@ -70,7 +68,7 @@ void FLCModuleInstancesHandler::initFomModel()
 	{
 		QMap<QUuid, FLOModuleInstanceDAO *> map = m_pModuleInstancesModel->getModuleInstancesMap();
 		for( auto module : map)
-			addModuleInstance(module, true);
+			addModuleInstance(module);
 	}
 }
 
@@ -78,6 +76,5 @@ void FLCModuleInstancesHandler::initFomModel()
 void FLCModuleInstancesHandler::setModel(FLCModuleInstancesModel *moduleInstancesModel)
 {
 	m_pModuleInstancesModel = moduleInstancesModel;
-	initFomModel();
-	connect(m_pModuleInstancesModel, &FLCModuleInstancesModel::moduleAdded, this, &FLCModuleInstancesHandler::addModuleInstance);
+	connect(m_pModuleInstancesModel, &FLCModuleInstancesModel::addModuleInstance, this, &FLCModuleInstancesHandler::addModuleInstance);
 }

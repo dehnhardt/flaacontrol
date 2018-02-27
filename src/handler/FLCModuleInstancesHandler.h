@@ -17,10 +17,13 @@ public:
 	bool handle(oscpkt::UdpSocket *socket, oscpkt::Message *message) override;
 	void setModel(FLCModuleInstancesModel *moduleInstancesModel);
 
+signals:
+	void moduleInstanceAdded(FLOModuleInstanceDAO *module);
+
 public slots:
 	bool requestSave();
 	bool requestStructure();
-	bool addModuleInstance( FLOModuleInstanceDAO *module, bool sendToServer);
+	bool addModuleInstance(FLOModuleInstanceDAO *module);
 
 private: // methods
 	void initFomModel();

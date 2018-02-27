@@ -46,7 +46,7 @@ void FlowControl::setModel(FLCModuleInstancesModel *model)
 {
 	m_pModel = model;
 	initFomModel();
-	connect(m_pModel, &FLCModuleInstancesModel::moduleAdded, this, &FlowControl::addModuleWidget);
+	connect(m_pModel, &FLCModuleInstancesModel::addModuleInstance, this, &FlowControl::addModuleWidget);
 }
 
 
@@ -64,7 +64,7 @@ void FlowControl::initFomModel()
 	{
 		QMap<QUuid, FLOModuleInstanceDAO *> map = m_pModel->getModuleInstancesMap();
 		for( auto module : map)
-			addModuleWidget(module);
+			moduleWidgetAdded(module);
 	}
 }
 
@@ -84,9 +84,8 @@ void FlowControl::saveStructure()
 	file->close();
 }
 
-void FlowControl::addModuleWidget(FLOModuleInstanceDAO *module)
+FLCModuleWidget *FlowControl::createModuleWidget(FLOModuleInstanceDAO *module)
 {
-
 	QIcon icon = iconForModule(module->moduleType(), module->dataType());
 	FLCModuleWidget *moduleWidget = new FLCModuleWidget(this, module->moduleFunctionalName(), icon);
 	QUuid sUuid = module->uuid();
@@ -95,6 +94,21 @@ void FlowControl::addModuleWidget(FLOModuleInstanceDAO *module)
 	moduleWidget->move(module->position());
 	moduleWidget->show();
 	this->m_flcWidgetMap[sUuid] = moduleWidget;
+	return moduleWidget;
+}
+
+void FlowControl::addModuleWidget(FLOModuleInstanceDAO *module)
+{
+	createModuleWidget(module);
+	emit(addModuleInstance(module));
+}
+
+void FlowControl::moduleWidgetAdded(FLOModuleInstanceDAO *module)
+{
+	FLCModuleWidget *moduleWidget = this->m_flcWidgetMap[module->uuid()];
+	if( !moduleWidget )
+		moduleWidget = createModuleWidget(module);
+	moduleWidget->setValid(FLCModuleWidget::VALID);
 }
 
 void FlowControl::removeModuleWidget(QUuid uuid)
@@ -251,7 +265,7 @@ void FlowControl::dropEvent(QDropEvent *event)
 					repositoryModule->functionalName().c_str(), repositoryModule->moduleTypeName().c_str());
 			sUuid = moduleInstance->uuid().toString();
 			moduleInstance->setPosition(event->pos() - offset);
-			m_pModel->addFLOModuleInstance(moduleInstance);
+			emit( addModuleInstance(moduleInstance) );
 		}
 		if (event->source() == this)
 		{
@@ -300,5 +314,7 @@ void FlowControl::connectSlots()
 {
 	connect(this->m_pUi->buttonBox, &QDialogButtonBox::accepted, this, &FlowControl::saveStructure);
 	connect(this->m_pUi->buttonBox, &QDialogButtonBox::accepted, Flaacontrol::instance()->pInstancesHandler(), &FLCModuleInstancesHandler::requestSave);
+	connect(this, &FlowControl::addModuleInstance, Flaacontrol::instance()->pInstancesHandler(), &FLCModuleInstancesHandler::addModuleInstance);
+	connect(Flaacontrol::instance()->moduleInstancesModel(), &FLCModuleInstancesModel::moduleInstanceAdded, this, &FlowControl::moduleWidgetAdded);
 }
 

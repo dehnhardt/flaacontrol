@@ -45,10 +45,15 @@ private: // Methods
 	void getRepositoryModules();
 	void clearModuleMap();
 	void initFomModel();
+	FLCModuleWidget *createModuleWidget(FLOModuleInstanceDAO *module);
+
+signals:
+	void addModuleInstance(FLOModuleInstanceDAO *module);
 
 private slots:
 	void saveStructure();
 	void addModuleWidget(FLOModuleInstanceDAO *module);
+	void moduleWidgetAdded(FLOModuleInstanceDAO *module);
 	void removeModuleWidget( QUuid uuid);
 
 private: // Members
