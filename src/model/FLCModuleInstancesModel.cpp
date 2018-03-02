@@ -35,7 +35,7 @@ void FLCModuleInstancesModel::deserialize(QXmlStreamReader *xmlReader)
 				{
 					FLOModuleInstanceDAO *i = new FLOModuleInstanceDAO();
 					i->deserialize(xmlReader);
-					addFLOModuleInstance(i);
+					addFLCModuleInstance(i);
 				}
 				break;
 			case QXmlStreamReader::TokenType::EndElement:
@@ -48,11 +48,18 @@ void FLCModuleInstancesModel::deserialize(QXmlStreamReader *xmlReader)
 	}
 }
 
-void FLCModuleInstancesModel::addFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance)
+void FLCModuleInstancesModel::addFLCModuleInstance(FLOModuleInstanceDAO *moduleInstance)
 {
 	m_moduleInstancesMap[moduleInstance->uuid()] = moduleInstance;
 	emit(moduleInstanceAdded(moduleInstance));
 }
+
+void FLCModuleInstancesModel::removeFLCModuleInstance(const QUuid &uuid)
+{
+	m_moduleInstancesMap.erase(m_moduleInstancesMap.find(uuid));
+	emit(moduleInstanceRemoved(uuid));
+}
+
 
 FLOModuleInstanceDAO *FLCModuleInstancesModel::getFLOModuleInstance(QUuid uuid)
 {

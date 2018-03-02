@@ -1,6 +1,8 @@
 #ifndef FLCMODULEWIDGET_H
 #define FLCMODULEWIDGET_H
 
+#include <memory>
+
 #include <QObject>
 #include <QWidget>
 #include <QIcon>
@@ -8,6 +10,7 @@
 #include <QDebug>
 #include <QApplication>
 #include <QMoveEvent>
+#include <QAction>
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -47,17 +50,21 @@ public:
 	void setValid( VALIDITY validity);
 
 signals:
+	void removeModuleWidget( QUuid uuid);
 
 public slots:
 
 protected:
+	// QWidget interface
 	void mouseMoveEvent(QMouseEvent *event) override
 	{
 		qDebug() << "mouseMoveEvent MW";
 		QApplication::sendEvent(parentWidget(), event);
 	}
+	void paintEvent(QPaintEvent *e) override;
+	void contextMenuEvent(QContextMenuEvent *event) override;
 
-private:
+private: //members
 	QHBoxLayout *m_pHorizontalLayot;
 	QVBoxLayout *m_pVerticalLayout;
 	QIcon m_pModuleIcon;
@@ -65,10 +72,11 @@ private:
 	QUuid m_uuid;
 	QColor borderColor = QColor(100,100,100);
 
+	// context menu action
+	std::unique_ptr<QAction> m_pRemoveAction;
 
-	// QWidget interface
-protected:
-	void paintEvent(QPaintEvent *e) override;
+private: //methods
+	void createActions();
 };
 
 #endif // FLCMODULEWIDGET_H

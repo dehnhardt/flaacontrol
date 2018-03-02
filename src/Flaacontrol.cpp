@@ -61,7 +61,7 @@ void Flaacontrol::readStructure()
 
 void Flaacontrol::readServerStructure()
 {
-	this->m_pInstancesHandler->requestStructure();
+	this->m_pModuleInstancesHandler->requestStructure();
 }
 
 void Flaacontrol::init(SettingsModel::SessionSettings *sessionSettings)
@@ -85,7 +85,7 @@ void Flaacontrol::openSockets()
 	m_pUdpListener->moveToThread(m_pListenerThread);
 	createGlobalHandlers();
 	registerHandler();
-	m_pInstancesHandler->setModel(m_pModuleInstancesModel);
+	m_pModuleInstancesHandler->setModel(m_pModuleInstancesModel);
 
 	m_pUdpSender->start();
 	m_pListenerThread->start();
@@ -103,7 +103,7 @@ void Flaacontrol::registerHandler()
 {
 	m_pUdpListener->registerHandler(new FLCPingHandler());
 	m_pUdpListener->registerHandler(new FLCRepositoryModuleHandler());
-	m_pUdpListener->registerHandler(m_pInstancesHandler);
+	m_pUdpListener->registerHandler(m_pModuleInstancesHandler);
 }
 
 void Flaacontrol::connectSlots()
@@ -113,19 +113,20 @@ void Flaacontrol::connectSlots()
 	connect(m_pUdpListener, &OscListener::started, this, &Flaacontrol::listenerThreadStarted);
 	connect(m_pUdpListener, &OscListener::finished, this, &Flaacontrol::listenerThreadFinished);
 	// Repository
-	connect(m_pInstancesHandler, &FLCModuleInstancesHandler::moduleInstanceAdded, this->m_pModuleInstancesModel, &FLCModuleInstancesModel::addFLOModuleInstance);
+	//connect(m_pModuleInstancesHandler, &FLCModuleInstancesHandler::moduleInstanceAdded, this->m_pModuleInstancesModel, &FLCModuleInstancesModel::addFLOModuleInstance);
+	//connect(m_pModuleInstancesHandler, &FLCModuleInstancesHandler::moduleInstanceRemoved, this->m_pModuleInstancesModel, &FLCModuleInstancesModel::removeModuleInstance);
 	// Allow graceful termination of the thread
 	connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &Flaacontrol::onApplicationExit );
 }
 
 void Flaacontrol::createGlobalHandlers()
 {
-	this->m_pInstancesHandler = new FLCModuleInstancesHandler();
+	this->m_pModuleInstancesHandler = new FLCModuleInstancesHandler();
 }
 
-FLCModuleInstancesHandler *Flaacontrol::pInstancesHandler() const
+FLCModuleInstancesHandler *Flaacontrol::moduleInstancesHandler() const
 {
-	return m_pInstancesHandler;
+	return m_pModuleInstancesHandler;
 }
 
 FLCModuleInstancesModel *Flaacontrol::moduleInstancesModel() const

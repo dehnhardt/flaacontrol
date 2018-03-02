@@ -6,6 +6,7 @@
 #include <QHBoxLayout>
 #include <QStyle>
 #include <QPainter>
+#include <QMenu>
 
 FLCModuleWidget::FLCModuleWidget(QWidget *parent, const QString functionalName, const QIcon icon)
 	: QWidget(parent),
@@ -28,6 +29,7 @@ FLCModuleWidget::FLCModuleWidget(QWidget *parent, const QString functionalName, 
 	m_pHorizontalLayot->addWidget(iconLabel);
 	m_pHorizontalLayot->addWidget(functionalLabel);
 	m_pVerticalLayout->insertLayout(-1, m_pHorizontalLayot);
+	createActions();
 	setLayout(m_pVerticalLayout);
 }
 
@@ -58,4 +60,19 @@ void FLCModuleWidget::paintEvent(QPaintEvent *e)
 	painter.drawRect(2,2,width()-4, height()-4);
 	painter.restore();
 	QWidget::paintEvent(e);
+}
+
+#ifndef QT_NO_CONTEXTMENU
+void FLCModuleWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+	QMenu menu(this);
+	menu.addAction(m_pRemoveAction.get());
+	menu.exec(event->globalPos());
+}
+#endif
+
+void FLCModuleWidget::createActions()
+{
+	this->m_pRemoveAction = std::make_unique<QAction>(tr("&Remove"), this);
+	connect(this->m_pRemoveAction.get(), &QAction::triggered, [this] {emit(this->removeModuleWidget(this->m_uuid));});
 }

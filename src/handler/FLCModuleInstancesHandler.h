@@ -4,6 +4,7 @@
 #include "../flaaoscsdk/oschandler.h"
 
 #include <QObject>
+#include <QUuid>
 
 class FLOModuleInstanceDAO;
 class FLCModuleInstancesModel;
@@ -19,11 +20,13 @@ public:
 
 signals:
 	void moduleInstanceAdded(FLOModuleInstanceDAO *module);
+	void moduleInstanceRemoved(QUuid uuid);
 
 public slots:
 	bool requestSave();
 	bool requestStructure();
 	bool addModuleInstance(FLOModuleInstanceDAO *module);
+	bool removeModuleInstance(QUuid uuid);
 
 private: // methods
 	void initFomModel();

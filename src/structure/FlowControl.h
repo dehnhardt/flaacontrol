@@ -12,6 +12,7 @@
 #include <vector>
 
 class FLCModuleInstancesModel;
+class FLCModuleInstancesHandler;
 class FLOModuleInstanceDAO;
 class FLCModuleWidget;
 
@@ -29,6 +30,7 @@ public: // Methods
 	~FlowControl();
 
 	void setModel(FLCModuleInstancesModel *model);
+	void setHandler(FLCModuleInstancesHandler *handler);
 	FLCModuleInstancesModel *model() const;
 	QIcon iconForModule(flaarlib::MODULE_TYPE moduleType, flaarlib::DATA_TYPE dataType);
 
@@ -46,21 +48,25 @@ private: // Methods
 	void clearModuleMap();
 	void initFomModel();
 	FLCModuleWidget *createModuleWidget(FLOModuleInstanceDAO *module);
+	void deletModuleWidget(FLCModuleWidget *moduleWidget);
 
 signals:
 	void addModuleInstance(FLOModuleInstanceDAO *module);
+	void removeModuleInstance( QUuid uuid);
 
 private slots:
 	void saveStructure();
 	void addModuleWidget(FLOModuleInstanceDAO *module);
 	void moduleWidgetAdded(FLOModuleInstanceDAO *module);
 	void removeModuleWidget( QUuid uuid);
+	void moduleWidgetRemoved( QUuid uuid);
 
 private: // Members
 	bool m_bDataLoaded = false;
 	Ui::FlowControl *m_pUi;
 	std::map<flaarlib::MODULE_TYPE, FLCRepositoryModuleModel *> m_flcModulesModelMap;
 	FLCModuleInstancesModel *m_pModel = 0;
+	FLCModuleInstancesHandler *m_pHandler = 0;
 	std::map<QUuid, FLCModuleWidget *> m_flcWidgetMap;
 
 };

@@ -34,6 +34,7 @@ FlowControl::FlowControl(QWidget *parent) :
 		getRepositoryModules();
 	connectSlots();
 	setModel(Flaacontrol::instance()->moduleInstancesModel());
+	setHandler(Flaacontrol::instance()->moduleInstancesHandler());
 }
 
 FlowControl::~FlowControl()
@@ -46,10 +47,16 @@ void FlowControl::setModel(FLCModuleInstancesModel *model)
 {
 	m_pModel = model;
 	initFomModel();
-	connect(m_pModel, &FLCModuleInstancesModel::addModuleInstance, this, &FlowControl::addModuleWidget);
+	connect(m_pModel, &FLCModuleInstancesModel::moduleInstanceAdded, this, &FlowControl::moduleWidgetAdded);
+	connect(m_pModel, &FLCModuleInstancesModel::moduleInstanceRemoved, this, &FlowControl::moduleWidgetRemoved);
 }
 
-
+void FlowControl::setHandler(FLCModuleInstancesHandler *handler)
+{
+	this->m_pHandler = handler;
+	connect(this, &FlowControl::addModuleInstance, this->m_pHandler, &FLCModuleInstancesHandler::addModuleInstance);
+	connect(this, &FlowControl::removeModuleInstance, this->m_pHandler, &FLCModuleInstancesHandler::removeModuleInstance);
+}
 
 void FlowControl::clearModuleMap()
 {
@@ -94,6 +101,7 @@ FLCModuleWidget *FlowControl::createModuleWidget(FLOModuleInstanceDAO *module)
 	moduleWidget->move(module->position());
 	moduleWidget->show();
 	this->m_flcWidgetMap[sUuid] = moduleWidget;
+	connect(moduleWidget, &FLCModuleWidget::removeModuleWidget, this, &FlowControl::removeModuleWidget);
 	return moduleWidget;
 }
 
@@ -111,15 +119,28 @@ void FlowControl::moduleWidgetAdded(FLOModuleInstanceDAO *module)
 	moduleWidget->setValid(FLCModuleWidget::VALID);
 }
 
+void FlowControl::deletModuleWidget(FLCModuleWidget *moduleWidget)
+{
+	moduleWidget->hide();
+	moduleWidget->deleteLater();
+	this->m_flcWidgetMap.erase(this->m_flcWidgetMap.find(moduleWidget->getUuid()));
+}
+
 void FlowControl::removeModuleWidget(QUuid uuid)
 {
 	FLCModuleWidget *moduleWidget = this->m_flcWidgetMap[uuid];
 	if( moduleWidget )
 	{
-		moduleWidget->hide();
-		moduleWidget->deleteLater();
-		this->m_flcWidgetMap.erase(this->m_flcWidgetMap.find(uuid));
+		moduleWidget->setValid(FLCModuleWidget::INVALID);
+		emit(removeModuleInstance(uuid));
 	}
+}
+
+void FlowControl::moduleWidgetRemoved(QUuid uuid)
+{
+	FLCModuleWidget *moduleWidget = this->m_flcWidgetMap[uuid];
+	if( moduleWidget )
+		deletModuleWidget(moduleWidget);
 }
 
 FLCModuleInstancesModel *FlowControl::model() const
@@ -252,7 +273,6 @@ void FlowControl::dropEvent(QDropEvent *event)
 		QString text;
 		QPoint offset;
 		QIcon icon;
-		QString sUuid;
 		int moduleType;
 		unsigned int index;
 		dataStream >> text >> icon >> offset >> moduleType >> index;
@@ -263,7 +283,6 @@ void FlowControl::dropEvent(QDropEvent *event)
 			FLCRepositoryModule *repositoryModule = m->moduleAt(index);
 			moduleInstance = new FLOModuleInstanceDAO(repositoryModule->moduleType(),repositoryModule->dataType(),
 					repositoryModule->functionalName().c_str(), repositoryModule->moduleTypeName().c_str());
-			sUuid = moduleInstance->uuid().toString();
 			moduleInstance->setPosition(event->pos() - offset);
 			emit( addModuleInstance(moduleInstance) );
 		}
@@ -313,8 +332,6 @@ void FlowControl::dropEvent(QDropEvent *event)
 void FlowControl::connectSlots()
 {
 	connect(this->m_pUi->buttonBox, &QDialogButtonBox::accepted, this, &FlowControl::saveStructure);
-	connect(this->m_pUi->buttonBox, &QDialogButtonBox::accepted, Flaacontrol::instance()->pInstancesHandler(), &FLCModuleInstancesHandler::requestSave);
-	connect(this, &FlowControl::addModuleInstance, Flaacontrol::instance()->pInstancesHandler(), &FLCModuleInstancesHandler::addModuleInstance);
-	connect(Flaacontrol::instance()->moduleInstancesModel(), &FLCModuleInstancesModel::moduleInstanceAdded, this, &FlowControl::moduleWidgetAdded);
+	connect(this->m_pUi->buttonBox, &QDialogButtonBox::accepted, Flaacontrol::instance()->moduleInstancesHandler(), &FLCModuleInstancesHandler::requestSave);
 }
 

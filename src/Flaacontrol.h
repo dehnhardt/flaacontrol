@@ -39,7 +39,7 @@ public: //getter
 	std::string sendHost() const {return m_sSendHost;}
 
 	FLCModuleInstancesModel *moduleInstancesModel() const;
-	FLCModuleInstancesHandler *pInstancesHandler() const;
+	FLCModuleInstancesHandler *moduleInstancesHandler() const;
 
 public: //setter
 	void setListenPort(int iListenPort) {m_iListenPort = iListenPort;}
@@ -75,7 +75,7 @@ private: // members
 	QThread *m_pListenerThread = 0;
 
 private: // handlers
-	FLCModuleInstancesHandler *m_pInstancesHandler = 0;
+	FLCModuleInstancesHandler *m_pModuleInstancesHandler = 0;
 
 	int m_iListenPort = 0;
 	int m_iSendPort = 0;
