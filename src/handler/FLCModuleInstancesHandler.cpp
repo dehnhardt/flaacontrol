@@ -27,10 +27,22 @@ bool FLCModuleInstancesHandler::addModuleInstance(FLOModuleInstanceDAO *module)
 	return(true);
 }
 
+bool FLCModuleInstancesHandler::modifyModuleInstance(FLOModuleInstanceDAO *module)
+{
+	std::string path = prefix() + "/modify";
+	qDebug("start sending module (path: %s)", path.c_str());
+	OscSender *sender = Flaacontrol::instance()->udpSender();
+	Message msg(path);
+	module->serialize(&msg);
+	sender->enqueuMessage(msg);
+	return(true);
+
+}
+
 bool FLCModuleInstancesHandler::removeModuleInstance(QUuid uuid)
 {
 	std::string path = prefix() + "/remove";
-	qDebug("start sending module (path: %s)", path.c_str());
+	qDebug("start sending module remove (path: %s)", path.c_str());
 	OscSender *sender = Flaacontrol::instance()->udpSender();
 	Message msg(path);
 	msg.pushStr(uuid.toString());
@@ -71,12 +83,20 @@ bool FLCModuleInstancesHandler::handle(UdpSocket *socket, Message *message)
 		emit( moduleInstanceAdded(moduleInstance) );
 		return true;
 	}
+	if( function == "modified")
+	{
+		FLOModuleInstanceDAO *moduleInstance = new FLOModuleInstanceDAO();
+		moduleInstance->deserialize(message);
+		qDebug() << "About to modify module instance " << moduleInstance->uuid().toString();
+		emit( moduleInstanceModified(moduleInstance) );
+		return true;
+	}
 	if( function == "removed")
 	{
 		QString uuid;
 		FLOModuleInstanceDAO *moduleInstance = new FLOModuleInstanceDAO();
 		message->arg().popStr(uuid);
-		qDebug() << "About to add module instance " << moduleInstance->uuid().toString();
+		qDebug() << "About to remove module instance " << moduleInstance->uuid().toString();
 		emit( moduleInstanceRemoved(QUuid(uuid)) );
 		return true;
 	}
@@ -100,4 +120,5 @@ void FLCModuleInstancesHandler::setModel(FLCModuleInstancesModel *moduleInstance
 	m_pModuleInstancesModel = moduleInstancesModel;
 	connect(this, &FLCModuleInstancesHandler::moduleInstanceAdded, m_pModuleInstancesModel, &FLCModuleInstancesModel::addFLCModuleInstance);
 	connect(this, &FLCModuleInstancesHandler::moduleInstanceRemoved, m_pModuleInstancesModel, &FLCModuleInstancesModel::removeFLCModuleInstance );
+	connect(this, &FLCModuleInstancesHandler::moduleInstanceModified, m_pModuleInstancesModel, &FLCModuleInstancesModel::modifyFLCModuleInstance );
 }

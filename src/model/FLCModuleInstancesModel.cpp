@@ -54,6 +54,12 @@ void FLCModuleInstancesModel::addFLCModuleInstance(FLOModuleInstanceDAO *moduleI
 	emit(moduleInstanceAdded(moduleInstance));
 }
 
+void FLCModuleInstancesModel::modifyFLCModuleInstance(FLOModuleInstanceDAO *moduleInstance)
+{
+	m_moduleInstancesMap[moduleInstance->uuid()] = moduleInstance;
+	emit(moduleInstanceModified(moduleInstance));
+}
+
 void FLCModuleInstancesModel::removeFLCModuleInstance(const QUuid &uuid)
 {
 	m_moduleInstancesMap.erase(m_moduleInstancesMap.find(uuid));

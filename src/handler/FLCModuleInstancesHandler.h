@@ -20,12 +20,14 @@ public:
 
 signals:
 	void moduleInstanceAdded(FLOModuleInstanceDAO *module);
+	void moduleInstanceModified(FLOModuleInstanceDAO *module);
 	void moduleInstanceRemoved(QUuid uuid);
 
 public slots:
 	bool requestSave();
 	bool requestStructure();
 	bool addModuleInstance(FLOModuleInstanceDAO *module);
+	bool modifyModuleInstance(FLOModuleInstanceDAO *module);
 	bool removeModuleInstance(QUuid uuid);
 
 private: // methods

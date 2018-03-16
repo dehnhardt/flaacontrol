@@ -48,16 +48,18 @@ private: // Methods
 	void clearModuleMap();
 	void initFomModel();
 	FLCModuleWidget *createModuleWidget(FLOModuleInstanceDAO *module);
-	void deletModuleWidget(FLCModuleWidget *moduleWidget);
+	void deleteModuleWidget(FLCModuleWidget *moduleWidget);
 
 signals:
 	void addModuleInstance(FLOModuleInstanceDAO *module);
+	void modifyModuleInstance(FLOModuleInstanceDAO *module);
 	void removeModuleInstance( QUuid uuid);
 
 private slots:
 	void saveStructure();
-	void addModuleWidget(FLOModuleInstanceDAO *module);
 	void moduleWidgetAdded(FLOModuleInstanceDAO *module);
+	//void modifyModuleWidget(FLOModuleInstanceDAO *module);
+	void moduleWidgetModified(FLOModuleInstanceDAO *module);
 	void removeModuleWidget( QUuid uuid);
 	void moduleWidgetRemoved( QUuid uuid);
 

@@ -19,6 +19,7 @@ public:
 
 public slots:
 	void addFLCModuleInstance(FLOModuleInstanceDAO *moduleInstance);
+	void modifyFLCModuleInstance(FLOModuleInstanceDAO *moduleInstance);
 	void removeFLCModuleInstance(const QUuid &uuid);
 
 public: //getter
@@ -27,6 +28,7 @@ public: //getter
 
 signals:
 	void moduleInstanceAdded( FLOModuleInstanceDAO *moduleInstance);
+	void moduleInstanceModified( FLOModuleInstanceDAO *moduleInstance);
 	void moduleInstanceRemoved( const QUuid &uuid);
 
 public slots:
