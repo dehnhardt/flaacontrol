@@ -8,7 +8,7 @@
 #include <QCursor>
 #include <QDebug>
 
-FLCRepositoryModuleModel::FLCRepositoryModuleModel(vector<FLCRepositoryModule *> *dataVector, QObject *parent)
+FLCRepositoryModuleModel::FLCRepositoryModuleModel(QHash<QString, FLCRepositoryModule *> *dataVector, QObject *parent)
 	: QAbstractListModel(parent),
 	  m_pDataVector(dataVector)
 {
@@ -17,7 +17,7 @@ FLCRepositoryModuleModel::FLCRepositoryModuleModel(vector<FLCRepositoryModule *>
 FLCRepositoryModuleModel::FLCRepositoryModuleModel(QObject *parent)
 	: QAbstractListModel(parent)
 {
-	m_pDataVector = new vector<FLCRepositoryModule *>();
+	m_pDataVector = new QHash<QString, FLCRepositoryModule *>();
 }
 
 FLCRepositoryModuleModel::~FLCRepositoryModuleModel()
@@ -46,7 +46,7 @@ QVariant FLCRepositoryModuleModel::data(const QModelIndex &index, int role) cons
 {
 	if (!index.isValid())
 		return QVariant();
-	FLCRepositoryModule *m = m_pDataVector->at(static_cast<unsigned long>(index.row()));
+	FLCRepositoryModule *m = moduleAt(index.row());
 	switch( role )
 	{
 		case Qt::DisplayRole:
@@ -85,7 +85,6 @@ QStringList FLCRepositoryModuleModel::mimeTypes() const
 	QStringList types;
 	types << "application/x-flowcontrol";
 	return types;
-
 }
 
 QMimeData *FLCRepositoryModuleModel::mimeData(const QModelIndexList &indexes) const
@@ -98,8 +97,7 @@ QMimeData *FLCRepositoryModuleModel::mimeData(const QModelIndexList &indexes) co
 	{
 		if (index.isValid())
 		{
-
-			FLCRepositoryModule *m = m_pDataVector->at(static_cast<unsigned long>(index.row()));
+			FLCRepositoryModule *m = moduleAt(index.row());
 			QPoint hotspot(0,0);
 			QString text = m->functionalName().c_str();
 			QIcon icon = data(index, Qt::DecorationRole).value<QIcon>();
@@ -125,8 +123,18 @@ Qt::ItemFlags FLCRepositoryModuleModel::flags(const QModelIndex &index) const
 QModelIndex FLCRepositoryModuleModel::addModule(FLCRepositoryModule *module)
 {
 	int rowIndex = rowCount();
-	beginInsertRows(QModelIndex(), rowIndex, rowIndex);
-	m_pDataVector->push_back(module);
-	endInsertRows();
-	return index(rowIndex, 0);
+	if( m_pDataVector->find(module->functionalName().c_str()) == m_pDataVector->end() )
+	{
+		beginInsertRows(QModelIndex(), rowIndex, rowIndex);
+		m_pDataVector->insert(module->functionalName().c_str(), module);
+		endInsertRows();
+		return index(rowIndex, 0);
+	}
+	return index(-1, -1);
+}
+
+FLCRepositoryModule *FLCRepositoryModuleModel::moduleAt(int index) const
+{
+	FLCRepositoryModule *m = (m_pDataVector->begin()+index).value();
+	return m;
 }

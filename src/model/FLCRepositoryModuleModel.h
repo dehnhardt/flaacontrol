@@ -4,6 +4,7 @@
 #include "FLCRepositoryModule.h"
 
 #include <vector>
+#include <QHash>
 #include <QAbstractListModel>
 
 using std::vector;
@@ -13,7 +14,7 @@ class FLCRepositoryModuleModel : public QAbstractListModel
 	Q_OBJECT
 
 public:
-	explicit FLCRepositoryModuleModel( vector<FLCRepositoryModule *> *dataVector, QObject *parent = nullptr);
+	explicit FLCRepositoryModuleModel( QHash<QString, FLCRepositoryModule *> *dataVector, QObject *parent = nullptr);
 	explicit FLCRepositoryModuleModel( QObject *parent = nullptr);
 
 	~FLCRepositoryModuleModel();
@@ -32,13 +33,10 @@ public:
 
 	QModelIndex addModule(FLCRepositoryModule *module);
 
-	FLCRepositoryModule *moduleAt( unsigned int index)
-	{
-		return m_pDataVector->at(static_cast<unsigned long>(index));
-	}
+	FLCRepositoryModule *moduleAt(int index) const;
 
 private:
-	vector<FLCRepositoryModule *> *m_pDataVector;
+	QHash<QString, FLCRepositoryModule *> *m_pDataVector;
 
 
 };
