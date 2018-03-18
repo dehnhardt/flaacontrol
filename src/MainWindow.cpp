@@ -1,7 +1,7 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 #include "Flaacontrol.h"
-#include "structure/FlowControl.h"
+#include "structure/FLCFlowControl.h"
 #include "flaaoscsdk/osclistener.h"
 #include "flaaoscsdk/oscpkt.hh"
 #include "settings/SessionSettings.h"
@@ -39,7 +39,7 @@ void MainWindow::connectSlots()
 
 void MainWindow::openFlowControlWindow()
 {
-	FlowControl *flowControlWindow = new FlowControl(this);
+	FLCFlowControl *flowControlWindow = new FLCFlowControl(this);
 	flowControlWindow->show();
 }
 

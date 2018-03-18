@@ -22,9 +22,10 @@ class FLCModuleWidget : public QWidget
 public:
 	enum VALIDITY
 	{
+		UNDEFINED = 0,
 		VALID=1,
 		INVALID = 2,
-		UNDEFINED = 3
+		LOCKED = 3
 	};
 	explicit FLCModuleWidget(QWidget *parent, const QString functionalName, const QIcon icon);
 
@@ -55,12 +56,6 @@ signals:
 public slots:
 
 protected:
-	// QWidget interface
-	void mouseMoveEvent(QMouseEvent *event) override
-	{
-		qDebug() << "mouseMoveEvent MW";
-		QApplication::sendEvent(parentWidget(), event);
-	}
 	void paintEvent(QPaintEvent *e) override;
 	void contextMenuEvent(QContextMenuEvent *event) override;
 
@@ -77,6 +72,8 @@ private: //members
 
 private: //methods
 	void createActions();
+
+	// QWidget interface
 };
 
 #endif // FLCMODULEWIDGET_H

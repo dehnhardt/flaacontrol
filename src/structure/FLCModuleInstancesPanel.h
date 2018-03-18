@@ -1,76 +1,65 @@
-#ifndef FLOWCONTROL_H
-#define FLOWCONTROL_H
+#ifndef FLCMODULEINSTANCESPANEL_H
+#define FLCMODULEINSTANCESPANEL_H
 
 #include "FLModuleDefs.h"
-#include "../model/FLCRepositoryModule.h"
-#include "../model/FLCRepositoryModuleModel.h"
 
-#include <QDialog>
+#include <QWidget>
 #include <QMoveEvent>
 #include <QUuid>
-#include <map>
-#include <vector>
 
+class FLCFlowControl;
 class FLCModuleInstancesModel;
 class FLCModuleInstancesHandler;
 class FLOModuleInstanceDAO;
 class FLCModuleWidget;
+class FLCRepositoryModuleModel;
 
-namespace Ui
-{
-class FlowControl;
-}
-
-class FlowControl : public QDialog
+class FLCModuleInstancesPanel : public QWidget
 {
 	Q_OBJECT
 
-public: // Methods
-	explicit FlowControl(QWidget *parent = 0);
-	~FlowControl();
+public: //methods
+	explicit FLCModuleInstancesPanel(QWidget *parent = nullptr);
+	~FLCModuleInstancesPanel();
 
 	void setModel(FLCModuleInstancesModel *model);
 	void setHandler(FLCModuleInstancesHandler *handler);
 	FLCModuleInstancesModel *model() const;
 	QIcon iconForModule(flaarlib::MODULE_TYPE moduleType, flaarlib::DATA_TYPE dataType);
 
-protected:
+protected: // events
 	void mousePressEvent(QMouseEvent *event) override;
 	void dragEnterEvent(QDragEnterEvent *event) override;
 	void dragMoveEvent(QDragMoveEvent *event) override;
 	void dropEvent(QDropEvent *event) override;
 
-private: // Methods
-	void connectSlots();
+protected: // methods
 	void setupUi();
-	void setupStructureObjects();
-	void getRepositoryModules();
-	void clearModuleMap();
 	void initFomModel();
 	FLCModuleWidget *createModuleWidget(FLOModuleInstanceDAO *module);
 	void deleteModuleWidget(FLCModuleWidget *moduleWidget);
+	QPoint snapToGrid(QPoint position, QPoint offset);
 
 signals:
 	void addModuleInstance(FLOModuleInstanceDAO *module);
 	void modifyModuleInstance(FLOModuleInstanceDAO *module);
 	void removeModuleInstance( QUuid uuid);
 
-private slots:
-	void saveStructure();
+protected slots:
 	void moduleWidgetAdded(FLOModuleInstanceDAO *module);
-	//void modifyModuleWidget(FLOModuleInstanceDAO *module);
 	void moduleWidgetModified(FLOModuleInstanceDAO *module);
 	void removeModuleWidget( QUuid uuid);
 	void moduleWidgetRemoved( QUuid uuid);
 
-private: // Members
+
+protected: // members
+	double snap = 10;
+	FLCFlowControl *m_pParent = 0;
 	bool m_bDataLoaded = false;
-	Ui::FlowControl *m_pUi;
-	std::map<flaarlib::MODULE_TYPE, FLCRepositoryModuleModel *> m_flcModulesModelMap;
 	FLCModuleInstancesModel *m_pModel = 0;
 	FLCModuleInstancesHandler *m_pHandler = 0;
 	std::map<QUuid, FLCModuleWidget *> m_flcWidgetMap;
 
 };
 
-#endif // FLOWCONTROL_H
+#endif // MODULEINSTANCESPANEL_H

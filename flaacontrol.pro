@@ -39,8 +39,10 @@ SOURCES += \
     src/settings/SessionSettings.cpp \
     src/settings/SettingsModel.cpp \
     src/structure/FLCModuleWidget.cpp \
-    src/structure/FlowControl.cpp \
-    src/MainWindow.cpp
+    src/MainWindow.cpp \
+    src/structure/FLCMainModuleInstancesPanel.cpp \
+    src/structure/FLCModuleInstancesPanel.cpp \
+    src/structure/FLCFlowControl.cpp
 
 HEADERS += \
     src/tracks/tracks.h \
@@ -56,8 +58,10 @@ HEADERS += \
     src/settings/XmlSettings.h \
     src/settings/SettingsModel.h \
     src/structure/FLCModuleWidget.h \
-    src/structure/FlowControl.h \
-    src/MainWindow.h
+    src/MainWindow.h \
+    src/structure/FLCMainModuleInstancesPanel.h \
+    src/structure/FLCModuleInstancesPanel.h \
+    src/structure/FLCFlowControl.h
 
 FORMS += \
     src/mainwindow.ui \
