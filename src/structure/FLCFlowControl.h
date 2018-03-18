@@ -4,6 +4,7 @@
 #include "FLModuleDefs.h"
 #include "../model/FLCRepositoryModule.h"
 #include "../model/FLCRepositoryModuleModel.h"
+#include "../model/FLCModuleInstanceAttributesModel.h"
 
 #include <QDialog>
 #include <QMoveEvent>
@@ -31,6 +32,7 @@ public: // Methods
 
 	QIcon iconForModule(flaarlib::MODULE_TYPE moduleType, flaarlib::DATA_TYPE dataType);
 	std::map<flaarlib::MODULE_TYPE, FLCRepositoryModuleModel *> getFlcModulesModelMap() const;
+	void setAttributesTableModel(FLCModuleInstanceAttributesModel *moduleInstanceAttributeModel);
 
 private: // Methods
 	void connectSlots();

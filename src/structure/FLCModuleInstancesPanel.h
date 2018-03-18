@@ -46,6 +46,7 @@ signals:
 	void removeModuleInstance( QUuid uuid);
 
 protected slots:
+	void moduleWidgetSelected(FLCModuleWidget *flcModuleWidget);
 	void moduleWidgetAdded(FLOModuleInstanceDAO *module);
 	void moduleWidgetModified(FLOModuleInstanceDAO *module);
 	void removeModuleWidget( QUuid uuid);
@@ -59,6 +60,7 @@ protected: // members
 	FLCModuleInstancesModel *m_pModel = 0;
 	FLCModuleInstancesHandler *m_pHandler = 0;
 	std::map<QUuid, FLCModuleWidget *> m_flcWidgetMap;
+	FLCModuleWidget *lastSelectedWidgt = 0;
 
 };
 

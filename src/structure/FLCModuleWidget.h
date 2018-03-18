@@ -27,7 +27,7 @@ public:
 		INVALID = 2,
 		LOCKED = 3
 	};
-	explicit FLCModuleWidget(QWidget *parent, const QString functionalName, const QIcon icon);
+	explicit FLCModuleWidget(QWidget *parent, const QString fuctionalName, const QIcon icon, const QString moduleName = "");
 
 	QIcon moduleIcon() const
 	{
@@ -50,16 +50,22 @@ public:
 
 	void setValid( VALIDITY validity);
 
+	bool seleced() const;
+	void setSeleced(bool bSeleced);
+
 signals:
 	void removeModuleWidget( QUuid uuid);
+	void widgetSelected(FLCModuleWidget *flcModuleWidget);
 
 public slots:
 
 protected:
 	void paintEvent(QPaintEvent *e) override;
 	void contextMenuEvent(QContextMenuEvent *event) override;
+	void mouseReleaseEvent(QMouseEvent *event);
 
 private: //members
+	bool m_bSeleced = false;
 	QHBoxLayout *m_pHorizontalLayot;
 	QVBoxLayout *m_pVerticalLayout;
 	QIcon m_pModuleIcon;

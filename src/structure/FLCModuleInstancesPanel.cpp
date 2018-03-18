@@ -6,6 +6,7 @@
 #include "../model/FLCModuleInstancesModel.h"
 #include "../model/FLCRepositoryModuleModel.h"
 #include "../handler/FLCModuleInstancesHandler.h"
+#include "../model/FLCModuleInstanceAttributesModel.h"
 
 #include <QWindow>
 #include <QMimeData>
@@ -101,7 +102,6 @@ void FLCModuleInstancesPanel::mousePressEvent(QMouseEvent *event)
 
 void FLCModuleInstancesPanel::dragEnterEvent(QDragEnterEvent *event)
 {
-	qDebug() << "DragEnter";
 	if (event->mimeData()->hasFormat(sMimeTypeAdd()) || event->mimeData()->hasFormat(sMimeTypeMove()))
 	{
 		qDebug() << "Right MIME";
@@ -121,7 +121,6 @@ void FLCModuleInstancesPanel::dragEnterEvent(QDragEnterEvent *event)
 
 void FLCModuleInstancesPanel::dragMoveEvent(QDragMoveEvent *event)
 {
-	qDebug() << "DragMove";
 	if (event->mimeData()->hasFormat(sMimeTypeAdd()) || event->mimeData()->hasFormat(sMimeTypeMove() ))
 	{
 		if (children().contains(event->source()))
@@ -140,7 +139,6 @@ void FLCModuleInstancesPanel::dragMoveEvent(QDragMoveEvent *event)
 
 void FLCModuleInstancesPanel::dropEvent(QDropEvent *event)
 {
-	qDebug() << "Drop";
 	if (event->mimeData()->hasFormat(sMimeTypeAdd()))
 	{
 		const QMimeData *mime = event->mimeData();
@@ -222,7 +220,7 @@ void FLCModuleInstancesPanel::initFomModel()
 FLCModuleWidget *FLCModuleInstancesPanel::createModuleWidget(FLOModuleInstanceDAO *module)
 {
 	QIcon icon = iconForModule(module->moduleType(), module->dataType());
-	FLCModuleWidget *moduleWidget = new FLCModuleWidget(this, module->moduleFunctionalName(), icon);
+	FLCModuleWidget *moduleWidget = new FLCModuleWidget(this, module->moduleFunctionalName(), icon, module->moduleName());
 	QUuid sUuid = module->uuid();
 	moduleWidget->setAttribute(Qt::WA_DeleteOnClose);
 	moduleWidget->setUuid(sUuid);
@@ -233,7 +231,9 @@ FLCModuleWidget *FLCModuleInstancesPanel::createModuleWidget(FLOModuleInstanceDA
 		setMinimumHeight(module->position().y() + moduleWidget->height());
 	moduleWidget->show();
 	this->m_flcWidgetMap[sUuid] = moduleWidget;
+	moduleWidgetSelected(moduleWidget);
 	connect(moduleWidget, &FLCModuleWidget::removeModuleWidget, this, &FLCModuleInstancesPanel::removeModuleWidget);
+	connect(moduleWidget, &FLCModuleWidget::widgetSelected, this, &FLCModuleInstancesPanel::moduleWidgetSelected);
 	return moduleWidget;
 }
 
@@ -252,6 +252,18 @@ QPoint FLCModuleInstancesPanel::snapToGrid(QPoint position, QPoint offset)
 	p.setY(static_cast<int>(round(static_cast<double>(p.y())/snap)
 							*static_cast<int>(snap)));
 	return p;
+}
+
+void FLCModuleInstancesPanel::moduleWidgetSelected(FLCModuleWidget *flcModuleWidget)
+{
+	if(lastSelectedWidgt)
+		lastSelectedWidgt->setSeleced(false);
+	FLOModuleInstanceDAO *dao = this->m_pModel->getFLOModuleInstance(flcModuleWidget->getUuid());
+	FLCModuleInstanceAttributesModel *attributesModel = new FLCModuleInstanceAttributesModel(dao, this);
+	m_pParent->setAttributesTableModel(attributesModel);
+
+	flcModuleWidget->setSeleced(true);
+	lastSelectedWidgt = flcModuleWidget;
 }
 
 void FLCModuleInstancesPanel::moduleWidgetAdded(FLOModuleInstanceDAO *module)

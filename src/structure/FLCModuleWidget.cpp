@@ -8,7 +8,7 @@
 #include <QPainter>
 #include <QMenu>
 
-FLCModuleWidget::FLCModuleWidget(QWidget *parent, const QString functionalName, const QIcon icon)
+FLCModuleWidget::FLCModuleWidget(QWidget *parent, const QString functionalName, const QIcon icon, const QString moduleName)
 	: QWidget(parent),
 	  m_pModuleIcon(icon),
 	  m_sFunctionalName(functionalName)
@@ -25,7 +25,11 @@ FLCModuleWidget::FLCModuleWidget(QWidget *parent, const QString functionalName, 
 	setAutoFillBackground(true);
 	m_pVerticalLayout = new QVBoxLayout(this);
 	m_pHorizontalLayot = new QHBoxLayout();
-	QLabel *functionalLabel = new QLabel(m_sFunctionalName, this);
+	QLabel *functionalLabel = new QLabel(this);
+	if( moduleName != "")
+		functionalLabel->setText(moduleName);
+	else
+		functionalLabel->setText(functionalName);
 	functionalLabel->setWordWrap(true);
 	QLabel *iconLabel = new QLabel(this);
 	iconLabel->setPixmap(icon.pixmap(QSize(20,20)));
@@ -63,6 +67,8 @@ void FLCModuleWidget::paintEvent(QPaintEvent *e)
 	QPainter painter(this);
 	painter.save();
 	QPen p = QPen(borderColor);
+	if( !seleced() )
+		p.setColor(borderColor.lighter());
 	p.setWidth(2);
 	painter.setPen(p);
 	painter.drawRect(2,2,width()-4, height()-4);
@@ -90,6 +96,23 @@ void FLCModuleWidget::contextMenuEvent(QContextMenuEvent *event)
 	menu.exec(event->globalPos());
 }
 #endif
+
+void FLCModuleWidget::mouseReleaseEvent(QMouseEvent *event __attribute__((unused)) )
+{
+	emit( widgetSelected(this) );
+}
+
+bool FLCModuleWidget::seleced() const
+{
+	return m_bSeleced;
+}
+
+void FLCModuleWidget::setSeleced(bool bSeleced)
+{
+	qDebug() << "selected: " << bSeleced;
+	m_bSeleced = bSeleced;
+	repaint();
+}
 
 void FLCModuleWidget::createActions()
 {

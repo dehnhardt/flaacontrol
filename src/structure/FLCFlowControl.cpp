@@ -73,6 +73,11 @@ std::map<flaarlib::MODULE_TYPE, FLCRepositoryModuleModel *> FLCFlowControl::getF
 	return m_flcModulesModelMap;
 }
 
+void FLCFlowControl::setAttributesTableModel(FLCModuleInstanceAttributesModel *moduleInstanceAttributeModel)
+{
+	this->m_pUi->moduleInstanceAtrributeTable->setModel(moduleInstanceAttributeModel);
+}
+
 QIcon FLCFlowControl::iconForModule(flaarlib::MODULE_TYPE moduleType, flaarlib::DATA_TYPE dataType)
 {
 	return m_flcModulesModelMap[moduleType]->icon(dataType).value<QIcon>();
