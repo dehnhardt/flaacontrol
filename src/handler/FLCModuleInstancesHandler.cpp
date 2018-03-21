@@ -4,6 +4,7 @@
 #include "../flaaoscsdk/oscsender.h"
 #include "../Flaacontrol.h"
 #include "../model/FLCModuleInstancesModel.h"
+#include "../model/FLCModuleInstanceAttributesModel.h"
 #include "../flaaoscsdk/FLOModuleInstanceDAO.h"
 
 #include <QDebug>
@@ -113,7 +114,6 @@ void FLCModuleInstancesHandler::initFomModel()
 			addModuleInstance(module);
 	}
 }
-
 
 void FLCModuleInstancesHandler::setModel(FLCModuleInstancesModel *moduleInstancesModel)
 {

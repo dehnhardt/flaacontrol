@@ -8,6 +8,7 @@
 
 class FLOModuleInstanceDAO;
 class FLCModuleInstancesModel;
+class FLCModuleInstanceAttributesModel;
 
 class FLCModuleInstancesHandler : public QObject, public OscHandler
 {
@@ -22,6 +23,7 @@ signals:
 	void moduleInstanceAdded(FLOModuleInstanceDAO *module);
 	void moduleInstanceModified(FLOModuleInstanceDAO *module);
 	void moduleInstanceRemoved(QUuid uuid);
+	void moduleInstanceAttributeModified(FLOModuleInstanceDAO *module);
 
 public slots:
 	bool requestSave();
@@ -35,6 +37,7 @@ private: // methods
 
 private: // mebers
 	FLCModuleInstancesModel *m_pModuleInstancesModel = 0;
+	FLCModuleInstanceAttributesModel *m_pModuleInstanceAttributesModel = 0;
 
 };
 

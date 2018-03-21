@@ -33,8 +33,8 @@ FLCFlowControl::FLCFlowControl(QWidget *parent) :
 	connectSlots();
 	FLCMainModuleInstancesPanel *mainPanel = new FLCMainModuleInstancesPanel(this);
 	m_pModel = Flaacontrol::instance()->moduleInstancesModel();
-	mainPanel->setModel(m_pModel);
 	mainPanel->setHandler(Flaacontrol::instance()->moduleInstancesHandler());
+	mainPanel->setModel(m_pModel);
 	this->m_pUi->centralScrollArea->setWidget( mainPanel);
 	mainPanel->show();
 }

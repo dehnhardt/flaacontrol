@@ -2,12 +2,15 @@
 #define FLCMODULEINSTANCEATTRIBUTESMODEL_H
 
 #include "../flaaoscsdk/FLOModuleInstanceDAO.h"
+#include "../flaaoscsdk/FLOParameter.h"
 
 #include <QObject>
 #include <QAbstractTableModel>
 
 class FLCModuleInstanceAttributesModel : public QAbstractTableModel
 {
+	Q_OBJECT
+
 public:
 	FLCModuleInstanceAttributesModel(FLOModuleInstanceDAO *moduleInstanceDAO, QObject *parent);
 	virtual ~FLCModuleInstanceAttributesModel();
@@ -20,6 +23,10 @@ public:
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 
 	QVariant displayData(const QModelIndex &index) const;
+	QVariant getParameterData(const FLOParameter *parameter, const QModelIndex &index) const;
+
+signals:
+	bool modifyModuleInstance(FLOModuleInstanceDAO *module);
 
 private:
 	FLOModuleInstanceDAO *m_pModuleInstanceDAO = 0;

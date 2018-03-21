@@ -261,7 +261,8 @@ void FLCModuleInstancesPanel::moduleWidgetSelected(FLCModuleWidget *flcModuleWid
 	FLOModuleInstanceDAO *dao = this->m_pModel->getFLOModuleInstance(flcModuleWidget->getUuid());
 	FLCModuleInstanceAttributesModel *attributesModel = new FLCModuleInstanceAttributesModel(dao, this);
 	m_pParent->setAttributesTableModel(attributesModel);
-
+	connect(attributesModel, &FLCModuleInstanceAttributesModel::modifyModuleInstance,
+			this->m_pHandler, &FLCModuleInstancesHandler::modifyModuleInstance );
 	flcModuleWidget->setSeleced(true);
 	lastSelectedWidgt = flcModuleWidget;
 }
