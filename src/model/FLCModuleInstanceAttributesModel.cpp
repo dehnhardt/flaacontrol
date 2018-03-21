@@ -67,11 +67,10 @@ bool FLCModuleInstanceAttributesModel::setData(const QModelIndex &index, const Q
 				p->setValue(value.toByteArray());
 				break;
 		}
-		emit( modifyModuleInstance(this->m_pModuleInstanceDAO));
-		emit( dataChanged(index, index));
-		return true;
 	}
-	return false;
+	emit( modifyModuleInstance(this->m_pModuleInstanceDAO));
+	emit( dataChanged(index, index));
+	return true;
 }
 
 Qt::ItemFlags FLCModuleInstanceAttributesModel::flags(const QModelIndex &index) const
