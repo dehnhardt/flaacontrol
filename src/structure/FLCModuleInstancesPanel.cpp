@@ -281,8 +281,13 @@ void FLCModuleInstancesPanel::moduleWidgetModified(FLOModuleInstanceDAO *module)
 	//TODO this is an error and should be handled
 	if( !moduleWidget )
 		return;
+	moduleWidget->setModuleName(module->moduleName());
+	moduleWidget->setInputPorts(module->getParameter("inputPorts")->value().toInt());
+	moduleWidget->setOutputPorts(module->getParameter("outputPorts")->value().toInt());
 	if( moduleWidget->pos() != module->position() )
 		moduleWidget->move(module->position());
+	else
+		moduleWidget->repaint();
 	moduleWidget->setValid(FLCModuleWidget::VALID);
 }
 

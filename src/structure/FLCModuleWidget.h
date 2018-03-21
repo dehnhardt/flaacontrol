@@ -53,6 +53,15 @@ public:
 	bool seleced() const;
 	void setSeleced(bool bSeleced);
 
+	QString moduleName() const;
+	void setModuleName(const QString &sModuleName);
+
+	int inputPorts() const;
+	void setInputPorts(int iInputPorts);
+
+	int outputPorts() const;
+	void setOutputPorts(int iOutputPorts);
+
 signals:
 	void removeModuleWidget( QUuid uuid);
 	void widgetSelected(FLCModuleWidget *flcModuleWidget);
@@ -62,16 +71,21 @@ public slots:
 protected:
 	void paintEvent(QPaintEvent *e) override;
 	void contextMenuEvent(QContextMenuEvent *event) override;
-	void mouseReleaseEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event) override;
 
 private: //members
 	bool m_bSeleced = false;
 	QHBoxLayout *m_pHorizontalLayot;
 	QVBoxLayout *m_pVerticalLayout;
 	QIcon m_pModuleIcon;
+	QString m_sModuleName;
 	QString m_sFunctionalName;
+	int m_iInputPorts;
+	int m_iOutputPorts;
 	QUuid m_uuid;
 	QColor borderColor = QColor(100,100,100);
+
+	QLabel *functionalLabel = 0;
 
 	// context menu action
 	std::unique_ptr<QAction> m_pRemoveAction;

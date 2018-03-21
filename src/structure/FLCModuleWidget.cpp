@@ -19,18 +19,22 @@ FLCModuleWidget::FLCModuleWidget(QWidget *parent, const QString functionalName, 
 	b.setColor(QColor(200,200,200));
 	p.setBrush(QPalette::ColorRole::Background, b);
 	setPalette(p);
-	setMinimumSize(115,45);
-	setMaximumSize(115,45);
+	setMinimumSize(125,45);
+	setMaximumSize(125,45);
 	setValid(UNDEFINED);
 	setAutoFillBackground(true);
 	m_pVerticalLayout = new QVBoxLayout(this);
 	m_pHorizontalLayot = new QHBoxLayout();
-	QLabel *functionalLabel = new QLabel(this);
+	functionalLabel = new QLabel(this);
 	if( moduleName != "")
 		functionalLabel->setText(moduleName);
 	else
 		functionalLabel->setText(functionalName);
+	functionalLabel->setAlignment(Qt::AlignCenter);
 	functionalLabel->setWordWrap(true);
+	functionalLabel->setMinimumWidth(70);
+	functionalLabel->setFrameShape(QFrame::Panel);
+	functionalLabel->setFrameShadow(QFrame::Sunken);
 	QLabel *iconLabel = new QLabel(this);
 	iconLabel->setPixmap(icon.pixmap(QSize(20,20)));
 	iconLabel->setStyleSheet("padding-left:0;");
@@ -102,6 +106,40 @@ void FLCModuleWidget::mouseReleaseEvent(QMouseEvent *event __attribute__((unused
 	emit( widgetSelected(this) );
 }
 
+int FLCModuleWidget::outputPorts() const
+{
+	return m_iOutputPorts;
+}
+
+void FLCModuleWidget::setOutputPorts(int iOutputPorts)
+{
+	m_iOutputPorts = iOutputPorts;
+}
+
+int FLCModuleWidget::inputPorts() const
+{
+	return m_iInputPorts;
+}
+
+void FLCModuleWidget::setInputPorts(int iInputPorts)
+{
+	m_iInputPorts = iInputPorts;
+}
+
+QString FLCModuleWidget::moduleName() const
+{
+	return m_sModuleName;
+}
+
+void FLCModuleWidget::setModuleName(const QString &sModuleName)
+{
+	m_sModuleName = sModuleName;
+	if( m_sModuleName != "" )
+		this->functionalLabel->setText(m_sModuleName);
+	else
+		this->functionalLabel->setText(m_sFunctionalName);
+}
+
 bool FLCModuleWidget::seleced() const
 {
 	return m_bSeleced;
@@ -109,7 +147,6 @@ bool FLCModuleWidget::seleced() const
 
 void FLCModuleWidget::setSeleced(bool bSeleced)
 {
-	qDebug() << "selected: " << bSeleced;
 	m_bSeleced = bSeleced;
 	repaint();
 }
