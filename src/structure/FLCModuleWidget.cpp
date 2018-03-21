@@ -67,7 +67,7 @@ void FLCModuleWidget::paintEvent(QPaintEvent *e)
 	QPainter painter(this);
 	painter.save();
 	QPen p = QPen(borderColor);
-	if( !seleced() )
+	if( seleced() )
 		p.setColor(borderColor.lighter());
 	p.setWidth(2);
 	painter.setPen(p);
