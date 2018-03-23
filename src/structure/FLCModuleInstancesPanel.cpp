@@ -220,7 +220,7 @@ void FLCModuleInstancesPanel::initFomModel()
 FLCModuleWidget *FLCModuleInstancesPanel::createModuleWidget(FLOModuleInstanceDAO *module)
 {
 	QIcon icon = iconForModule(module->moduleType(), module->dataType());
-	FLCModuleWidget *moduleWidget = new FLCModuleWidget(this, module->moduleFunctionalName(), icon, module->moduleName());
+	FLCModuleWidget *moduleWidget = new FLCModuleWidget(this, icon, module);
 	QUuid sUuid = module->uuid();
 	moduleWidget->setAttribute(Qt::WA_DeleteOnClose);
 	moduleWidget->setUuid(sUuid);
@@ -281,9 +281,7 @@ void FLCModuleInstancesPanel::moduleWidgetModified(FLOModuleInstanceDAO *module)
 	//TODO this is an error and should be handled
 	if( !moduleWidget )
 		return;
-	moduleWidget->setModuleName(module->moduleName());
-	moduleWidget->setInputPorts(module->getParameter("inputPorts")->value().toInt());
-	moduleWidget->setOutputPorts(module->getParameter("outputPorts")->value().toInt());
+	moduleWidget->setData(module);
 	if( moduleWidget->pos() != module->position() )
 		moduleWidget->move(module->position());
 	else

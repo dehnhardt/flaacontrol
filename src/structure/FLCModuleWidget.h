@@ -15,6 +15,7 @@
 class QHBoxLayout;
 class QVBoxLayout;
 class QLabel;
+class FLOModuleInstanceDAO;
 
 class FLCModuleWidget : public QWidget
 {
@@ -27,7 +28,10 @@ public:
 		INVALID = 2,
 		LOCKED = 3
 	};
-	explicit FLCModuleWidget(QWidget *parent, const QString fuctionalName, const QIcon icon, const QString moduleName = "");
+
+	explicit FLCModuleWidget(QWidget *parent, const QIcon icon, FLOModuleInstanceDAO *instanceData);
+
+	void setData(FLOModuleInstanceDAO *instanceData);
 
 	QIcon moduleIcon() const
 	{
@@ -78,19 +82,23 @@ private: //members
 	QHBoxLayout *m_pHorizontalLayot;
 	QVBoxLayout *m_pVerticalLayout;
 	QIcon m_pModuleIcon;
+
+	QLabel *iconLabel = 0;
+	QLabel *functionalLabel = 0;
+
+	QColor borderColor = QColor(100,100,100);
+
 	QString m_sModuleName;
 	QString m_sFunctionalName;
 	int m_iInputPorts;
 	int m_iOutputPorts;
 	QUuid m_uuid;
-	QColor borderColor = QColor(100,100,100);
-
-	QLabel *functionalLabel = 0;
 
 	// context menu action
 	std::unique_ptr<QAction> m_pRemoveAction;
 
 private: //methods
+	void createGUI();
 	void createActions();
 
 	// QWidget interface

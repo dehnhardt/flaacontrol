@@ -1,4 +1,5 @@
 #include "FLCModuleWidget.h"
+#include "../flaaoscsdk/FLOModuleInstanceDAO.h"
 
 #include <QLabel>
 #include <QIcon>
@@ -8,42 +9,26 @@
 #include <QPainter>
 #include <QMenu>
 
-FLCModuleWidget::FLCModuleWidget(QWidget *parent, const QString functionalName, const QIcon icon, const QString moduleName)
+FLCModuleWidget::FLCModuleWidget(QWidget *parent, const QIcon icon, FLOModuleInstanceDAO *instanceData)
 	: QWidget(parent),
-	  m_pModuleIcon(icon),
-	  m_sFunctionalName(functionalName)
+	  m_pModuleIcon(icon)
 {
-	QPalette p = palette();
-	QBrush b = p.brush(QPalette::ColorRole::Background);
-	setStyleSheet("font-size:8pt");
-	b.setColor(QColor(200,200,200));
-	p.setBrush(QPalette::ColorRole::Background, b);
-	setPalette(p);
-	setMinimumSize(125,45);
-	setMaximumSize(125,45);
-	setValid(UNDEFINED);
-	setAutoFillBackground(true);
-	m_pVerticalLayout = new QVBoxLayout(this);
-	m_pHorizontalLayot = new QHBoxLayout();
-	functionalLabel = new QLabel(this);
-	if( moduleName != "")
-		functionalLabel->setText(moduleName);
-	else
-		functionalLabel->setText(functionalName);
-	functionalLabel->setAlignment(Qt::AlignCenter);
-	functionalLabel->setWordWrap(true);
-	functionalLabel->setMinimumWidth(70);
-	functionalLabel->setFrameShape(QFrame::Panel);
-	functionalLabel->setFrameShadow(QFrame::Sunken);
-	QLabel *iconLabel = new QLabel(this);
+	createGUI();
 	iconLabel->setPixmap(icon.pixmap(QSize(20,20)));
-	iconLabel->setStyleSheet("padding-left:0;");
-	m_pHorizontalLayot->addSpacing(16);
-	m_pHorizontalLayot->addWidget(iconLabel);
-	m_pHorizontalLayot->addWidget(functionalLabel);
-	m_pVerticalLayout->insertLayout(-1, m_pHorizontalLayot);
-	createActions();
-	setLayout(m_pVerticalLayout);
+	setData(instanceData);
+}
+
+void FLCModuleWidget::setData(FLOModuleInstanceDAO *instanceData)
+{
+	this->m_uuid = instanceData->uuid();
+	this->m_sModuleName = instanceData->moduleName();
+	this->m_sFunctionalName = instanceData->moduleFunctionalName();
+	this->m_iInputPorts = instanceData->getParameter("inputPorts")->value().toInt();
+	this->m_iOutputPorts = instanceData->getParameter("outputPorts")->value().toInt();
+	if( this->m_sModuleName != "")
+		functionalLabel->setText(m_sModuleName);
+	else
+		functionalLabel->setText(m_sFunctionalName);
 }
 
 void FLCModuleWidget::setValid(FLCModuleWidget::VALIDITY validity)
@@ -104,6 +89,36 @@ void FLCModuleWidget::contextMenuEvent(QContextMenuEvent *event)
 void FLCModuleWidget::mouseReleaseEvent(QMouseEvent *event __attribute__((unused)) )
 {
 	emit( widgetSelected(this) );
+}
+
+void FLCModuleWidget::createGUI()
+{
+	QPalette p = palette();
+	QBrush b = p.brush(QPalette::ColorRole::Background);
+	setStyleSheet("font-size:8pt");
+	b.setColor(QColor(200,200,200));
+	p.setBrush(QPalette::ColorRole::Background, b);
+	setPalette(p);
+	setMinimumSize(125,45);
+	setMaximumSize(125,45);
+	setValid(UNDEFINED);
+	setAutoFillBackground(true);
+	m_pVerticalLayout = new QVBoxLayout(this);
+	m_pHorizontalLayot = new QHBoxLayout();
+	functionalLabel = new QLabel(this);
+	functionalLabel->setAlignment(Qt::AlignCenter);
+	functionalLabel->setWordWrap(true);
+	functionalLabel->setMinimumWidth(70);
+	functionalLabel->setFrameShape(QFrame::Panel);
+	functionalLabel->setFrameShadow(QFrame::Sunken);
+	iconLabel = new QLabel(this);
+	iconLabel->setStyleSheet("padding-left:0;");
+	m_pHorizontalLayot->addSpacing(16);
+	m_pHorizontalLayot->addWidget(iconLabel);
+	m_pHorizontalLayot->addWidget(functionalLabel);
+	m_pVerticalLayout->insertLayout(-1, m_pHorizontalLayot);
+	createActions();
+	setLayout(m_pVerticalLayout);
 }
 
 int FLCModuleWidget::outputPorts() const
