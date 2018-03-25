@@ -8,6 +8,7 @@
 #include <QStyle>
 #include <QPainter>
 #include <QMenu>
+#include <QGraphicsEllipseItem>
 
 FLCModuleWidget::FLCModuleWidget(QWidget *parent, const QIcon icon, FLOModuleInstanceDAO *instanceData)
 	: QWidget(parent),
@@ -18,13 +19,42 @@ FLCModuleWidget::FLCModuleWidget(QWidget *parent, const QIcon icon, FLOModuleIns
 	setData(instanceData);
 }
 
+void FLCModuleWidget::addPorts(int portsCount, QVector<QPainterPath> &v, flaarlib::MODULE_TYPE moduleType)
+{
+	int radius = 8;
+	int y = 0;
+	if( moduleType == flaarlib::MODULE_TYPE::OUTPUT)
+		y = height();
+	v.clear();
+	int distance = (width() - (m_iLeftOffset + 5))
+				   / (portsCount + 1);
+	for( int i = 0; i < portsCount; i++)
+	{
+		QPainterPath path;
+		QFont myfont = font();
+		myfont.setPointSize(6);
+		QPoint point( m_iLeftOffset + ((i+1) * distance), y);
+		path.addEllipse(point, radius, radius );
+		//path.addText(point, myfont, "\u25bc");
+		v.append(path);
+	}
+}
+
 void FLCModuleWidget::setData(FLOModuleInstanceDAO *instanceData)
 {
 	this->m_uuid = instanceData->uuid();
 	this->m_sModuleName = instanceData->moduleName();
 	this->m_sFunctionalName = instanceData->moduleFunctionalName();
-	this->m_iInputPorts = instanceData->getParameter("inputPorts")->value().toInt();
-	this->m_iOutputPorts = instanceData->getParameter("outputPorts")->value().toInt();
+	if( m_iInputPortsCount != instanceData->getParameter("inputPorts")->value().toInt() )
+	{
+		this->m_iInputPortsCount = instanceData->getParameter("inputPorts")->value().toInt();
+		addPorts(m_iInputPortsCount, m_vInputPorts, flaarlib::MODULE_TYPE::INPUT);
+	}
+	if( this->m_iOutputPortsCount != instanceData->getParameter("outputPorts")->value().toInt() )
+	{
+		this->m_iOutputPortsCount = instanceData->getParameter("outputPorts")->value().toInt();
+		addPorts(m_iOutputPortsCount, m_vOutputPorts, flaarlib::MODULE_TYPE::OUTPUT);
+	}
 	if( this->m_sModuleName != "")
 		functionalLabel->setText(m_sModuleName);
 	else
@@ -39,10 +69,10 @@ void FLCModuleWidget::setValid(FLCModuleWidget::VALIDITY validity)
 			borderColor.setRgb(100,100,100);
 			break;
 		case VALID:
-			borderColor.setRgb(100, 200, 100);
+			borderColor.setRgb(60, 160, 60);
 			break;
 		case INVALID:
-			borderColor.setRgb(200,100,100);
+			borderColor.setRgb(160,60,60);
 			break;
 		case LOCKED:
 			borderColor.setRgb(100,100,100);
@@ -65,10 +95,33 @@ void FLCModuleWidget::mouseReleaseEvent(QMouseEvent *event __attribute__((unused
 	emit( widgetSelected(this) );
 }
 
+void FLCModuleWidget::mouseMoveEvent(QMouseEvent *event)
+{
+	QPoint p = event->pos();
+	for(QPainterPath path : m_vInputPorts )
+	{
+		if( path.contains(p) )
+		{
+			setCursor(Qt::CrossCursor);
+			return;
+		}
+	}
+	for(QPainterPath path : m_vOutputPorts )
+	{
+		if( path.contains(p) )
+		{
+			setCursor(Qt::CrossCursor);
+			return;
+		}
+	}
+	unsetCursor();
+}
+
 void FLCModuleWidget::createGUI()
 {
 	QPalette p = palette();
 	QBrush b = p.brush(QPalette::ColorRole::Background);
+	setMouseTracking(true);
 	setStyleSheet("font-size:8pt;");
 	b.setColor(QColor(200,200,200));
 	p.setBrush(QPalette::ColorRole::Background, b);
@@ -97,22 +150,22 @@ void FLCModuleWidget::createGUI()
 
 int FLCModuleWidget::outputPorts() const
 {
-	return m_iOutputPorts;
+	return m_iOutputPortsCount;
 }
 
 void FLCModuleWidget::setOutputPorts(int iOutputPorts)
 {
-	m_iOutputPorts = iOutputPorts;
+	m_iOutputPortsCount = iOutputPorts;
 }
 
 int FLCModuleWidget::inputPorts() const
 {
-	return m_iInputPorts;
+	return m_iInputPortsCount;
 }
 
 void FLCModuleWidget::setInputPorts(int iInputPorts)
 {
-	m_iInputPorts = iInputPorts;
+	m_iInputPortsCount = iInputPorts;
 }
 
 QString FLCModuleWidget::moduleName() const
@@ -168,42 +221,26 @@ void FLCModuleWidget::paintEvent(QPaintEvent *e)
 	for( int y = 10; y <= 38; y+=7)
 		painter.drawLine(4,y,11,y);
 	painter.drawLine(16,4,16,40);
-	paintPorts(painter, flaarlib::MODULE_TYPE::INPUT );
-	paintPorts(painter, flaarlib::MODULE_TYPE::OUTPUT );
+	paintPorts(painter);
 	painter.restore();
 	QWidget::paintEvent(e);
 }
 
 
-void FLCModuleWidget::paintPorts(QPainter &painter, flaarlib::MODULE_TYPE moduleType)
+void FLCModuleWidget::paintPorts(QPainter &painter)
 {
-	int portCount = 0;
-	int distance = 0;
-	int leftOffset = 16;
-	int radius = 8;
-	int y = 0;
-	QColor color = QColor(180,180,180);
-	if( seleced() )
-		color = QColor(222,222,222);
-	QPainterPath path;
-	if( moduleType == flaarlib::MODULE_TYPE::INPUT )
-		portCount = inputPorts();
-	else if( moduleType == flaarlib::MODULE_TYPE::OUTPUT)
+	QColor portsColor(120, 120, 120);
+	QPen pen(this->seleced()? borderColor.lighter():borderColor);
+	pen.setWidth(2);
+	painter.setPen(pen);
+	for( QPainterPath path : m_vInputPorts)
 	{
-		portCount = outputPorts();
-		y = height();
+		painter.fillPath(path, portsColor);
+		painter.drawPath(path);
 	}
-	if(portCount == 0)
-		return;
-	painter.setPen(borderColor);
-	distance = (width() - (leftOffset + 5))
-			   / (portCount + 1);
-	for( int i = 0; i < portCount; i++)
+	for( QPainterPath path : m_vOutputPorts)
 	{
-		QPoint point( leftOffset + ((i+1) * distance), y);
-		path.addEllipse(point, radius, radius );
+		painter.fillPath(path, portsColor);
+		painter.drawPath(path);
 	}
-	painter.fillPath(path, color);
-	painter.drawPath(path);
-
 }

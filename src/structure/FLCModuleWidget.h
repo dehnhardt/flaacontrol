@@ -13,6 +13,7 @@
 #include <QApplication>
 #include <QMoveEvent>
 #include <QAction>
+#include <QPainterPath>
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -78,6 +79,7 @@ protected:
 	void paintEvent(QPaintEvent *e) override;
 	void contextMenuEvent(QContextMenuEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
+	void mouseMoveEvent(QMouseEvent *event) override;
 
 private: //members
 	bool m_bSeleced = false;
@@ -92,9 +94,11 @@ private: //members
 
 	QString m_sModuleName;
 	QString m_sFunctionalName;
-	int m_iInputPorts;
-	int m_iOutputPorts;
+	int m_iInputPortsCount;
+	int m_iOutputPortsCount;
 	QUuid m_uuid;
+
+	int m_iLeftOffset = 16;
 
 	// context menu action
 	std::unique_ptr<QAction> m_pRemoveAction;
@@ -102,9 +106,13 @@ private: //members
 private: //methods
 	void createGUI();
 	void createActions();
-	void paintPorts(QPainter &painter, flaarlib::MODULE_TYPE moduleType );
+	void paintPorts(QPainter &painter);
 
-	// QWidget interface
+	QVector<QPainterPath> m_vInputPorts;
+	QVector<QPainterPath> m_vOutputPorts;
+
+	void addPorts(int portsCount, QVector<QPainterPath> &path, flaarlib::MODULE_TYPE moduleType);
+
 };
 
 #endif // FLCMODULEWIDGET_H
