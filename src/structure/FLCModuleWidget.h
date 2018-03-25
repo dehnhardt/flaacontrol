@@ -1,6 +1,8 @@
 #ifndef FLCMODULEWIDGET_H
 #define FLCMODULEWIDGET_H
 
+#include "FLModuleDefs.h"
+
 #include <memory>
 
 #include <QObject>
@@ -100,6 +102,7 @@ private: //members
 private: //methods
 	void createGUI();
 	void createActions();
+	void paintPorts(QPainter &painter, flaarlib::MODULE_TYPE moduleType );
 
 	// QWidget interface
 };

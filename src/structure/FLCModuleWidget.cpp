@@ -51,32 +51,6 @@ void FLCModuleWidget::setValid(FLCModuleWidget::VALIDITY validity)
 	repaint();
 }
 
-void FLCModuleWidget::paintEvent(QPaintEvent *e)
-{
-	QPainter painter(this);
-	painter.save();
-	QPen p = QPen(borderColor);
-	if( seleced() )
-		p.setColor(borderColor.lighter());
-	p.setWidth(2);
-	painter.setPen(p);
-	painter.drawRect(2,2,width()-4, height()-4);
-	p.setColor(QColor(190,190,190));
-	p.setWidth(3);
-	painter.setPen(p);
-	for( int y = 8; y <= 37; y+=7)
-		painter.drawLine(4,y,11,y);
-	painter.drawLine(14,4,14,40);
-	p.setColor(QColor(170,170,170));
-	p.setWidth(1);
-	painter.setPen(p);
-	for( int y = 10; y <= 38; y+=7)
-		painter.drawLine(4,y,11,y);
-	painter.drawLine(16,4,16,40);
-	painter.restore();
-	QWidget::paintEvent(e);
-}
-
 #ifndef QT_NO_CONTEXTMENU
 void FLCModuleWidget::contextMenuEvent(QContextMenuEvent *event)
 {
@@ -95,7 +69,7 @@ void FLCModuleWidget::createGUI()
 {
 	QPalette p = palette();
 	QBrush b = p.brush(QPalette::ColorRole::Background);
-	setStyleSheet("font-size:8pt");
+	setStyleSheet("font-size:8pt;");
 	b.setColor(QColor(200,200,200));
 	p.setBrush(QPalette::ColorRole::Background, b);
 	setPalette(p);
@@ -170,4 +144,66 @@ void FLCModuleWidget::createActions()
 {
 	this->m_pRemoveAction = std::make_unique<QAction>(tr("&Remove"), this);
 	connect(this->m_pRemoveAction.get(), &QAction::triggered, [this] {emit(this->removeModuleWidget(this->m_uuid));});
+}
+
+void FLCModuleWidget::paintEvent(QPaintEvent *e)
+{
+	QPainter painter(this);
+	painter.save();
+	QPen p = QPen(borderColor);
+	if( seleced() )
+		p.setColor(borderColor.lighter());
+	p.setWidth(2);
+	painter.setPen(p);
+	painter.drawRect(2,2,width()-4, height()-4);
+	p.setColor(QColor(190,190,190));
+	p.setWidth(3);
+	painter.setPen(p);
+	for( int y = 8; y <= 37; y+=7)
+		painter.drawLine(4,y,11,y);
+	painter.drawLine(14,4,14,40);
+	p.setColor(QColor(170,170,170));
+	p.setWidth(1);
+	painter.setPen(p);
+	for( int y = 10; y <= 38; y+=7)
+		painter.drawLine(4,y,11,y);
+	painter.drawLine(16,4,16,40);
+	paintPorts(painter, flaarlib::MODULE_TYPE::INPUT );
+	paintPorts(painter, flaarlib::MODULE_TYPE::OUTPUT );
+	painter.restore();
+	QWidget::paintEvent(e);
+}
+
+
+void FLCModuleWidget::paintPorts(QPainter &painter, flaarlib::MODULE_TYPE moduleType)
+{
+	int portCount = 0;
+	int distance = 0;
+	int leftOffset = 16;
+	int radius = 8;
+	int y = 0;
+	QColor color = QColor(180,180,180);
+	if( seleced() )
+		color = QColor(222,222,222);
+	QPainterPath path;
+	if( moduleType == flaarlib::MODULE_TYPE::INPUT )
+		portCount = inputPorts();
+	else if( moduleType == flaarlib::MODULE_TYPE::OUTPUT)
+	{
+		portCount = outputPorts();
+		y = height();
+	}
+	if(portCount == 0)
+		return;
+	painter.setPen(borderColor);
+	distance = (width() - (leftOffset + 5))
+			   / (portCount + 1);
+	for( int i = 0; i < portCount; i++)
+	{
+		QPoint point( leftOffset + ((i+1) * distance), y);
+		path.addEllipse(point, radius, radius );
+	}
+	painter.fillPath(path, color);
+	painter.drawPath(path);
+
 }
