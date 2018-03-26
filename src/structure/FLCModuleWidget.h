@@ -69,17 +69,25 @@ public:
 	int outputPorts() const;
 	void setOutputPorts(int iOutputPorts);
 
+	QPoint getPortOrigin( flaarlib::PORT_TYPE portType, int portNumber);
+
 signals:
 	void removeModuleWidget( QUuid uuid);
 	void widgetSelected(FLCModuleWidget *flcModuleWidget);
+	void portClicked( FLCModuleWidget *flcModuleWidget, flaarlib::PORT_TYPE portType, int portNumber );
 
 public slots:
 
 protected:
 	void paintEvent(QPaintEvent *e) override;
 	void contextMenuEvent(QContextMenuEvent *event) override;
+	void mousePressEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
+
+	int inInputPort(QPoint p);
+	int inOutputPort(QPoint p);
+	int inHandleArea(QPoint p);
 
 private: //members
 	bool m_bSeleced = false;
@@ -98,7 +106,10 @@ private: //members
 	int m_iOutputPortsCount;
 	QUuid m_uuid;
 
-	int m_iLeftOffset = 16;
+	int m_iHandleWidth = 16;
+	int m_iHeight = 55;
+	int m_iWidth = 125;
+	QRect m_handleRect = QRect(0,0,m_iHandleWidth,m_iHeight);
 
 	// context menu action
 	std::unique_ptr<QAction> m_pRemoveAction;
@@ -111,7 +122,7 @@ private: //methods
 	QVector<QPainterPath> m_vInputPorts;
 	QVector<QPainterPath> m_vOutputPorts;
 
-	void addPorts(int portsCount, QVector<QPainterPath> &path, flaarlib::MODULE_TYPE moduleType);
+	void addPorts(int portsCount, QVector<QPainterPath> &path, flaarlib::PORT_TYPE portType);
 
 };
 

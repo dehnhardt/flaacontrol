@@ -1,12 +1,13 @@
 #include "FLCModuleInstancesPanel.h"
 #include "FLCModuleWidget.h"
 #include "FLCFlowControl.h"
+#include "FLCModuleConnection.h"
 #include "../Flaacontrol.h"
 #include "../flaaoscsdk/FLOModuleInstanceDAO.h"
-#include "../model/FLCModuleInstancesModel.h"
-#include "../model/FLCRepositoryModuleModel.h"
 #include "../handler/FLCModuleInstancesHandler.h"
+#include "../model/FLCModuleInstancesModel.h"
 #include "../model/FLCModuleInstanceAttributesModel.h"
+#include "../model/FLCRepositoryModuleModel.h"
 
 #include <QWindow>
 #include <QMimeData>
@@ -14,6 +15,7 @@
 #include <QIcon>
 #include <QDebug>
 #include <QLayout>
+#include <QPainter>
 
 static inline QString sMimeTypeAdd() { return QStringLiteral("application/x-flowcontrol-add"); }
 static inline QString sMimeTypeMove() { return QStringLiteral("application/x-flowcontrol-move"); }
@@ -88,7 +90,7 @@ void FLCModuleInstancesPanel::mousePressEvent(QMouseEvent *event)
 			drag->setMimeData(mimeData);
 			drag->setPixmap(pixmap);
 			drag->setHotSpot(hotSpot);
-
+			m->hide();
 			Qt::DropAction dropAction = drag->exec();
 			if( dropAction == Qt::MoveAction)
 			{
@@ -234,6 +236,7 @@ FLCModuleWidget *FLCModuleInstancesPanel::createModuleWidget(FLOModuleInstanceDA
 	moduleWidgetSelected(moduleWidget);
 	connect(moduleWidget, &FLCModuleWidget::removeModuleWidget, this, &FLCModuleInstancesPanel::removeModuleWidget);
 	connect(moduleWidget, &FLCModuleWidget::widgetSelected, this, &FLCModuleInstancesPanel::moduleWidgetSelected);
+	connect(moduleWidget, &FLCModuleWidget::portClicked, this, &FLCModuleInstancesPanel::portClicked);
 	return moduleWidget;
 }
 
@@ -304,4 +307,60 @@ void FLCModuleInstancesPanel::moduleWidgetRemoved(QUuid uuid)
 	FLCModuleWidget *moduleWidget = this->m_flcWidgetMap[uuid];
 	if( moduleWidget )
 		deleteModuleWidget(moduleWidget);
+}
+
+void FLCModuleInstancesPanel::portClicked(FLCModuleWidget *flcModuleWidget, flaarlib::PORT_TYPE portType, int portNumber)
+{
+	FLCModuleConnection *moduleConnection = new FLCModuleConnection();
+	if( portType == flaarlib::PORT_TYPE::OUTPUT_PORT)
+	{
+		moduleConnection->outputUuid = flcModuleWidget->getUuid();
+		moduleConnection->outputWidget = flcModuleWidget;
+		moduleConnection->outputPortNumber = portNumber;
+	}
+	if( portType == flaarlib::PORT_TYPE::INPUT_PORT)
+	{
+		moduleConnection->inputUuid = flcModuleWidget->getUuid();
+		moduleConnection->inputWidget = flcModuleWidget;
+		moduleConnection->inputPortNumber = portNumber;
+	}
+	m_vModuleConnections.append(moduleConnection);
+	repaint();
+}
+
+
+void FLCModuleInstancesPanel::paintEvent(QPaintEvent *event)
+{
+	QPainter painter(this);
+	//painter.save();
+	for( FLCModuleConnection *moduleConnection : m_vModuleConnections )
+	{
+		QPoint start;
+		QPoint end;
+		if(moduleConnection->outputUuid != "" )
+		{
+			FLCModuleWidget *moduleWidget = m_flcWidgetMap[moduleConnection->outputUuid];
+			if( !moduleWidget->paintingActive() )
+				start = moduleConnection->outputWidget->getPortOrigin(flaarlib::PORT_TYPE::OUTPUT_PORT, moduleConnection->outputPortNumber);
+			else
+				continue;
+		}
+		else
+			start = QPoint(width()/2, height()/2);
+
+		if(moduleConnection->inputUuid != "" )
+		{
+			FLCModuleWidget *moduleWidget = m_flcWidgetMap[moduleConnection->inputUuid];
+			if( !moduleWidget->paintingActive() )
+				end = moduleConnection->inputWidget->getPortOrigin(flaarlib::PORT_TYPE::INPUT_PORT, moduleConnection->inputPortNumber);
+			else
+				continue;
+		}
+		else
+			end = QPoint(width()/2, height()/2);
+
+		painter.drawLine(start, end);
+		qDebug() << "Start: " << start << " / End: " << end;
+	}
+	QWidget::paintEvent(event);
 }

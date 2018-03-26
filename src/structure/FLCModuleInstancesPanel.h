@@ -13,6 +13,7 @@ class FLCModuleInstancesHandler;
 class FLOModuleInstanceDAO;
 class FLCModuleWidget;
 class FLCRepositoryModuleModel;
+class FLCModuleConnection;
 
 class FLCModuleInstancesPanel : public QWidget
 {
@@ -32,6 +33,7 @@ protected: // events
 	void dragEnterEvent(QDragEnterEvent *event) override;
 	void dragMoveEvent(QDragMoveEvent *event) override;
 	void dropEvent(QDropEvent *event) override;
+	void paintEvent(QPaintEvent *event) override;
 
 protected: // methods
 	void setupUi();
@@ -51,7 +53,7 @@ protected slots:
 	void moduleWidgetModified(FLOModuleInstanceDAO *module);
 	void removeModuleWidget( QUuid uuid);
 	void moduleWidgetRemoved( QUuid uuid);
-
+	void portClicked( FLCModuleWidget *flcModuleWidget, flaarlib::PORT_TYPE portType, int portNumber );
 
 protected: // members
 	double snap = 10;
@@ -61,6 +63,7 @@ protected: // members
 	FLCModuleInstancesHandler *m_pHandler = 0;
 	std::map<QUuid, FLCModuleWidget *> m_flcWidgetMap;
 	FLCModuleWidget *lastSelectedWidgt = 0;
+	QVector<FLCModuleConnection *> m_vModuleConnections;
 
 };
 

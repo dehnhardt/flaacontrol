@@ -43,7 +43,8 @@ SOURCES += \
     src/structure/FLCMainModuleInstancesPanel.cpp \
     src/structure/FLCModuleInstancesPanel.cpp \
     src/structure/FLCFlowControl.cpp \
-    src/model/FLCModuleInstanceAttributesModel.cpp
+    src/model/FLCModuleInstanceAttributesModel.cpp \
+    src/structure/FLCModuleConnection.cpp
 
 HEADERS += \
     src/tracks/tracks.h \
@@ -63,7 +64,8 @@ HEADERS += \
     src/structure/FLCMainModuleInstancesPanel.h \
     src/structure/FLCModuleInstancesPanel.h \
     src/structure/FLCFlowControl.h \
-    src/model/FLCModuleInstanceAttributesModel.h
+    src/model/FLCModuleInstanceAttributesModel.h \
+    src/structure/FLCModuleConnection.h
 
 FORMS += \
     src/mainwindow.ui \
