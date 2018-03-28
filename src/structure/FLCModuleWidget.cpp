@@ -109,6 +109,8 @@ void FLCModuleWidget::mousePressEvent(QMouseEvent *event)
 		emit(portClicked(this, flaarlib::PORT_TYPE::OUTPUT_PORT, outputPort));
 		return;
 	}
+	if( inHandleArea( p ))
+		m_pOffset = event->pos();
 	QWidget::mousePressEvent(event);
 }
 
@@ -131,7 +133,13 @@ void FLCModuleWidget::mouseMoveEvent(QMouseEvent *event)
 		return;
 	}
 	if( inHandleArea(p) )
+	{
+		if( !event->buttons() )
+			setCursor(Qt::OpenHandCursor);
+		if(event->buttons() & Qt::LeftButton)
+			this->move(mapToParent(event->pos() - m_pOffset));
 		return;
+	}
 	unsetCursor();
 }
 
@@ -158,11 +166,7 @@ int FLCModuleWidget::inOutputPort(QPoint p)
 int FLCModuleWidget::inHandleArea(QPoint p)
 {
 	if( m_handleRect.contains(p))
-	{
-		setCursor(Qt::OpenHandCursor);
 		return 1;
-	}
-	unsetCursor();
 	return 0;
 }
 

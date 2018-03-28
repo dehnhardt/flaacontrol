@@ -110,6 +110,7 @@ private: //members
 	int m_iHeight = 55;
 	int m_iWidth = 125;
 	QRect m_handleRect = QRect(0,0,m_iHandleWidth,m_iHeight);
+	QPoint m_pOffset;
 
 	// context menu action
 	std::unique_ptr<QAction> m_pRemoveAction;

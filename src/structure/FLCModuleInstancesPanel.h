@@ -29,7 +29,6 @@ public: //methods
 	QIcon iconForModule(flaarlib::MODULE_TYPE moduleType, flaarlib::DATA_TYPE dataType);
 
 protected: // events
-	void mousePressEvent(QMouseEvent *event) override;
 	void dragEnterEvent(QDragEnterEvent *event) override;
 	void dragMoveEvent(QDragMoveEvent *event) override;
 	void dropEvent(QDropEvent *event) override;

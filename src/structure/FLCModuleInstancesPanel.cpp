@@ -61,47 +61,6 @@ QIcon FLCModuleInstancesPanel::iconForModule(flaarlib::MODULE_TYPE moduleType, f
 	return m_pParent->getFlcModulesModelMap()[moduleType]->icon(dataType).value<QIcon>();
 }
 
-void FLCModuleInstancesPanel::mousePressEvent(QMouseEvent *event)
-{
-	QPoint dragStartPosition;
-	if (event->button() == Qt::LeftButton )
-	{
-		dragStartPosition = event->pos();
-		QWidget *w = childAt(dragStartPosition);
-		FLCModuleWidget *m = dynamic_cast<FLCModuleWidget *>(w);
-		if( m )
-		{
-			QPoint hotSpot = dragStartPosition - m->pos();
-			QByteArray encodedData;
-			QDataStream stream(&encodedData, QIODevice::WriteOnly);
-			QDrag *drag = new QDrag(this);
-			QMimeData *mimeData = new QMimeData;
-			QString text = m->functionalName();
-			const QIcon icon = m->moduleIcon();
-			QUuid uuid = m->getUuid();
-			stream << text << icon << hotSpot << uuid;
-			mimeData->setData(sMimeTypeMove(), encodedData);
-
-			qreal dpr = window()->windowHandle()->devicePixelRatio();
-			QPixmap pixmap(m->size() * dpr);
-			pixmap.setDevicePixelRatio(dpr);
-			m->render(&pixmap);
-
-			drag->setMimeData(mimeData);
-			drag->setPixmap(pixmap);
-			drag->setHotSpot(hotSpot);
-			m->hide();
-			Qt::DropAction dropAction = drag->exec();
-			if( dropAction == Qt::MoveAction)
-			{
-				m->hide();
-				m->deleteLater();
-			}
-		}
-	}
-
-}
-
 void FLCModuleInstancesPanel::dragEnterEvent(QDragEnterEvent *event)
 {
 	if (event->mimeData()->hasFormat(sMimeTypeAdd()) || event->mimeData()->hasFormat(sMimeTypeMove()))
@@ -162,33 +121,6 @@ void FLCModuleInstancesPanel::dropEvent(QDropEvent *event)
 					repositoryModule->functionalName().c_str(), repositoryModule->moduleTypeName().c_str());
 			moduleInstance->setPosition(snapToGrid(event->pos(), offset));
 			emit( addModuleInstance(moduleInstance) );
-		}
-		if (event->source() == this)
-		{
-			event->setDropAction(Qt::CopyAction);
-			event->accept();
-		}
-		else
-			event->acceptProposedAction();
-	}
-	else if (event->mimeData()->hasFormat(sMimeTypeMove()))
-	{
-		const QMimeData *mime = event->mimeData();
-		QByteArray itemData = mime->data(sMimeTypeMove());
-		QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-
-		QString text;
-		QPoint offset;
-		QIcon icon;
-		QUuid uuid;
-		dataStream >> text >> icon >> offset >>uuid;
-		if( !icon.isNull() && uuid != "" )
-		{
-			FLOModuleInstanceDAO *moduleInstance = m_pModel->getFLOModuleInstance(uuid);
-			moduleInstance->setPosition(snapToGrid(event->pos(), offset));
-			FLCModuleWidget *moduleWidget = createModuleWidget(moduleInstance);
-			this->m_flcWidgetMap[uuid] = moduleWidget;
-			emit( modifyModuleInstance(moduleInstance));
 		}
 		if (event->source() == this)
 		{
