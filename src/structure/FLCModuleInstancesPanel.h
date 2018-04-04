@@ -33,6 +33,9 @@ protected: // events
 	void dragMoveEvent(QDragMoveEvent *event) override;
 	void dropEvent(QDropEvent *event) override;
 	void paintEvent(QPaintEvent *event) override;
+	void mouseMoveEvent(QMouseEvent *event) override;
+	void mousePressEvent(QMouseEvent *event) override;
+	void mouseReleaseEvent(QMouseEvent *event) override;
 
 protected: // methods
 	void setupUi();
@@ -40,6 +43,7 @@ protected: // methods
 	FLCModuleWidget *createModuleWidget(FLOModuleInstanceDAO *module);
 	void deleteModuleWidget(FLCModuleWidget *moduleWidget);
 	QPoint snapToGrid(QPoint position, QPoint offset);
+	void drawModuleConnection(FLCModuleConnection *moduleConnection);
 
 signals:
 	void addModuleInstance(FLOModuleInstanceDAO *module);
@@ -47,6 +51,7 @@ signals:
 	void removeModuleInstance( QUuid uuid);
 
 protected slots:
+	void moveModuleWidget(FLCModuleWidget *flcModuleWidget, QPoint pos);
 	void moduleWidgetSelected(FLCModuleWidget *flcModuleWidget);
 	void moduleWidgetAdded(FLOModuleInstanceDAO *module);
 	void moduleWidgetModified(FLOModuleInstanceDAO *module);
@@ -60,10 +65,12 @@ protected: // members
 	bool m_bDataLoaded = false;
 	FLCModuleInstancesModel *m_pModel = 0;
 	FLCModuleInstancesHandler *m_pHandler = 0;
-	std::map<QUuid, FLCModuleWidget *> m_flcWidgetMap;
+	QMap<QUuid, FLCModuleWidget *> m_flcWidgetMap;
 	FLCModuleWidget *lastSelectedWidgt = 0;
 	QVector<FLCModuleConnection *> m_vModuleConnections;
 
+	FLCModuleConnection *m_tmpModuleConnection = 0;
+	QPoint m_tmpEndPoint;
 };
 
 #endif // MODULEINSTANCESPANEL_H

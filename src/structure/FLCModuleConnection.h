@@ -10,6 +10,7 @@ class FLCModuleConnection
 {
 public:
 	FLCModuleConnection();
+	FLCModuleConnection( FLCModuleConnection *fLCModuleConnection);
 
 	QUuid outputUuid = "";
 	QUuid inputUuid = "";

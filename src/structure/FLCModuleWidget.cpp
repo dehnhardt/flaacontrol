@@ -100,6 +100,7 @@ void FLCModuleWidget::mousePressEvent(QMouseEvent *event)
 	{
 		qDebug() << "click on input port";
 		emit(portClicked(this, flaarlib::PORT_TYPE::INPUT_PORT, inputPort));
+		event->ignore();
 		return;
 	}
 	outputPort = inOutputPort(p);
@@ -107,15 +108,40 @@ void FLCModuleWidget::mousePressEvent(QMouseEvent *event)
 	{
 		qDebug() << "click on output port";
 		emit(portClicked(this, flaarlib::PORT_TYPE::OUTPUT_PORT, outputPort));
+		event->ignore();
 		return;
 	}
 	if( inHandleArea( p ))
+	{
+		m_bMoving = true;
 		m_pOffset = event->pos();
+	}
 	QWidget::mousePressEvent(event);
 }
 
 void FLCModuleWidget::mouseReleaseEvent(QMouseEvent *event __attribute__((unused)) )
 {
+	QPoint p = event->pos();
+	if( inInputPort(p))
+	{
+		event->ignore();
+		return;
+	}
+	if( inOutputPort(p))
+	{
+		event->ignore();
+		return;
+	}
+	if( inHandleArea(p))
+	{
+		if( m_bMoving )
+		{
+			QPoint newPos = snapToGrid(pos(), QPoint(0,0));
+			move(newPos);
+			m_bMoving = false;
+			emit( widgetMoved(this, newPos));
+		}
+	}
 	emit( widgetSelected(this) );
 }
 
@@ -125,11 +151,13 @@ void FLCModuleWidget::mouseMoveEvent(QMouseEvent *event)
 	if( inInputPort(p))
 	{
 		setCursor(Qt::PointingHandCursor);
+		event->ignore();
 		return;
 	}
 	if( inOutputPort(p))
 	{
 		setCursor(Qt::PointingHandCursor);
+		event->ignore();
 		return;
 	}
 	if( inHandleArea(p) )
@@ -141,6 +169,17 @@ void FLCModuleWidget::mouseMoveEvent(QMouseEvent *event)
 		return;
 	}
 	unsetCursor();
+}
+
+QPoint FLCModuleWidget::snapToGrid(QPoint position, QPoint offset)
+{
+	int snap = 10;
+	QPoint p = position - offset;
+	p.setX(static_cast<int>(round(static_cast<double>(p.x())/snap)
+							*static_cast<int>(snap)));
+	p.setY(static_cast<int>(round(static_cast<double>(p.y())/snap)
+							*static_cast<int>(snap)));
+	return p;
 }
 
 int FLCModuleWidget::inInputPort(QPoint p)
@@ -312,7 +351,6 @@ void FLCModuleWidget::paintEvent(QPaintEvent *e)
 
 void FLCModuleWidget::paintPorts(QPainter &painter)
 {
-	//QPalette::ColorRole role = backgroundRole();
 	QColor portsColor = QWidget::palette().color(backgroundRole());
 	QPen pen(this->seleced()? borderColor.lighter():borderColor);
 	pen.setWidth(2);

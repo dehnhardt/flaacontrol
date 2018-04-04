@@ -70,11 +70,14 @@ public:
 	void setOutputPorts(int iOutputPorts);
 
 	QPoint getPortOrigin( flaarlib::PORT_TYPE portType, int portNumber);
+	int inInputPort(QPoint p);
+	int inOutputPort(QPoint p);
 
 signals:
 	void removeModuleWidget( QUuid uuid);
 	void widgetSelected(FLCModuleWidget *flcModuleWidget);
 	void portClicked( FLCModuleWidget *flcModuleWidget, flaarlib::PORT_TYPE portType, int portNumber );
+	void widgetMoved( FLCModuleWidget *flcModuleWidget, QPoint pos);
 
 public slots:
 
@@ -85,11 +88,12 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
 
-	int inInputPort(QPoint p);
-	int inOutputPort(QPoint p);
 	int inHandleArea(QPoint p);
 
 private: //members
+
+	bool m_bMoving = false;
+
 	bool m_bSeleced = false;
 	QHBoxLayout *m_pHorizontalLayot;
 	QVBoxLayout *m_pVerticalLayout;
@@ -125,6 +129,7 @@ private: //methods
 
 	void addPorts(int portsCount, QVector<QPainterPath> &path, flaarlib::PORT_TYPE portType);
 
+	QPoint snapToGrid(QPoint position, QPoint offset);
 };
 
 #endif // FLCMODULEWIDGET_H

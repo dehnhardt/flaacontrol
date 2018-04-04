@@ -169,6 +169,7 @@ FLCModuleWidget *FLCModuleInstancesPanel::createModuleWidget(FLOModuleInstanceDA
 	connect(moduleWidget, &FLCModuleWidget::removeModuleWidget, this, &FLCModuleInstancesPanel::removeModuleWidget);
 	connect(moduleWidget, &FLCModuleWidget::widgetSelected, this, &FLCModuleInstancesPanel::moduleWidgetSelected);
 	connect(moduleWidget, &FLCModuleWidget::portClicked, this, &FLCModuleInstancesPanel::portClicked);
+	connect(moduleWidget, &FLCModuleWidget::widgetMoved, this, &FLCModuleInstancesPanel::moveModuleWidget);
 	return moduleWidget;
 }
 
@@ -243,56 +244,130 @@ void FLCModuleInstancesPanel::moduleWidgetRemoved(QUuid uuid)
 
 void FLCModuleInstancesPanel::portClicked(FLCModuleWidget *flcModuleWidget, flaarlib::PORT_TYPE portType, int portNumber)
 {
-	FLCModuleConnection *moduleConnection = new FLCModuleConnection();
+	grabMouse();
+	FLCModuleWidget *storedWidget = m_flcWidgetMap[flcModuleWidget->getUuid()];
+	qDebug() << "port " << portNumber << " (" << portType << ") clicked on widget " << flcModuleWidget->getUuid();
+	qDebug() << "port " << portNumber << " (" << portType << ") clicked on widget " << storedWidget->getUuid();
+	m_tmpModuleConnection = new FLCModuleConnection();
 	if( portType == flaarlib::PORT_TYPE::OUTPUT_PORT)
 	{
-		moduleConnection->outputUuid = flcModuleWidget->getUuid();
-		moduleConnection->outputWidget = flcModuleWidget;
-		moduleConnection->outputPortNumber = portNumber;
+		m_tmpModuleConnection->outputUuid = flcModuleWidget->getUuid().toString();
+		m_tmpModuleConnection->outputWidget = flcModuleWidget;
+		m_tmpModuleConnection->outputPortNumber = portNumber;
 	}
 	if( portType == flaarlib::PORT_TYPE::INPUT_PORT)
 	{
-		moduleConnection->inputUuid = flcModuleWidget->getUuid();
-		moduleConnection->inputWidget = flcModuleWidget;
-		moduleConnection->inputPortNumber = portNumber;
+		m_tmpModuleConnection->inputUuid = flcModuleWidget->getUuid().toString();
+		m_tmpModuleConnection->inputWidget = flcModuleWidget;
+		m_tmpModuleConnection->inputPortNumber = portNumber;
 	}
-	m_vModuleConnections.append(moduleConnection);
-	repaint();
+}
+
+void FLCModuleInstancesPanel::moveModuleWidget(FLCModuleWidget *flcModuleWidget, QPoint pos)
+{
+	FLOModuleInstanceDAO *floModuleInstanceDAO = this->m_pModel->getFLOModuleInstance(flcModuleWidget->getUuid());
+	floModuleInstanceDAO->setPosition(pos);
+	emit( modifyModuleInstance(floModuleInstanceDAO));
 }
 
 
 void FLCModuleInstancesPanel::paintEvent(QPaintEvent *event)
 {
-	QPainter painter(this);
-	//painter.save();
-	for( FLCModuleConnection *moduleConnection : m_vModuleConnections )
-	{
-		QPoint start;
-		QPoint end;
-		if(moduleConnection->outputUuid != "" )
-		{
-			FLCModuleWidget *moduleWidget = m_flcWidgetMap[moduleConnection->outputUuid];
-			if( !moduleWidget->paintingActive() )
-				start = moduleConnection->outputWidget->getPortOrigin(flaarlib::PORT_TYPE::OUTPUT_PORT, moduleConnection->outputPortNumber);
-			else
-				continue;
-		}
-		else
-			start = QPoint(width()/2, height()/2);
-
-		if(moduleConnection->inputUuid != "" )
-		{
-			FLCModuleWidget *moduleWidget = m_flcWidgetMap[moduleConnection->inputUuid];
-			if( !moduleWidget->paintingActive() )
-				end = moduleConnection->inputWidget->getPortOrigin(flaarlib::PORT_TYPE::INPUT_PORT, moduleConnection->inputPortNumber);
-			else
-				continue;
-		}
-		else
-			end = QPoint(width()/2, height()/2);
-
-		painter.drawLine(start, end);
-		qDebug() << "Start: " << start << " / End: " << end;
-	}
 	QWidget::paintEvent(event);
+	if( m_tmpModuleConnection)
+	{
+		qDebug() << "paint temp connection";
+		drawModuleConnection(m_tmpModuleConnection);
+	}
+	for( FLCModuleConnection *moduleConnection : m_vModuleConnections )
+		drawModuleConnection(moduleConnection);
+}
+
+void FLCModuleInstancesPanel::drawModuleConnection( FLCModuleConnection *moduleConnection)
+{
+	QPainter painter(this);
+	QPoint start;
+	QPoint end;
+	if(moduleConnection->outputWidget )
+	{
+		if( !moduleConnection->outputWidget->paintingActive() )
+			start = moduleConnection->outputWidget->getPortOrigin(flaarlib::PORT_TYPE::OUTPUT_PORT, moduleConnection->outputPortNumber);
+		else
+			return;
+	}
+	else
+		start = m_tmpEndPoint;
+
+	if(moduleConnection->inputWidget )
+	{
+		if(!moduleConnection->inputWidget->paintingActive() )
+			end = moduleConnection->inputWidget->getPortOrigin(flaarlib::PORT_TYPE::INPUT_PORT, moduleConnection->inputPortNumber);
+		else
+			return;
+	}
+	else
+		end = m_tmpEndPoint;
+
+	painter.drawLine(start, end);
+}
+
+void FLCModuleInstancesPanel::mouseMoveEvent(QMouseEvent *event)
+{
+	qDebug() << "mouse move";
+	if( m_tmpModuleConnection )
+	{
+		m_tmpEndPoint = event->pos();
+		repaint();
+	}
+}
+
+void FLCModuleInstancesPanel::mousePressEvent(QMouseEvent *event)
+{
+	qDebug() << "mouse press";
+}
+
+void FLCModuleInstancesPanel::mouseReleaseEvent(QMouseEvent *event)
+{
+	QPoint p = event->pos();
+
+	if( m_tmpModuleConnection)
+	{
+		qDebug() << "Release Mouse";
+		releaseMouse();
+		for( auto widget :  m_flcWidgetMap )
+		{
+			QRect r = QRect(widget->pos(), widget->size());
+			qDebug() << "is Point " << p << " contained in " << r;
+			if( r.contains(p) )
+			{
+				qDebug() << "Point " << p << " is contained in " << r;
+				int port;
+				QPoint widgetPos = widget->pos();
+				QPoint localPoint = p - widgetPos;
+				qDebug() << "mapped point: " << localPoint;
+				if( !m_tmpModuleConnection->inputPortNumber  &&  (port = widget->inInputPort(localPoint)))
+				{
+					qDebug() << "found mathing input port: " << port  << " in widget " << widget->getUuid();
+					m_tmpModuleConnection->inputPortNumber = port;
+					m_tmpModuleConnection->inputWidget = widget;
+					m_tmpModuleConnection->inputUuid = widget->getUuid().toString();
+					m_vModuleConnections.append(new FLCModuleConnection(m_tmpModuleConnection));
+					break;
+				}
+				else if(!m_tmpModuleConnection->outputPortNumber  &&  (port = widget->inOutputPort(localPoint)))
+				{
+					qDebug() << "found mathing output port: " << port;
+					m_tmpModuleConnection->outputPortNumber = port;
+					m_tmpModuleConnection->outputWidget = widget;
+					m_tmpModuleConnection->outputUuid = widget->getUuid().toString();
+					m_vModuleConnections.append(new FLCModuleConnection(m_tmpModuleConnection));
+					break;
+				}
+				break;
+			}
+		}
+		qDebug() << "delete temp connection";
+		delete m_tmpModuleConnection;
+		m_tmpModuleConnection = 0;
+	}
 }
